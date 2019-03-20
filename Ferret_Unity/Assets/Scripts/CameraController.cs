@@ -5,15 +5,15 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class CameraController : MonoBehaviour {
 
-	[SerializeField] private float m_minViewAngle = 45;
-	[SerializeField] private float m_maxViewAngle = 45;
-	[SerializeField] private float m_XRotateSpeed = 5;
-	[SerializeField] private float m_YRotateSpeed = 5;
-	[SerializeField] private Transform m_pivot;
+	[SerializeField] Transform m_target;
+	[SerializeField] float m_minViewAngle = 45;
+	[SerializeField] float m_maxViewAngle = 45;
+	[SerializeField] float m_XRotateSpeed = 5;
+	[SerializeField] float m_YRotateSpeed = 5;
+	[SerializeField] Transform m_pivot;
 
 	//public bool m_invertY;
 
-	private Transform m_target;
 	private Vector3 m_offset;
 
 	void Start(){
@@ -68,9 +68,9 @@ public class CameraController : MonoBehaviour {
 
 		//transform.position = m_target.position - m_offset;
 
-		/*if(transform.position.y < m_target.position.y){
+		if(transform.position.y < m_target.position.y){
 			transform.position = new Vector3(transform.position.x, m_target.position.y + 0.5f, transform.position.z);
-		}*/
+		}
 
 		transform.LookAt(m_target);
 	}

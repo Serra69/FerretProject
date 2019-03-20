@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour {
 	[System.Serializable] public class MouvementSpeed {
 		[Header("Speed of the walk")] 
 		public float walkSpeed;
+
 		[Header("Multipliers based on the walk speed")]
 		public float runMultiplier;
 		public float climbMultiplier;
@@ -36,6 +37,9 @@ public class PlayerController : MonoBehaviour {
 	[System.Serializable] public class Cameras {
 		public Transform m_thirdPersonCameraPos; 
 		public Transform m_firstPersonCameraPos;
+
+		public Camera m_thirdPersonCamera;
+		public Camera m_firstPersonCamera;
 	}
 	[System.Serializable] public class Layers {
 		public LayerMask m_whatIsGround;
@@ -212,11 +216,11 @@ public class PlayerController : MonoBehaviour {
 				Physics.Raycast(positionBotRight, Vector3.down, maxDistance, m_layersMask.m_whatIsGround) ||
 				Physics.Raycast(positionBotLeft, Vector3.down, maxDistance, m_layersMask.m_whatIsGround) ||
 				Physics.Raycast(positionBot, Vector3.down, maxDistance, m_layersMask.m_whatIsGround) ){
-				Debug.Log("I touch the ground");
+			//Debug.Log("I touch the ground");
 				m_isGrounded = true;
 				//Debug.Log(Physics.Raycast(positionTopRight, Vector3.down, maxDistance, m_layersMask.m_whatIsGround));
 			}else{
-				Debug.Log("I don't touch the ground");
+				//Debug.Log("I don't touch the ground");
 				m_isGrounded = false;
 			}
 
