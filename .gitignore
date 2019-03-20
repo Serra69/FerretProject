@@ -34,3 +34,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+/EXO_GitHub/Assets/ProCore/ProBuilder/Data/ProBuilderPreferences.asset
+/EXO_GitHub/Assets/ProCore/ProBuilder/Data/ProBuilderPreferences.asset.meta
+/Ferret_Unity/Assets/Import/ProBuilder DataProBuilderPreferences.asset
+/Ferret_Unity/Assets/Import/ProBuilder DataProBuilderPreferences.asset.meta
