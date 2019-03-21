@@ -73,8 +73,15 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	[Header("Camera")]
-	public Camera m_camera = new Camera();
-	[System.Serializable] public class Camera {
+	public EditCamera m_camera = new EditCamera();
+	[System.Serializable] public class EditCamera {
+
+		public Cameras m_cameras = new Cameras();
+		[System.Serializable] public class Cameras {
+			public Camera m_firstPerson;
+			public Camera m_thirdPerson;
+		}
+
 		public Transform m_pivot;
 		public float m_rotateSpeed = 5;
 		public Camera m_firstPerson;
@@ -89,6 +96,7 @@ public class PlayerManager : MonoBehaviour {
 	public LayerMask m_checkTopMask;
 
 	[HideInInspector] public Rigidbody m_rigidbody;
+	[HideInInspector] public bool m_isIn3rdPersonCamera = true;
 
 #endregion Public Variables
 
@@ -213,6 +221,18 @@ public class PlayerManager : MonoBehaviour {
 			transform.rotation = Quaternion.Euler(0f, m_camera.m_pivot.rotation.eulerAngles.y, 0f);
 			Quaternion newRotation = Quaternion.LookRotation(new Vector3(m_moveDirection.x, 0f, m_moveDirection.z));
 			m_ferretMesh.transform.rotation = Quaternion.Slerp(m_ferretMesh.transform.rotation, newRotation, m_camera.m_rotateSpeed * Time.deltaTime);
+		}
+	}
+
+	public void ChangeCamera(){
+		m_isIn3rdPersonCamera =! m_isIn3rdPersonCamera;
+
+		if(m_isIn3rdPersonCamera){
+			m_camera.m_cameras.m_firstPerson.depth = 0;
+			m_camera.m_cameras.m_thirdPerson.depth = 1;
+		}else{
+			m_camera.m_cameras.m_firstPerson.depth = 1;
+			m_camera.m_cameras.m_thirdPerson.depth = 0;
 		}
 	}
 

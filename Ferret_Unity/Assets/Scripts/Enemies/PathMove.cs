@@ -3,7 +3,7 @@ using UnityEngine;
 
 //[RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Rigidbody))]
-public class EnemyPathMove : MonoBehaviour {
+public class PathMove : MonoBehaviour {
 
 	[SerializeField] private float m_moveSpeed = 5;
 	//[SerializeField] private float m_rotationSpeed = 90;
