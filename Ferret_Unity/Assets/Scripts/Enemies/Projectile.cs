@@ -29,10 +29,11 @@ public class Projectile : MonoBehaviour {
 			m_isStick = true;
 			m_rigidbody.isKinematic = true;
 			transform.parent = col.gameObject.transform;
+			print("colission with : " + col.gameObject.name);
 			Destroy(GetComponent<Collider>());
 
 			if(col.gameObject.GetComponentInParent<PlayerManager>() != null){
-				print("I shot the player !");
+				print("I shoot the player !");
 			}
 		}
 	}

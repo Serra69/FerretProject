@@ -25,21 +25,32 @@ public class PlayerWalkState : IState
 
     public void FixedUpdate()
     {
-        throw new System.NotImplementedException();
+        Move();
     }
 
     public void Update()
     {
-		if(!m_playerManager.PlayerInputIsMoving()){
-			m_playerManager.ChangeState(0);
-		}
+      if(!m_playerManager.PlayerInputIsMoving()){
+        m_playerManager.ChangeState(0);
+      }
 
-		if(m_playerManager.m_runButton){
-			m_playerManager.ChangeState(2);
-		}
+      if(m_playerManager.m_runButton){
+        m_playerManager.ChangeState(2);
+      }    
 
-		m_playerManager.MovePlayer(m_playerManager.m_states.m_walk.m_speed);
-		m_playerManager.RotatePlayer();
+      if(m_playerManager.m_jumpButton){
+        m_playerManager.ChangeState(3);
+      }
+
+      if(!m_playerManager.CheckCollider(false)){
+        m_playerManager.ChangeState(4);
+      }
+      
+    }
+
+    void Move(){
+      m_playerManager.MovePlayer(m_playerManager.m_states.m_walk.m_speed);
+      m_playerManager.RotatePlayer();
     }
 
 }

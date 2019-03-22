@@ -14,17 +14,17 @@ public class PlayerIdleState : IState
 
     public void Enter()
     {
-		  //Debug.LogFormat("{0} : Enter()", GetType().Name);
+		  Debug.LogFormat("{0} : Enter()", GetType().Name);
     }
 
     public void Exit()
     {
-		  //Debug.LogFormat("{0} : Exit()", GetType().Name);
+		  Debug.LogFormat("{0} : Exit()", GetType().Name);
     }
 
     public void FixedUpdate()
     {
-        throw new System.NotImplementedException();
+      
     }
 
     public void Update()
@@ -34,12 +34,16 @@ public class PlayerIdleState : IState
       }
 
       if(m_playerManager.m_crawlButton){
-        if(!m_playerManager.CheckTopCollider()){
-          m_playerManager.ChangeState(3);
+        if(!m_playerManager.CheckCollider(true)){
+          m_playerManager.ChangeState(5);
         }
       }
       if(Input.GetKeyDown(KeyCode.A)){
         m_playerManager.ChangeCamera();
+      }
+
+      if(m_playerManager.m_jumpButton){
+        m_playerManager.ChangeState(3);
       }
     }
 

@@ -48,9 +48,8 @@ public class FieldOfView : MonoBehaviour {
 		return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad),0,Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
 	}
 
-	void Update(){
-		
-		if(GetComponent<RobotTurret>()){
+	void Update(){	
+		if(GetComponent<RobotTurret>() || GetComponent<RobotDoctor>()){
 			LookAtTarget();
 		}
 	}

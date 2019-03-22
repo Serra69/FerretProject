@@ -1,10 +1,22 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
+[System.Serializable]
 public class StateMachine
 {
     List<IState> m_states = null;
 
     IState m_currentState = null; // = null car elle n'a pas d'état courant, elle n'est pas initialisée
+
+    [SerializeField] string m_currentStateString;
+
+    public IState CurrentState
+    {
+        get
+        {
+            return m_currentState;
+        }
+    }
 
     #region Methods
 
@@ -42,6 +54,14 @@ public class StateMachine
         }
     }
 
+    public void FixedUpdate()
+    {
+        if (m_currentState != null)
+        {
+            m_currentState.FixedUpdate();
+        }
+    }
+
     public void ChangeState(int index)
     {
         if (index > m_states.Count - 1)
@@ -54,7 +74,13 @@ public class StateMachine
         }
         m_currentState = m_states[index];
         m_currentState.Enter();
+        m_currentStateString = m_currentState.GetType().Name;
     }
+
+    public bool CompareState(int stateIndex){
+        return m_states[stateIndex] == CurrentState;
+    }
+
     #endregion // Methods
 
 }

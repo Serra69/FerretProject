@@ -7,6 +7,8 @@ public class PlayerManager : MonoBehaviour {
 
 #region Public [System.Serializable] Variables
 
+	[SerializeField] StateMachine m_sM = new StateMachine(); 
+
 	[Header("States")]
 	public States m_states = new States();
 	[System.Serializable] public class States {
@@ -36,6 +38,7 @@ public class PlayerManager : MonoBehaviour {
 		public Jump m_jump = new Jump();
 		[System.Serializable] public class Jump {
 			public float m_jumpForce = 10f;
+			public float m_maxJumpForce = 10f;
 		}
 
 	}
@@ -45,6 +48,9 @@ public class PlayerManager : MonoBehaviour {
 	[System.Serializable] public class PhysicsVar {
 		public bool m_useGravity = true;
 		public float m_gravity = 9.81f;
+
+		public Transform castCenter = null;
+		public float m_maxDistance = 1;
 	}	
 
 	[Header("Colliders")]
@@ -84,8 +90,6 @@ public class PlayerManager : MonoBehaviour {
 
 		public Transform m_pivot;
 		public float m_rotateSpeed = 5;
-		public Camera m_firstPerson;
-		public Camera m_thirdPerson;
 	}
 
 #endregion Public [System.Serializable] Variables
@@ -93,10 +97,9 @@ public class PlayerManager : MonoBehaviour {
 #region Public Variables
 
 	public GameObject m_ferretMesh;
-	public LayerMask m_checkTopMask;
+	public LayerMask m_checkMask;
 
-	[HideInInspector] public Rigidbody m_rigidbody;
-	[HideInInspector] public bool m_isIn3rdPersonCamera = true;
+    [HideInInspector] public bool m_isIn3rdPersonCamera = true;
 
 #endregion Public Variables
 
@@ -106,6 +109,7 @@ public class PlayerManager : MonoBehaviour {
 	[HideInInspector] public float m_vAxis_Button;
 	[HideInInspector] public bool m_runButton;
 	[HideInInspector] public bool m_jumpButton;
+	[HideInInspector] public bool m_jumpHeldButton;
 	[HideInInspector] public bool m_crawlButton;
 	[HideInInspector] public bool m_takeButton;
 
@@ -113,19 +117,29 @@ public class PlayerManager : MonoBehaviour {
 
 #region Private Variables
 
-	StateMachine m_sM = new StateMachine(); 
 	Vector3 m_moveDirection = Vector3.zero;
 
-#endregion Private Variables
+	Rigidbody m_rigidbody;
+    public Rigidbody Rigidbody
+    {
+        get
+        {
+            return m_rigidbody;
+        }
+    }
 
-#region Private functions
+    #endregion Private Variables
 
-	void Awake(){
+    #region Private functions
+
+    void Awake(){
 		m_sM.AddStates(new List<IState> {
-				new PlayerIdleState(this),	// 0 = Idle
-				new PlayerWalkState(this),	// 1 = Walk
-				new PlayerRunState(this),	// 2 = Run
-				new PlayerCrawlState(this)	// 3 = Crawl
+			new PlayerIdleState(this),	// 0 = Idle
+			new PlayerWalkState(this),	// 1 = Walk
+			new PlayerRunState(this),	// 2 = Run
+			new PlayerJumpState(this),	// 3 = Jump
+			new PlayerFallState(this),	// 4 = Fall
+			new PlayerCrawlState(this)	// 5 = Crawl	
 		});
 
 		m_rigidbody = GetComponent<Rigidbody>();
@@ -139,11 +153,16 @@ public class PlayerManager : MonoBehaviour {
 		UpdateInputButtons();
 	}
 
+	void FixedUpdate(){
+		m_sM.FixedUpdate();
+	}
+
 	void UpdateInputButtons(){
 		m_hAxis_Button = Input.GetAxis("Horizontal");
 		m_vAxis_Button = Input.GetAxis("Vertical");
 		m_runButton = Input.GetButton("Run");
 		m_jumpButton = Input.GetButtonDown("Jump");
+		m_jumpHeldButton = Input.GetButton("Jump");
 		m_crawlButton = Input.GetButtonDown("Crawl");
 		m_takeButton = Input.GetButtonDown("Take");
 	}
@@ -164,15 +183,17 @@ public class PlayerManager : MonoBehaviour {
 		}
 	}
 
-	public bool CheckTopCollider(){
-		Vector3 center = transform.position + new Vector3(0, 0, 0.075f);
+	public bool CheckCollider(bool top){
+		// Vector3 center = transform.position + new Vector3(0, top == true ? 0 : 0.1f , 0.075f);
+		Vector3 center = m_physics.castCenter.position;
 		Vector3 halfExtends = new Vector3(0.3f, 0.5f, 1.25f) / 2;
-		Vector3 direction = Vector3.up;
-		Quaternion orientation = m_ferretMesh.transform.rotation;
-		float maxDistance = 0.75f;
-		int layerMask = m_checkTopMask;
 		
-		if(Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, layerMask)){
+		Vector3 direction = top == true ? Vector3.up : Vector3.down;
+
+		Quaternion orientation = m_ferretMesh.transform.rotation;
+		int layerMask = m_checkMask;
+		
+		if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_maxDistance, layerMask)){
 			//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, layerMask)));
 			return true;
 		}else{
@@ -180,6 +201,27 @@ public class PlayerManager : MonoBehaviour {
 			return false;
 		}
 	}
+
+	void OnDrawGizmos(){
+		if (m_physics.castCenter == null)
+		{
+			return;
+		}
+		Vector3 center = m_physics.castCenter.position;
+		// transform.position + new Vector3(0, 0.1f, 0.075f);
+		Vector3 halfExtends = new Vector3(0.3f, 0.5f, 1.25f) / 2;
+		
+		Vector3 direction = Vector3.down;
+
+		Quaternion orientation = m_ferretMesh.transform.rotation;
+
+		Gizmos.color = Color.magenta;
+		Gizmos.DrawWireCube(center, halfExtends);
+
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawWireCube(center + (direction * m_physics.m_maxDistance), halfExtends);
+	}
+
 	public void Crawl(bool b){
 		if(b){
 			m_colliders.m_base.m_headColl.enabled = false;
@@ -202,13 +244,13 @@ public class PlayerManager : MonoBehaviour {
 		}
 	}
 
-	public void MovePlayer(float speed){
-		m_moveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button);
+	public void MovePlayer(float speed, float y = 0){
+		m_moveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
 		m_moveDirection = transform.TransformDirection(m_moveDirection);
 		m_moveDirection = m_moveDirection.normalized;
 		m_moveDirection *= speed;
 
-		m_rigidbody.MovePosition(transform.position + m_moveDirection * Time.deltaTime);
+		m_rigidbody.MovePosition(transform.position + m_moveDirection * Time.fixedDeltaTime);
 	}
 
 	public void ClimbMove(){
