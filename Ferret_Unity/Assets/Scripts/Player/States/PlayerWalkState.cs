@@ -42,6 +42,12 @@ public class PlayerWalkState : IState
         m_playerManager.ChangeState(3);
       }
 
+      if(m_playerManager.m_crawlButton){
+        if(!m_playerManager.CheckCollider(true)){
+          m_playerManager.ChangeState(5);
+        }
+      }
+
       if(!m_playerManager.CheckCollider(false)){
         m_playerManager.ChangeState(4);
       }

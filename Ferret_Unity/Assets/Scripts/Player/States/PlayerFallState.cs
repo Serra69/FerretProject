@@ -15,12 +15,12 @@ public class PlayerFallState : IState
 
   public void Enter()
   {
-    Debug.LogFormat("{0} : Enter()", GetType().Name);
+    //Debug.LogFormat("{0} : Enter()", GetType().Name);
   }
 
   public void Exit()
   {
-    Debug.LogFormat("{0} : Exit()", GetType().Name);
+    //Debug.LogFormat("{0} : Exit()", GetType().Name);
   }
 
   public void FixedUpdate()

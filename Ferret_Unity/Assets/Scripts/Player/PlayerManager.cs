@@ -37,8 +37,12 @@ public class PlayerManager : MonoBehaviour {
 
 		public Jump m_jump = new Jump();
 		[System.Serializable] public class Jump {
+
 			public float m_jumpForce = 10f;
-			public float m_maxJumpForce = 10f;
+			public float m_minJumpTime = 0.1f;
+			public float m_jumpTime = 0.5f;
+
+			public AnimationCurve m_jumpHeightCurve = null;
 		}
 
 	}
@@ -118,6 +122,17 @@ public class PlayerManager : MonoBehaviour {
 #region Private Variables
 
 	Vector3 m_moveDirection = Vector3.zero;
+	public Vector3 MoveDirection
+    {
+        get
+        {
+            return m_moveDirection;
+        }
+        set
+        {
+            m_moveDirection = value;
+        }
+    }
 
 	Rigidbody m_rigidbody;
     public Rigidbody Rigidbody
@@ -154,7 +169,9 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
+		MoveDirection = Vector3.zero;
 		m_sM.FixedUpdate();
+		DoMove();
 	}
 
 	void UpdateInputButtons(){
@@ -208,18 +225,15 @@ public class PlayerManager : MonoBehaviour {
 			return;
 		}
 		Vector3 center = m_physics.castCenter.position;
-		// transform.position + new Vector3(0, 0.1f, 0.075f);
 		Vector3 halfExtends = new Vector3(0.3f, 0.5f, 1.25f) / 2;
-		
-		Vector3 direction = Vector3.down;
-
 		Quaternion orientation = m_ferretMesh.transform.rotation;
 
 		Gizmos.color = Color.magenta;
 		Gizmos.DrawWireCube(center, halfExtends);
 
 		Gizmos.color = Color.yellow;
-		Gizmos.DrawWireCube(center + (direction * m_physics.m_maxDistance), halfExtends);
+		Gizmos.DrawWireCube(center + (Vector3.down * m_physics.m_maxDistance), halfExtends);
+		Gizmos.DrawWireCube(center + (Vector3.up * m_physics.m_maxDistance), halfExtends);
 	}
 
 	public void Crawl(bool b){
@@ -244,13 +258,19 @@ public class PlayerManager : MonoBehaviour {
 		}
 	}
 
-	public void MovePlayer(float speed, float y = 0){
-		m_moveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
-		m_moveDirection = transform.TransformDirection(m_moveDirection);
-		m_moveDirection = m_moveDirection.normalized;
-		m_moveDirection *= speed;
+	public void MovePlayer(float speed, float y = 0, float jumpSpeed = 0){
+		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
+		MoveDirection = transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
+		m_moveDirection.x *= speed;
+		m_moveDirection.z *= speed;
+		m_moveDirection.y *= jumpSpeed;
+	}
 
-		m_rigidbody.MovePosition(transform.position + m_moveDirection * Time.fixedDeltaTime);
+	public void DoMove(){
+		if(MoveDirection != Vector3.zero){
+			m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
+		}
 	}
 
 	public void ClimbMove(){
@@ -261,7 +281,7 @@ public class PlayerManager : MonoBehaviour {
 		// Rotate the player in different directions based on camera look direction
 		if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0){
 			transform.rotation = Quaternion.Euler(0f, m_camera.m_pivot.rotation.eulerAngles.y, 0f);
-			Quaternion newRotation = Quaternion.LookRotation(new Vector3(m_moveDirection.x, 0f, m_moveDirection.z));
+			Quaternion newRotation = Quaternion.LookRotation(new Vector3(MoveDirection.x, 0f, MoveDirection.z));
 			m_ferretMesh.transform.rotation = Quaternion.Slerp(m_ferretMesh.transform.rotation, newRotation, m_camera.m_rotateSpeed * Time.deltaTime);
 		}
 	}

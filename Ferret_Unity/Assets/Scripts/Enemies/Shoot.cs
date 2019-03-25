@@ -17,7 +17,7 @@ public class Shoot : MonoBehaviour {
 	}
 
 	void Update(){
-		if(m_fov.m_target != null){
+		if(m_fov.m_playerTarget != null){
 			if(m_canShoot){
 				Fire();
 			}

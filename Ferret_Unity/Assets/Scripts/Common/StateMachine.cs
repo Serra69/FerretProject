@@ -7,9 +7,6 @@ public class StateMachine
     List<IState> m_states = null;
 
     IState m_currentState = null; // = null car elle n'a pas d'état courant, elle n'est pas initialisée
-
-    [SerializeField] string m_currentStateString;
-
     public IState CurrentState
     {
         get
@@ -17,6 +14,19 @@ public class StateMachine
             return m_currentState;
         }
     }
+
+    IState m_lastState = null;
+    public IState LastState
+    {
+        get
+        {
+            return m_lastState;
+        }
+    }
+
+    [SerializeField] string m_currentStateString;
+
+    
 
     #region Methods
 
@@ -72,6 +82,9 @@ public class StateMachine
         {
             m_currentState.Exit();
         }
+
+        m_lastState = m_currentState;
+        
         m_currentState = m_states[index];
         m_currentState.Enter();
         m_currentStateString = m_currentState.GetType().Name;

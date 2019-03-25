@@ -14,12 +14,12 @@ public class PlayerIdleState : IState
 
     public void Enter()
     {
-		  Debug.LogFormat("{0} : Enter()", GetType().Name);
+		  //Debug.LogFormat("{0} : Enter()", GetType().Name);
     }
 
     public void Exit()
     {
-		  Debug.LogFormat("{0} : Exit()", GetType().Name);
+		  //Debug.LogFormat("{0} : Exit()", GetType().Name);
     }
 
     public void FixedUpdate()
@@ -44,6 +44,10 @@ public class PlayerIdleState : IState
 
       if(m_playerManager.m_jumpButton){
         m_playerManager.ChangeState(3);
+      }
+
+      if(!m_playerManager.CheckCollider(false)){
+        m_playerManager.ChangeState(4);
       }
     }
 

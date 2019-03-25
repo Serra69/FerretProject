@@ -16,8 +16,8 @@ public class FieldOfViewEditor : Editor {
 		Handles.DrawLine (fow.transform.position, fow.transform.position + viewAngleB * fow.m_viewRadius);
 
 		Handles.color = Color.red;
-		if(fow.m_target != null){
-			Handles.DrawLine (fow.transform.position, fow.m_target.transform.position);
+		if(fow.m_playerTarget != null){
+			Handles.DrawLine (fow.transform.position, fow.m_playerTarget.transform.position);
 		}
 	}
 

@@ -2,20 +2,20 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(Rigidbody))]
 public class PathMove : MonoBehaviour {
 
-	[SerializeField] private float m_moveSpeed = 5;
-	//[SerializeField] private float m_rotationSpeed = 90;
 	[SerializeField] private Color m_pathColor = Color.yellow;
 	[SerializeField] private float m_timeToWaitOnAWaitPath = 2;
 	[SerializeField] private Transform[] m_pathList;
 
-	private Rigidbody m_rbody;
-	private Transform m_target;
-	private int m_currenttarget;
-	private int m_pathType;
-	private bool m_waitingOnAPath;
+	RobotPusher m_robotPusher;
+	RobotDoctor m_robotDoctor;
+
+	NavMeshAgent m_agent;
+	Transform m_pathTarget;
+	int m_currenttarget;
+	int m_pathType;
+	bool m_waitingOnAPath;
 
 	void Awake(){
 		if(m_pathList.Length < 2){
@@ -27,46 +27,64 @@ public class PathMove : MonoBehaviour {
 			}
 		}
 		transform.position = m_pathList[0].position;
+		transform.LookAt(m_pathList[1]);
+
+		m_robotDoctor = GetComponent<RobotDoctor>();
+		m_robotPusher = GetComponent<RobotPusher>();
 	}
 
 	void Start(){
-		m_rbody = GetComponent<Rigidbody>();
+		m_agent = GetComponent<NavMeshAgent>();
 		ChoseNextTarget();
 	}
 
 	void Update(){
-		Move();
+		
+		if(GetComponent<RobotPusher>()){
+			if(m_pathTarget != null){
+				MoveWithRigidbody();
+			}
+		}
+
+		if(GetComponent<RobotDoctor>()){
+			if(!m_robotDoctor.FollowPlayer){
+				MoveWithNavMesh();
+			}
+		}
 	}
 
-	void Move(){
+	void MoveWithRigidbody(){
 		Vector3 step;
 
-		Vector3 targetPos = m_target.position;
+		Vector3 targetPos = m_pathTarget.position;
 		targetPos.y = transform.position.y;
 		
 		transform.LookAt(targetPos);
 
-		/*Vector3 direction = (targetPos - transform.position).normalized;	// Soustraction entre 2 vecteurs (".normalized" : stocke la direction normalisée)
-		Quaternion targetRot = Quaternion.LookRotation(direction);			// Quaternion (pour la rotation
-		transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, m_rotationSpeed * Time.deltaTime);*/
-
-		step = transform.forward * (m_moveSpeed * Time.deltaTime);
+		step = transform.forward * (m_robotPusher.m_moveSpeed * Time.deltaTime);
 
 		if(!m_waitingOnAPath){
-			m_rbody.velocity = step;
+			m_robotPusher.Rigidbody.velocity = step;
 		}else{
-			m_rbody.velocity = new Vector3(0, 0, 0);
+			m_robotPusher.Rigidbody.velocity = new Vector3(0, 0, 0);
 		}
+	}
 
+	void MoveWithNavMesh(){
+		if(!m_waitingOnAPath){
+			m_agent.SetDestination(m_pathTarget.position);
+		}else{
+			m_agent.SetDestination(transform.position);
+		}
 	}
 
 	void ChoseNextTarget(){
 		if(m_currenttarget == m_pathList.Length -1){
-			m_target = m_pathList[0].transform;
+			m_pathTarget = m_pathList[0].transform;
 			m_currenttarget = 0;
 		}else{
 			if(m_pathList[m_currenttarget + 1] != null){
-				m_target = m_pathList[m_currenttarget + 1].transform;
+				m_pathTarget = m_pathList[m_currenttarget + 1].transform;
 				m_currenttarget ++;
 			}
 		}
@@ -74,7 +92,7 @@ public class PathMove : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col){
 		if(col.tag == "Path"){
-			if(col.gameObject == m_target.gameObject){
+			if(col.gameObject == m_pathTarget.gameObject){
 
 				col.SendMessage("GetPathType", gameObject, SendMessageOptions.RequireReceiver);
 
@@ -100,6 +118,11 @@ public class PathMove : MonoBehaviour {
 
 	void OnDrawGizmosSelected(){
 		Gizmos.color = m_pathColor;
+
+		if(m_pathList == null){
+			return;
+		}
+
 		for(int i = 0; i < m_pathList.Length; i++){
 			if(i+1 != m_pathList.Length){
 				if(m_pathList[i] != null && m_pathList[i + 1] != null){

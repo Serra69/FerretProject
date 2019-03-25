@@ -9,7 +9,7 @@ public class PlayerCrawlState : IState {
 	// Constructor (CTOR)
     public PlayerCrawlState (PlayerManager playerManager)
     {
-		m_playerManager = playerManager;
+		  m_playerManager = playerManager;
     }
 
     public void Enter()

@@ -11,7 +11,7 @@ public class FieldOfView : MonoBehaviour {
 	public LayerMask m_targetMask;
 	public LayerMask m_obstacleMask;
 
-	[HideInInspector] public GameObject m_target;
+	/*[HideInInspector]*/ public GameObject m_playerTarget;
 
 	void Start() {
 		StartCoroutine ("FindTargetsWithDelay", 0.2f);
@@ -25,7 +25,7 @@ public class FieldOfView : MonoBehaviour {
 	}
 
 	void FindVisibleTargets() {
-		m_target = null;
+		m_playerTarget = null;
 		Collider[] targetsInViewRadius = Physics.OverlapSphere (transform.position, m_viewRadius, m_targetMask);
 
 		for (int i = 0; i < targetsInViewRadius.Length; i++) {
@@ -35,7 +35,7 @@ public class FieldOfView : MonoBehaviour {
 				float dstToTarget = Vector3.Distance (transform.position, target.position);
 
 				if (!Physics.Raycast (transform.position, dirToTarget, dstToTarget, m_obstacleMask)) {
-					m_target = target.GetComponentInParent<PlayerManager>().gameObject;
+					m_playerTarget = target.GetComponentInParent<PlayerManager>().gameObject;
 				}
 			}
 		}
@@ -49,14 +49,14 @@ public class FieldOfView : MonoBehaviour {
 	}
 
 	void Update(){	
-		if(GetComponent<RobotTurret>() || GetComponent<RobotDoctor>()){
+		if(GetComponent<RobotTurret>()){
 			LookAtTarget();
 		}
 	}
 
 	void LookAtTarget(){
-		if(m_target != null){
-			transform.LookAt(m_target.transform);
+		if(m_playerTarget != null){
+			transform.LookAt(m_playerTarget.transform);
 		}
 	}
 
