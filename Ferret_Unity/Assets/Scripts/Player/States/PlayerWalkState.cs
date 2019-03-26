@@ -16,6 +16,7 @@ public class PlayerWalkState : IState
     public void Enter()
     {
 		  //Debug.LogFormat("{0} : Enter()", GetType().Name);
+      m_playerManager.Animator.SetTrigger("Walk");
     }
 
     public void Exit()

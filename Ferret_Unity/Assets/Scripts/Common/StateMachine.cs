@@ -4,6 +4,8 @@ using UnityEngine;
 [System.Serializable]
 public class StateMachine
 {
+    [SerializeField] string m_currentStateString;
+
     List<IState> m_states = null;
 
     IState m_currentState = null; // = null car elle n'a pas d'état courant, elle n'est pas initialisée
@@ -23,10 +25,6 @@ public class StateMachine
             return m_lastState;
         }
     }
-
-    [SerializeField] string m_currentStateString;
-
-    
 
     #region Methods
 
@@ -92,6 +90,10 @@ public class StateMachine
 
     public bool CompareState(int stateIndex){
         return m_states[stateIndex] == CurrentState;
+    }
+
+    public bool IsLastStateIndex(int index){
+        return m_lastState == m_states[index];
     }
 
     #endregion // Methods

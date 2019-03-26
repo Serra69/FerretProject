@@ -36,7 +36,7 @@ public class PlayerFallState : IState
   }
 
   void Move(){
-    m_playerManager.MovePlayer(m_playerManager.m_states.m_walk.m_speed);
+    m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed);
     m_playerManager.RotatePlayer();
   }
 

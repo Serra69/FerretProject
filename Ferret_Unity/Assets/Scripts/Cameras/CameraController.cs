@@ -17,7 +17,6 @@ public class CameraController : MonoBehaviour {
 	private Vector3 m_offset;
 
 	void Start(){
-		m_target = GameObject.FindGameObjectWithTag("Player").transform;
 		if(m_target == null){
 			Debug.LogError("I can't find a Player in the actual scene!");
 		}

@@ -11,7 +11,9 @@ public class FieldOfView : MonoBehaviour {
 	public LayerMask m_targetMask;
 	public LayerMask m_obstacleMask;
 
-	/*[HideInInspector]*/ public GameObject m_playerTarget;
+	public Transform m_eyesPosition;
+
+	[HideInInspector] public GameObject m_playerTarget;
 
 	void Start() {
 		StartCoroutine ("FindTargetsWithDelay", 0.2f);
@@ -34,7 +36,7 @@ public class FieldOfView : MonoBehaviour {
 			if (Vector3.Angle (transform.forward, dirToTarget) < m_viewAngle / 2) {
 				float dstToTarget = Vector3.Distance (transform.position, target.position);
 
-				if (!Physics.Raycast (transform.position, dirToTarget, dstToTarget, m_obstacleMask)) {
+				if (!Physics.Raycast (m_eyesPosition.position, dirToTarget, dstToTarget, m_obstacleMask)) {
 					m_playerTarget = target.GetComponentInParent<PlayerManager>().gameObject;
 				}
 			}
