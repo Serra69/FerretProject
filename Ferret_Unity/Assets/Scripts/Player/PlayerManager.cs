@@ -34,9 +34,13 @@ public class PlayerManager : MonoBehaviour {
 				[Header("Curve")]
 				public AnimationCurve m_snapCurve;
 
-				[Header("Speeds")]
-				public float m_changePositionSpeed = 5;
-				public float m_changeRotationSpeed = 5;				
+				[Header("Enter Speeds")]
+				public float m_enterChangePositionSpeed = 5;
+				public float m_enterChangeRotationSpeed = 5;
+
+				[Header("Exit Speeds")]
+				public float m_exitChangePositionSpeed = 5;
+				public float m_exitChangeRotationSpeed = 5;					
 			}
 		}
 
@@ -86,17 +90,18 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	[Header("Meshes")]
-	public Meshes m_meshes = new Meshes();
-	[System.Serializable] public class Meshes {
-		public GameObject m_base;
-		public GameObject m_crawl;
-	}
+	public GameObject m_mesh;
 
 	[Header("Cameras")]
 	public EditCamera m_cameras = new EditCamera();
 	[System.Serializable] public class EditCamera {
 		public Camera m_firstPerson;
 		public Camera m_thirdPerson;
+
+		[Header("Distance")]
+		public float m_miniDistanceToSeeFurret = 1;
+		public bool m_showDistance = false;
+		public Color m_distanceColor = Color.white;
 	}
 
 	[Header("Rotations")]
@@ -108,6 +113,16 @@ public class PlayerManager : MonoBehaviour {
 		public float maxTurnSpeed = 1200;
 	}
 	
+	[Header("Raycasts")]
+	public Raycasts m_raycasts = new Raycasts();
+	[System.Serializable] public class Raycasts {
+		public Transform m_rightLeg;
+		public Transform m_leftLeg;
+		public float m_maxCastDistance = 0.5f;
+		public Color m_color = Color.white;
+	}
+
+	[Space]
 
 #endregion Public [System.Serializable] Variables
 
@@ -181,6 +196,15 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
+	bool m_endOfClimbInterpolation = false;
+    public bool EndOfClimbInterpolation
+    {
+        get
+        {
+            return m_endOfClimbInterpolation;
+        }
+    }
+  
     bool m_isIn3rdPersonCamera = true;
 
 	// ----------------------------
@@ -217,9 +241,6 @@ public class PlayerManager : MonoBehaviour {
 	void Update(){
 		m_sM.Update();
 		UpdateInputButtons();
-
-		Debug.DrawRay(m_ferretMesh.transform.position, m_ferretMesh.transform.forward * 1, Color.white, .25f);
-
 		/*RaycastHit hit;
 		Physics.Raycast(transform.position, Vector3.down, out hit, 1, m_checkMask);
 		Debug.Log("Normal = " + hit.normal);*/
@@ -246,6 +267,40 @@ public class PlayerManager : MonoBehaviour {
 		if(col.GetComponent<ClimbArea>()){
 			print("JE VAIS MONTER !!!");
 			m_iAmOnAClimbArea = true;
+		}
+	}
+	void OnTriggerExit(Collider col){
+		if(col.GetComponent<ClimbArea>()){
+			m_iAmOnAClimbArea = false;
+		}
+	}
+
+	void OnDrawGizmos(){
+		if (m_physics.castCenter != null){
+			Vector3 center = m_physics.castCenter.position;
+			Vector3 halfExtends = new Vector3(0.3f, 0.5f, 1.25f) / 2;
+			Quaternion orientation = m_ferretMesh.transform.rotation;
+
+			Gizmos.color = Color.magenta;
+			Gizmos.DrawWireCube(center, halfExtends);
+
+			Gizmos.color = Color.yellow;
+			Gizmos.DrawWireCube(center + (Vector3.down * m_physics.m_maxDistance), halfExtends);
+			Gizmos.DrawWireCube(center + (Vector3.up * m_physics.m_maxDistance), halfExtends);
+		}
+		
+		if(m_raycasts.m_rightLeg != null && m_raycasts.m_leftLeg != null){
+			// Forward
+			Debug.DrawRay(m_raycasts.m_rightLeg.position, m_raycasts.m_rightLeg.transform.forward * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+			Debug.DrawRay(m_raycasts.m_leftLeg.position, m_raycasts.m_leftLeg.transform.forward * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+			// Down
+			Debug.DrawRay(m_raycasts.m_rightLeg.position, - m_raycasts.m_rightLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+			Debug.DrawRay(m_raycasts.m_leftLeg.position, - m_raycasts.m_leftLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+		}
+
+		if(m_cameras.m_showDistance){
+			Gizmos.color = m_cameras.m_distanceColor;
+			Gizmos.DrawWireSphere(transform.position, m_cameras.m_miniDistanceToSeeFurret);
 		}
 	}
 
@@ -285,33 +340,15 @@ public class PlayerManager : MonoBehaviour {
 		}
 	}
 
-	void OnDrawGizmos(){
-		if (m_physics.castCenter == null)
-		{
-			return;
-		}
-		Vector3 center = m_physics.castCenter.position;
-		Vector3 halfExtends = new Vector3(0.3f, 0.5f, 1.25f) / 2;
-		Quaternion orientation = m_ferretMesh.transform.rotation;
-
-		Gizmos.color = Color.magenta;
-		Gizmos.DrawWireCube(center, halfExtends);
-
-		Gizmos.color = Color.yellow;
-		Gizmos.DrawWireCube(center + (Vector3.down * m_physics.m_maxDistance), halfExtends);
-		Gizmos.DrawWireCube(center + (Vector3.up * m_physics.m_maxDistance), halfExtends);
-	}
-
-	public void Crawl(bool b){
-		if(b){
+	public void Crawl(bool isCrawling){
+		if(isCrawling){
 			m_colliders.m_base.m_headColl.enabled = false;
 			m_colliders.m_base.m_bodyColl.enabled = false;
 
 			m_colliders.m_crawl.m_headColl.enabled = true;
 			m_colliders.m_crawl.m_bodyColl.enabled = true;
 
-			m_meshes.m_base.SetActive(false);
-			m_meshes.m_crawl.SetActive(true);
+			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y / 2, m_mesh.transform.localScale.z);
 		}else{
 			m_colliders.m_base.m_headColl.enabled = true;
 			m_colliders.m_base.m_bodyColl.enabled = true;
@@ -319,8 +356,7 @@ public class PlayerManager : MonoBehaviour {
 			m_colliders.m_crawl.m_headColl.enabled = false;
 			m_colliders.m_crawl.m_bodyColl.enabled = false;
 
-			m_meshes.m_base.SetActive(true);
-			m_meshes.m_crawl.SetActive(false);
+			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y * 2, m_mesh.transform.localScale.z);
 		}
 	}
 
@@ -421,18 +457,27 @@ public class PlayerManager : MonoBehaviour {
 		}
 	}
 
-	public void StartClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
-		StartCoroutine(ClimbInterpolation(transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation));
+	public void StartClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation, bool enter = true){
+		StartCoroutine(ClimbInterpolation(enter, transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation));
 	}
-	IEnumerator ClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+	IEnumerator ClimbInterpolation(bool enter, Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
 		
 		m_canMoveOnClimb = false;
 
 		m_rigidbody.isKinematic = true;
 
 		AnimationCurve animationCurve = m_states.m_climb.m_interpolation.m_snapCurve;
-		float changePositionSpeed = m_states.m_climb.m_interpolation.m_changePositionSpeed;
-		float changeRotationSpeed = m_states.m_climb.m_interpolation.m_changeRotationSpeed;
+
+		float changePositionSpeed;
+		float changeRotationSpeed;
+
+		if(enter){
+			changePositionSpeed = m_states.m_climb.m_interpolation.m_enterChangePositionSpeed;
+			changeRotationSpeed = m_states.m_climb.m_interpolation.m_enterChangeRotationSpeed;
+		}else{
+			changePositionSpeed = m_states.m_climb.m_interpolation.m_exitChangePositionSpeed;
+			changeRotationSpeed = m_states.m_climb.m_interpolation.m_exitChangeRotationSpeed;
+		}
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
@@ -450,7 +495,7 @@ public class PlayerManager : MonoBehaviour {
 			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
 			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / rotateJourneyLength;
 			//transform.rotation = Quaternion.Lerp(fromRotation, toRotation, m_rotateFracJourney);
-			transformRotation.rotation = Quaternion.Lerp(fromRotation, toRotation, animationCurve.Evaluate(moveFracJourney));
+			transformRotation.rotation = Quaternion.Lerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
 
 			yield return null;
 		}
@@ -459,14 +504,45 @@ public class PlayerManager : MonoBehaviour {
 
 		m_canMoveOnClimb = true;
 
+		m_endOfClimbInterpolation = true;
+		yield return new WaitForSeconds(0.5f);
+		m_endOfClimbInterpolation = false;
+
 		//moveFracJourney = 0;
 		//rotateFracJourney = 0;
 	}
-
-	public RaycastHit climbingHit;
-	public bool RayCastForStartClimbing(){
+	
+	public RaycastHit rightClimbHit;
+	public RaycastHit leftClimbHit;
+	public bool RayCastForwardToStartClimbing(){
 		//Debug.Log("I touch " + hit.collider.gameObject.name);
-		return Physics.Raycast(m_ferretMesh.transform.position, m_ferretMesh.transform.forward, out climbingHit, 1, m_checkMask);
+		
+		if(Physics.Raycast(m_raycasts.m_rightLeg.position, m_raycasts.m_rightLeg.transform.forward, out rightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)
+		&&
+		Physics.Raycast(m_raycasts.m_leftLeg.position, m_raycasts.m_leftLeg.transform.forward, out leftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	public bool RayCastDownToStartClimbing(){
+		//Debug.Log("I touch " + hit.collider.gameObject.name);
+		
+		if(Physics.Raycast(m_raycasts.m_rightLeg.position, - m_raycasts.m_rightLeg.transform.up, out rightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)
+		&&
+		Physics.Raycast(m_raycasts.m_leftLeg.position, - m_raycasts.m_leftLeg.transform.up, out leftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public void WhenCameraIsCloseToTheFerret(float distance){
+		if(distance < m_cameras.m_miniDistanceToSeeFurret){
+			m_mesh.SetActive(false);
+		}else{
+			m_mesh.SetActive(true);
+		}
 	}
 
 #endregion Public functions

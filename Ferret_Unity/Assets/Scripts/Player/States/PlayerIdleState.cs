@@ -9,7 +9,7 @@ public class PlayerIdleState : IState
 	// Constructor (CTOR)
     public PlayerIdleState (PlayerManager playerManager)
     {
-		m_playerManager = playerManager;
+		  m_playerManager = playerManager;
     }
 
     public void Enter()

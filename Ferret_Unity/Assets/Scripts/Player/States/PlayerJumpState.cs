@@ -39,7 +39,9 @@ public class PlayerJumpState : IState
     {
       m_playerManager.ChangeState(4);
     }
-    m_playerManager.RotatePlayer();
+    if(m_playerManager.PlayerInputIsMoving()){
+      m_playerManager.RotatePlayer();
+    }
   }
 
   bool isJumpContinue(){
@@ -50,7 +52,7 @@ public class PlayerJumpState : IState
   {
     m_isJumpButtonHeld = m_playerManager.m_jumpHeldButton;
 
-    if((m_playerManager.m_iAmOnAClimbArea) && m_playerManager.RayCastForStartClimbing()){
+    if((m_playerManager.m_iAmOnAClimbArea) && m_playerManager.RayCastForwardToStartClimbing()){
       m_playerManager.ChangeState(6);
     }
   }
