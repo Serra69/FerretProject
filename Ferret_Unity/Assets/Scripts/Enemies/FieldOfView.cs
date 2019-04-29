@@ -58,7 +58,7 @@ public class FieldOfView : MonoBehaviour {
 
 	void LookAtTarget(){
 		if(m_playerTarget != null){
-			transform.LookAt(m_playerTarget.transform);
+			transform.LookAt(m_playerTarget.transform, new Vector3(0, 2, 0));
 		}
 	}
 

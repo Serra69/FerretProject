@@ -10,7 +10,7 @@ public class SwitchCamera : MonoBehaviour {
 	void Awake(){
 		if(Instance == null){
 			Instance = this;
-			DontDestroyOnLoad(gameObject);
+			//DontDestroyOnLoad(gameObject);
 		}else{
 			Debug.LogError("Two instance of SwitchCamera");
 			//Destroy(gameObject);
@@ -38,13 +38,22 @@ public class SwitchCamera : MonoBehaviour {
 	PlayerManager m_playerManager;
 	float m_moveJourneyLength;
 	float m_moveFracJourney;
+
 	bool m_thirdPersonMode = true;
+	public bool ThirdPersonMode
+    {
+        get
+        {
+            return m_thirdPersonMode;
+        }
+    }
+
 	bool m_canChangePosition = true;
 
 	bool m_cameraBrainType = true;
 	Transform m_cameraBrainParent;
 
-	void Start(){
+    void Start(){
 		m_camera = GetComponent<Camera>();
 		m_camera.enabled = false;
 		m_cameraBrain = m_thirdPersonCam.GetComponent<CinemachineBrain>();
@@ -116,6 +125,7 @@ public class SwitchCamera : MonoBehaviour {
 			m_firstPersonCam.depth = 0;
 			m_thirdPersonCam.depth = 1;
 		}else{
+			m_playerManager.WhenCameraGoToFirstPlayerMode();
 			m_firstPersonCam.depth = 1;
 			m_thirdPersonCam.depth = 0;
 		}

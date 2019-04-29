@@ -39,9 +39,8 @@ public class PlayerJumpState : IState
     {
       m_playerManager.ChangeState(4);
     }
-    if(m_playerManager.PlayerInputIsMoving()){
-      m_playerManager.RotatePlayer();
-    }
+    
+    MoveCamera();
   }
 
   bool isJumpContinue(){
@@ -54,6 +53,17 @@ public class PlayerJumpState : IState
 
     if((m_playerManager.m_iAmOnAClimbArea) && m_playerManager.RayCastForwardToStartClimbing()){
       m_playerManager.ChangeState(6);
+    }
+  }
+
+  void MoveCamera(){
+    
+    if(SwitchCamera.Instance.ThirdPersonMode){
+      if(m_playerManager.PlayerInputIsMoving()){
+        m_playerManager.RotatePlayer();
+      }
+    }else{
+      FirstPersonCamera.Instance.RotateCamera();
     }
   }
 

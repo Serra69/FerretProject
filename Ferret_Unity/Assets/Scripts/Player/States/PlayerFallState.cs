@@ -40,7 +40,12 @@ public class PlayerFallState : IState
 
   void Move(){
     m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed);
-    m_playerManager.RotatePlayer();
+
+    if(SwitchCamera.Instance.ThirdPersonMode){
+      m_playerManager.RotatePlayer();
+    }else{
+      FirstPersonCamera.Instance.RotateCamera();
+    }
   }
 
 }

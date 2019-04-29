@@ -57,7 +57,12 @@ public class PlayerWalkState : IState
 
     void Move(){
       m_playerManager.MovePlayer(m_playerManager.m_states.m_walk.m_speed);
-      m_playerManager.RotatePlayer();
+      
+      if(SwitchCamera.Instance.ThirdPersonMode){
+        m_playerManager.RotatePlayer();
+      }else{
+        FirstPersonCamera.Instance.RotateCamera();
+      }
     }
 
 }

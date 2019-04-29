@@ -205,8 +205,6 @@ public class PlayerManager : MonoBehaviour {
         }
     }
   
-    bool m_isIn3rdPersonCamera = true;
-
 	// ----------------------------
 	// ----- FOR THE ROTATION -----
 	const float k_InverseOneEighty = 1f / 180f;
@@ -433,18 +431,6 @@ public class PlayerManager : MonoBehaviour {
 		m_ferretMesh.transform.rotation = m_TargetRotation;
 	}
 
-	public void ChangeCamera(){
-		m_isIn3rdPersonCamera =! m_isIn3rdPersonCamera;
-
-		if(m_isIn3rdPersonCamera){
-			m_cameras.m_firstPerson.depth = 0;
-			m_cameras.m_thirdPerson.depth = 1;
-		}else{
-			m_cameras.m_firstPerson.depth = 1;
-			m_cameras.m_thirdPerson.depth = 0;
-		}
-	}
-
 	public void SetLastStateMoveSpeed(){
 		if(m_sM.IsLastStateIndex(0)){
 			m_lastStateMoveSpeed = 0;
@@ -488,14 +474,12 @@ public class PlayerManager : MonoBehaviour {
 			// MovePosition
 			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
 			moveFracJourney += (Time.deltaTime) * changePositionSpeed / moveJourneyLength;
-			//transform.position = Vector3.Lerp(fromPosition, toPosition, m_moveFracJourney);
 			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, animationCurve.Evaluate(moveFracJourney));
 
 			// MoveRotation
 			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
 			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / rotateJourneyLength;
-			//transform.rotation = Quaternion.Lerp(fromRotation, toRotation, m_rotateFracJourney);
-			transformRotation.rotation = Quaternion.Lerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
+			transformRotation.rotation = Quaternion.Slerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
 
 			yield return null;
 		}
@@ -543,6 +527,10 @@ public class PlayerManager : MonoBehaviour {
 		}else{
 			m_mesh.SetActive(true);
 		}
+	}
+
+	public void WhenCameraGoToFirstPlayerMode(){
+		transform.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
 	}
 
 #endregion Public functions

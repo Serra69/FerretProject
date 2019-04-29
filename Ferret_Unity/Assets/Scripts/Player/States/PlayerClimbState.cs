@@ -24,6 +24,8 @@ public class PlayerClimbState : IState
       if(m_playerManager.RayCastForwardToStartClimbing()){
         // Calcul du millieu de la position à rejoindre entre les 2 pattes du furet
         Vector3 lerpPosition =  Vector3.Lerp(m_playerManager.rightClimbHit.point, m_playerManager.leftClimbHit.point, 0.5f);
+        Quaternion rotationNormal = Quaternion.LookRotation(- m_playerManager.rightClimbHit.normal);
+        Debug.Log("Normal = " + rotationNormal);
         // Déplacement et rotation du Furret entier
         m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, 0, 0));
         // Rotation du mesh pour qu'il soit bien droit

@@ -40,7 +40,7 @@ public class PlayerIdleState : IState
         }
       }
       if(Input.GetKeyDown(KeyCode.A)){
-        m_playerManager.ChangeCamera();
+        SwitchCamera.Instance.SwitchCameraType();
       }
 
       if(m_playerManager.m_jumpButton){
@@ -50,6 +50,11 @@ public class PlayerIdleState : IState
       if(!m_playerManager.CheckCollider(false)){
         m_playerManager.ChangeState(4);
       }
+      
+      if(!SwitchCamera.Instance.ThirdPersonMode){
+        FirstPersonCamera.Instance.RotateCamera();
+      }
+
     }
 
 }
