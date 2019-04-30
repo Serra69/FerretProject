@@ -42,6 +42,13 @@ public class PlayerManager : MonoBehaviour {
 				public float m_exitChangePositionSpeed = 5;
 				public float m_exitChangeRotationSpeed = 5;					
 			}
+
+			public CheckCollision m_checkCollision = new CheckCollision();
+			[System.Serializable] public class CheckCollision {
+				public bool m_outOfClibingAreaInLeft = false;
+				public bool m_outOfClibingAreaInRight = false;
+				public bool m_outOfClibingAreaInBot = false;
+			}
 		}
 
 		public Crawl m_crawl = new Crawl();
@@ -118,6 +125,7 @@ public class PlayerManager : MonoBehaviour {
 	[System.Serializable] public class Raycasts {
 		public Transform m_rightLeg;
 		public Transform m_leftLeg;
+		public Transform m_middleAss;
 		public float m_maxCastDistance = 0.5f;
 		public Color m_color = Color.white;
 	}
@@ -263,7 +271,7 @@ public class PlayerManager : MonoBehaviour {
 	public bool m_iAmOnAClimbArea = false;
 	void OnTriggerEnter(Collider col){
 		if(col.GetComponent<ClimbArea>()){
-			print("JE VAIS MONTER !!!");
+			// print("JE VAIS MONTER !!!");
 			m_iAmOnAClimbArea = true;
 		}
 	}
@@ -294,6 +302,11 @@ public class PlayerManager : MonoBehaviour {
 			// Down
 			Debug.DrawRay(m_raycasts.m_rightLeg.position, - m_raycasts.m_rightLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
 			Debug.DrawRay(m_raycasts.m_leftLeg.position, - m_raycasts.m_leftLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+		}
+
+		// Middle ass
+		if(m_raycasts.m_middleAss != null){
+			Debug.DrawRay(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
 		}
 
 		if(m_cameras.m_showDistance){
@@ -367,6 +380,16 @@ public class PlayerManager : MonoBehaviour {
 		m_moveDirection.y *= jumpSpeed;
 	}
 
+	Quaternion m_normal;
+	public void InclinePlayer(){
+		RaycastHit hit;
+		if(Physics.Raycast(transform.position, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_checkMask)){
+			m_normal = Quaternion.Euler(Quaternion.Euler(hit.normal).x, m_ferretMesh.transform.rotation.y, m_ferretMesh.transform.rotation.z);
+			// m_ferretMesh.transform.rotation = m_normal;
+			// Debug.Log("Normal map = " + m_normal.eulerAngles);
+		}
+	}
+
 	public void DoMove(){
 		if(MoveDirection != Vector3.zero){
 			m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
@@ -374,13 +397,39 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	public void ClimbMove(float speed){
-		//MoveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button); 	// Monter/descendre
-		MoveDirection = new Vector3(0, 0, m_vAxis_Button);					 // Monter/descendre + déplacements latéraux
+		MoveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button);		// Monter/descendre + déplacements latéraux
 		MoveDirection = transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
-		m_moveDirection.x *= speed;
+
+		// X
+		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight){
+			if(m_moveDirection.x < 0){
+				m_moveDirection.x *= speed;
+			}else{
+				m_moveDirection.x = 0;
+			}
+		}else if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft){
+			if(m_moveDirection.x > 0){
+				m_moveDirection.x *= speed;
+			}else{
+				m_moveDirection.x = 0;
+			}
+		}else if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight && m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft){
+			m_moveDirection.x *= speed;
+		}
+
+		// Y
 		m_moveDirection.z *= speed;
-		m_moveDirection.y *= speed;
+
+		// Z
+		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot){
+			if(m_moveDirection.y > 0){
+				m_moveDirection.y *= speed;
+			}else{
+				m_moveDirection.y = 0;
+			}
+		}
+
 	}
 
 	public void RotatePlayer(){
@@ -492,10 +541,34 @@ public class PlayerManager : MonoBehaviour {
 		yield return new WaitForSeconds(0.5f);
 		m_endOfClimbInterpolation = false;
 
+        // Rotation du mesh pour qu'il soit bien droit
+		if(enter){
+			// m_ferretMesh.transform.rotation = Quaternion.Euler(-90, 0, 0);
+		}
+
 		//moveFracJourney = 0;
 		//rotateFracJourney = 0;
 	}
 	
+	public void StartRotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
+		StartCoroutine(RotateInterpolation(trans, fromRotation, toRotation));
+	}
+	IEnumerator RotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
+
+		float rotateJourneyLength;
+		float rotateFracJourney = new float();
+
+		while(transform.rotation != toRotation){
+			// MoveRotation
+			rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation);
+			rotateFracJourney += (Time.deltaTime) * m_states.m_climb.m_interpolation.m_enterChangeRotationSpeed / rotateJourneyLength;
+			trans.rotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_climb.m_interpolation.m_snapCurve.Evaluate(rotateFracJourney));
+
+			yield return null;
+		}
+	}
+
+
 	public RaycastHit rightClimbHit;
 	public RaycastHit leftClimbHit;
 	public bool RayCastForwardToStartClimbing(){
@@ -511,13 +584,43 @@ public class PlayerManager : MonoBehaviour {
 	}
 	public bool RayCastDownToStartClimbing(){
 		//Debug.Log("I touch " + hit.collider.gameObject.name);
-		
 		if(Physics.Raycast(m_raycasts.m_rightLeg.position, - m_raycasts.m_rightLeg.transform.up, out rightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)
-		&&
+		||
 		Physics.Raycast(m_raycasts.m_leftLeg.position, - m_raycasts.m_leftLeg.transform.up, out leftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
 			return true;
 		}else{
 			return false;
+		}
+	}
+
+	public void RayCastDownToStopSideScrollingMovement(){
+
+		// RIGHT check
+		if(Physics.Raycast(m_raycasts.m_rightLeg.position, - m_raycasts.m_rightLeg.transform.up, out rightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			if(rightClimbHit.collider.CompareTag("ClimbArea")){
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight = false;
+			}else{
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight = true;
+			}
+		}
+
+		// LEFT check
+		if(Physics.Raycast(m_raycasts.m_leftLeg.position, - m_raycasts.m_leftLeg.transform.up, out leftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			if(leftClimbHit.collider.CompareTag("ClimbArea")){
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft = false;
+			}else{
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft = true;
+			}
+		}
+
+		// BOT check
+		RaycastHit hit;
+		if(Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, out hit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			if(hit.collider.CompareTag("ClimbArea")){
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = false;
+			}else{
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = true;
+			}
 		}
 	}
 
