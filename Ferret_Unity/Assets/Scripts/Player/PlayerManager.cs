@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : MonoBehaviour {
 
+	public static PlayerManager Instance;
+
 #region Public [System.Serializable] Variables
 
 	public StateMachine m_sM = new StateMachine(); 
@@ -68,9 +70,12 @@ public class PlayerManager : MonoBehaviour {
 
 		public TakeObject m_takeObject = new TakeObject();
 		[System.Serializable] public class TakeObject {
-			public bool m_objectIsTake = false;
+			public float m_delayToTakeAnObject = 0.15f;
+			public bool m_canITakeAnObject = true;
+			public bool m_iHaveAnObject = false;
 			public Transform m_objectPosition;
-			public ObjectToBeGrapped m_actualClosedObjectToBegrapped;
+			public ObjectToBeGrapped m_actualGrappedObject;
+			public ObjectToBeGrapped m_actualClosedObjectToBeGrapped;
 		}
 
 	}
@@ -236,6 +241,12 @@ public class PlayerManager : MonoBehaviour {
 #region Private functions
 
     void Awake(){
+		if(Instance == null){
+			Instance = this;
+		}else{
+			Debug.LogError("Two instance of PlayerManager");
+		}
+
 		m_sM.AddStates(new List<IState> {
 			new PlayerIdleState(this),		// 0 = Idle
 			new PlayerWalkState(this),		// 1 = Walk
@@ -256,9 +267,9 @@ public class PlayerManager : MonoBehaviour {
 	void Update(){
 		m_sM.Update();
 		UpdateInputButtons();
-		/*RaycastHit hit;
-		Physics.Raycast(transform.position, Vector3.down, out hit, 1, m_checkMask);
-		Debug.Log("Normal = " + hit.normal);*/
+		if(m_takeButton){
+			GrappedObject();
+		}
 	}
 
 	void FixedUpdate(){
@@ -651,17 +662,38 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	public void SetClosedObjectToBeGrapped(ObjectToBeGrapped obj){
-		m_states.m_takeObject.m_actualClosedObjectToBegrapped = obj;
+		if(m_states.m_takeObject.m_actualGrappedObject != obj){
+			m_states.m_takeObject.m_actualClosedObjectToBeGrapped = obj;
+		}
 	}
 
 	public void GrappedObject(){
-		m_states.m_takeObject.m_objectIsTake =! m_states.m_takeObject.m_objectIsTake;
-
-		if(m_states.m_takeObject.m_objectIsTake){
-			
-		}else{
-			
+		if(!m_states.m_takeObject.m_canITakeAnObject){
+			return;
 		}
+		StartCoroutine(DelayToTakeAnObject());
+		Debug.Log("GrappedObject");
+		
+		// m_states.m_takeObject.m_iHaveAnObject =! m_states.m_takeObject.m_iHaveAnObject;
+
+		// if(m_states.m_takeObject.m_iHaveAnObject){
+
+			if(m_states.m_takeObject.m_actualGrappedObject != null){
+				m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(false);
+			}
+
+			if(m_states.m_takeObject.m_actualClosedObjectToBeGrapped != null){
+				m_states.m_takeObject.m_actualGrappedObject = m_states.m_takeObject.m_actualClosedObjectToBeGrapped;
+				m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(true);
+			}
+		// }else{
+			
+		// }
+	}
+	IEnumerator DelayToTakeAnObject(){
+		m_states.m_takeObject.m_canITakeAnObject = false;
+		yield return new WaitForSeconds(m_states.m_takeObject.m_delayToTakeAnObject);
+		m_states.m_takeObject.m_canITakeAnObject = true;
 	}
 
 #endregion Public functions
