@@ -660,7 +660,7 @@ public class PlayerManager : MonoBehaviour {
 		if(m_states.m_takeObject.m_objectIsTake){
 			
 		}else{
-
+			
 		}
 	}
 
