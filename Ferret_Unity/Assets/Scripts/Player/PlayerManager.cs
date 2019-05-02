@@ -7,6 +7,8 @@ public class PlayerManager : MonoBehaviour {
 
 #region Public [System.Serializable] Variables
 
+	public StateMachine m_sM = new StateMachine(); 
+
 	[Header("States")]
 	public States m_states = new States();
 	[System.Serializable] public class States {
@@ -26,6 +28,27 @@ public class PlayerManager : MonoBehaviour {
 		public Climb m_climb = new Climb();
 		[System.Serializable] public class Climb {
 			public float m_speed = 2.25f;
+
+			public Interpolation m_interpolation = new Interpolation();
+			[System.Serializable] public class Interpolation {
+				[Header("Curve")]
+				public AnimationCurve m_snapCurve;
+
+				[Header("Enter Speeds")]
+				public float m_enterChangePositionSpeed = 5;
+				public float m_enterChangeRotationSpeed = 5;
+
+				[Header("Exit Speeds")]
+				public float m_exitChangePositionSpeed = 5;
+				public float m_exitChangeRotationSpeed = 5;					
+			}
+
+			public CheckCollision m_checkCollision = new CheckCollision();
+			[System.Serializable] public class CheckCollision {
+				public bool m_outOfClibingAreaInLeft = false;
+				public bool m_outOfClibingAreaInRight = false;
+				public bool m_outOfClibingAreaInBot = false;
+			}
 		}
 
 		public Crawl m_crawl = new Crawl();
@@ -35,7 +58,12 @@ public class PlayerManager : MonoBehaviour {
 
 		public Jump m_jump = new Jump();
 		[System.Serializable] public class Jump {
+
 			public float m_jumpForce = 10f;
+			public float m_minJumpTime = 0.1f;
+			public float m_jumpTime = 0.5f;
+
+			public AnimationCurve m_jumpHeightCurve = null;
 		}
 
 	}
@@ -45,6 +73,9 @@ public class PlayerManager : MonoBehaviour {
 	[System.Serializable] public class PhysicsVar {
 		public bool m_useGravity = true;
 		public float m_gravity = 9.81f;
+
+		public Transform castCenter = null;
+		public float m_maxDistance = 1;
 	}	
 
 	[Header("Colliders")]
@@ -66,29 +97,47 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	[Header("Meshes")]
-	public Meshes m_meshes = new Meshes();
-	[System.Serializable] public class Meshes {
-		public GameObject m_base;
-		public GameObject m_crawl;
-	}
+	public GameObject m_mesh;
 
-	[Header("Camera")]
-	public Camera m_camera = new Camera();
-	[System.Serializable] public class Camera {
-		public Transform m_pivot;
-		public float m_rotateSpeed = 5;
+	[Header("Cameras")]
+	public EditCamera m_cameras = new EditCamera();
+	[System.Serializable] public class EditCamera {
 		public Camera m_firstPerson;
 		public Camera m_thirdPerson;
+
+		[Header("Distance")]
+		public float m_miniDistanceToSeeFurret = 1;
+		public bool m_showDistance = false;
+		public Color m_distanceColor = Color.white;
 	}
+
+	[Header("Rotations")]
+	public Rotations m_rotations = new Rotations();
+	[System.Serializable] public class Rotations {
+		public CameraSettings cameraSettings;
+		public Transform m_pivot;
+		public float minTurnSpeed = 400;
+		public float maxTurnSpeed = 1200;
+	}
+	
+	[Header("Raycasts")]
+	public Raycasts m_raycasts = new Raycasts();
+	[System.Serializable] public class Raycasts {
+		public Transform m_rightLeg;
+		public Transform m_leftLeg;
+		public Transform m_middleAss;
+		public float m_maxCastDistance = 0.5f;
+		public Color m_color = Color.white;
+	}
+
+	[Space]
 
 #endregion Public [System.Serializable] Variables
 
 #region Public Variables
 
 	public GameObject m_ferretMesh;
-	public LayerMask m_checkTopMask;
-
-	[HideInInspector] public Rigidbody m_rigidbody;
+	public LayerMask m_checkMask;
 
 #endregion Public Variables
 
@@ -98,6 +147,7 @@ public class PlayerManager : MonoBehaviour {
 	[HideInInspector] public float m_vAxis_Button;
 	[HideInInspector] public bool m_runButton;
 	[HideInInspector] public bool m_jumpButton;
+	[HideInInspector] public bool m_jumpHeldButton;
 	[HideInInspector] public bool m_crawlButton;
 	[HideInInspector] public bool m_takeButton;
 
@@ -105,22 +155,90 @@ public class PlayerManager : MonoBehaviour {
 
 #region Private Variables
 
-	StateMachine m_sM = new StateMachine(); 
 	Vector3 m_moveDirection = Vector3.zero;
+	public Vector3 MoveDirection
+    {
+        get
+        {
+            return m_moveDirection;
+        }
+        set
+        {
+            m_moveDirection = value;
+        }
+    }
+
+	Rigidbody m_rigidbody;
+    public Rigidbody Rigidbody
+    {
+        get
+        {
+            return m_rigidbody;
+        }
+    }
+
+	float m_lastStateMoveSpeed = 0;
+    public float LastStateMoveSpeed
+    {
+        get
+        {
+            return m_lastStateMoveSpeed;
+        }
+    }
+
+    Animator m_animator;
+    public Animator Animator
+    {
+        get
+        {
+            return m_animator;
+        }
+    }
+
+    bool m_canMoveOnClimb = false;
+    public bool CanMoveOnClimb
+    {
+        get
+        {
+            return m_canMoveOnClimb;
+        }
+    }
+
+	bool m_endOfClimbInterpolation = false;
+    public bool EndOfClimbInterpolation
+    {
+        get
+        {
+            return m_endOfClimbInterpolation;
+        }
+    }
+  
+	// ----------------------------
+	// ----- FOR THE ROTATION -----
+	const float k_InverseOneEighty = 1f / 180f;
+	const float k_AirborneTurnSpeedProportion = 5.4f;
+	protected float m_AngleDiff;
+	Quaternion m_TargetRotation;
+	// ----------------------------
+
 
 #endregion Private Variables
 
 #region Private functions
 
-	void Awake(){
+    void Awake(){
 		m_sM.AddStates(new List<IState> {
-				new PlayerIdleState(this),	// 0 = Idle
-				new PlayerWalkState(this),	// 1 = Walk
-				new PlayerRunState(this),	// 2 = Run
-				new PlayerCrawlState(this)	// 3 = Crawl
+			new PlayerIdleState(this),		// 0 = Idle
+			new PlayerWalkState(this),		// 1 = Walk
+			new PlayerRunState(this),		// 2 = Run
+			new PlayerJumpState(this),		// 3 = Jump
+			new PlayerFallState(this),		// 4 = Fall
+			new PlayerCrawlState(this), 	// 5 = Crawl
+			new PlayerClimbState(this), 	// 6 = Climb		
 		});
 
 		m_rigidbody = GetComponent<Rigidbody>();
+		m_animator = GetComponentInChildren<Animator>();
 	}
 	void OnEnable(){
 		ChangeState(0);
@@ -129,6 +247,15 @@ public class PlayerManager : MonoBehaviour {
 	void Update(){
 		m_sM.Update();
 		UpdateInputButtons();
+		/*RaycastHit hit;
+		Physics.Raycast(transform.position, Vector3.down, out hit, 1, m_checkMask);
+		Debug.Log("Normal = " + hit.normal);*/
+	}
+
+	void FixedUpdate(){
+		MoveDirection = Vector3.zero;
+		m_sM.FixedUpdate();
+		DoMove();
 	}
 
 	void UpdateInputButtons(){
@@ -136,8 +263,56 @@ public class PlayerManager : MonoBehaviour {
 		m_vAxis_Button = Input.GetAxis("Vertical");
 		m_runButton = Input.GetButton("Run");
 		m_jumpButton = Input.GetButtonDown("Jump");
+		m_jumpHeldButton = Input.GetButton("Jump");
 		m_crawlButton = Input.GetButtonDown("Crawl");
 		m_takeButton = Input.GetButtonDown("Take");
+	}
+
+	public bool m_iAmOnAClimbArea = false;
+	void OnTriggerEnter(Collider col){
+		if(col.GetComponent<ClimbArea>()){
+			// print("JE VAIS MONTER !!!");
+			m_iAmOnAClimbArea = true;
+		}
+	}
+	void OnTriggerExit(Collider col){
+		if(col.GetComponent<ClimbArea>()){
+			m_iAmOnAClimbArea = false;
+		}
+	}
+
+	void OnDrawGizmos(){
+		if (m_physics.castCenter != null){
+			Vector3 center = m_physics.castCenter.position;
+			Vector3 halfExtends = new Vector3(0.3f, 0.5f, 1.25f) / 2;
+			Quaternion orientation = m_ferretMesh.transform.rotation;
+
+			Gizmos.color = Color.magenta;
+			Gizmos.DrawWireCube(center, halfExtends);
+
+			Gizmos.color = Color.yellow;
+			Gizmos.DrawWireCube(center + (Vector3.down * m_physics.m_maxDistance), halfExtends);
+			Gizmos.DrawWireCube(center + (Vector3.up * m_physics.m_maxDistance), halfExtends);
+		}
+		
+		if(m_raycasts.m_rightLeg != null && m_raycasts.m_leftLeg != null){
+			// Forward
+			Debug.DrawRay(m_raycasts.m_rightLeg.position, m_raycasts.m_rightLeg.transform.forward * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+			Debug.DrawRay(m_raycasts.m_leftLeg.position, m_raycasts.m_leftLeg.transform.forward * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+			// Down
+			Debug.DrawRay(m_raycasts.m_rightLeg.position, - m_raycasts.m_rightLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+			Debug.DrawRay(m_raycasts.m_leftLeg.position, - m_raycasts.m_leftLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+		}
+
+		// Middle ass
+		if(m_raycasts.m_middleAss != null){
+			Debug.DrawRay(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+		}
+
+		if(m_cameras.m_showDistance){
+			Gizmos.color = m_cameras.m_distanceColor;
+			Gizmos.DrawWireSphere(transform.position, m_cameras.m_miniDistanceToSeeFurret);
+		}
 	}
 
 #endregion Private functions
@@ -146,6 +321,7 @@ public class PlayerManager : MonoBehaviour {
 
 	public void ChangeState(int index){
 		m_sM.ChangeState(index);
+		SetLastStateMoveSpeed();
 	}
 
 	public bool PlayerInputIsMoving(){
@@ -156,15 +332,17 @@ public class PlayerManager : MonoBehaviour {
 		}
 	}
 
-	public bool CheckTopCollider(){
-		Vector3 center = transform.position + new Vector3(0, 0, 0.075f);
+	public bool CheckCollider(bool top){
+		// Vector3 center = transform.position + new Vector3(0, top == true ? 0 : 0.1f , 0.075f);
+		Vector3 center = m_physics.castCenter.position;
 		Vector3 halfExtends = new Vector3(0.3f, 0.5f, 1.25f) / 2;
-		Vector3 direction = Vector3.up;
-		Quaternion orientation = m_ferretMesh.transform.rotation;
-		float maxDistance = 0.75f;
-		int layerMask = m_checkTopMask;
 		
-		if(Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, layerMask)){
+		Vector3 direction = top == true ? Vector3.up : Vector3.down;
+
+		Quaternion orientation = m_ferretMesh.transform.rotation;
+		int layerMask = m_checkMask;
+		
+		if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_maxDistance, layerMask)){
 			//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, layerMask)));
 			return true;
 		}else{
@@ -172,16 +350,16 @@ public class PlayerManager : MonoBehaviour {
 			return false;
 		}
 	}
-	public void Crawl(bool b){
-		if(b){
+
+	public void Crawl(bool isCrawling){
+		if(isCrawling){
 			m_colliders.m_base.m_headColl.enabled = false;
 			m_colliders.m_base.m_bodyColl.enabled = false;
 
 			m_colliders.m_crawl.m_headColl.enabled = true;
 			m_colliders.m_crawl.m_bodyColl.enabled = true;
 
-			m_meshes.m_base.SetActive(false);
-			m_meshes.m_crawl.SetActive(true);
+			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y / 2, m_mesh.transform.localScale.z);
 		}else{
 			m_colliders.m_base.m_headColl.enabled = true;
 			m_colliders.m_base.m_bodyColl.enabled = true;
@@ -189,31 +367,273 @@ public class PlayerManager : MonoBehaviour {
 			m_colliders.m_crawl.m_headColl.enabled = false;
 			m_colliders.m_crawl.m_bodyColl.enabled = false;
 
-			m_meshes.m_base.SetActive(true);
-			m_meshes.m_crawl.SetActive(false);
+			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y * 2, m_mesh.transform.localScale.z);
 		}
 	}
 
-	public void MovePlayer(float speed){
-		m_moveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button);
-		m_moveDirection = transform.TransformDirection(m_moveDirection);
-		m_moveDirection = m_moveDirection.normalized;
-		m_moveDirection *= speed;
-
-		m_rigidbody.MovePosition(transform.position + m_moveDirection * Time.deltaTime);
+	public void MovePlayer(float speed, float y = 0, float jumpSpeed = 0){
+		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
+		MoveDirection = transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
+		m_moveDirection.x *= speed;
+		m_moveDirection.z *= speed;
+		m_moveDirection.y *= jumpSpeed;
 	}
 
-	public void ClimbMove(){
+	Quaternion m_normal;
+	public void InclinePlayer(){
+		RaycastHit hit;
+		if(Physics.Raycast(transform.position, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_checkMask)){
+			m_normal = Quaternion.Euler(Quaternion.Euler(hit.normal).x, m_ferretMesh.transform.rotation.y, m_ferretMesh.transform.rotation.z);
+			// m_ferretMesh.transform.rotation = m_normal;
+			// Debug.Log("Normal map = " + m_normal.eulerAngles);
+		}
+	}
+
+	public void DoMove(){
+		if(MoveDirection != Vector3.zero){
+			m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
+		}
+	}
+
+	public void ClimbMove(float speed){
+		MoveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button);		// Monter/descendre + déplacements latéraux
+		MoveDirection = transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
+
+		// X
+		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight){
+			if(m_moveDirection.x < 0){
+				m_moveDirection.x *= speed;
+			}else{
+				m_moveDirection.x = 0;
+			}
+		}else if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft){
+			if(m_moveDirection.x > 0){
+				m_moveDirection.x *= speed;
+			}else{
+				m_moveDirection.x = 0;
+			}
+		}else if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight && m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft){
+			m_moveDirection.x *= speed;
+		}
+
+		// Y
+		m_moveDirection.z *= speed;
+
+		// Z
+		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot){
+			if(m_moveDirection.y > 0){
+				m_moveDirection.y *= speed;
+			}else{
+				m_moveDirection.y = 0;
+			}
+		}
 
 	}
 
 	public void RotatePlayer(){
-		// Rotate the player in different directions based on camera look direction
-		if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0){
-			transform.rotation = Quaternion.Euler(0f, m_camera.m_pivot.rotation.eulerAngles.y, 0f);
-			Quaternion newRotation = Quaternion.LookRotation(new Vector3(m_moveDirection.x, 0f, m_moveDirection.z));
-			m_ferretMesh.transform.rotation = Quaternion.Slerp(m_ferretMesh.transform.rotation, newRotation, m_camera.m_rotateSpeed * Time.deltaTime);
+		// -------------------------------
+		// ----- SET TARGET ROTATION -----
+		// -------------------------------
+		// Create three variables, move input local to the player, flattened forward direction of the camera and a local target rotation.
+		Vector2 moveInput = new Vector2(m_hAxis_Button, m_vAxis_Button);
+		Vector3 localMovementDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+		
+		Vector3 forward = Quaternion.Euler(0f, m_rotations.cameraSettings.Current.m_XAxis.Value, 0f) * Vector3.forward;
+		forward.y = 0f;
+		forward.Normalize();
+
+		Quaternion targetRotation;
+		
+		// If the local movement direction is the opposite of forward then the target rotation should be towards the camera.
+		if (Mathf.Approximately(Vector3.Dot(localMovementDirection, Vector3.forward), -1.0f))
+		{
+			targetRotation = Quaternion.LookRotation(-forward);
 		}
+		else
+		{
+			// Otherwise the rotation should be the offset of the input from the camera's forward.
+			Quaternion cameraToInputOffset = Quaternion.FromToRotation(Vector3.forward, localMovementDirection);
+			targetRotation = Quaternion.LookRotation(cameraToInputOffset * forward);
+		}
+
+		// The desired forward direction of Ellen.
+		Vector3 resultingForward = targetRotation * Vector3.forward;
+
+		// Find the difference between the current rotation of the player and the desired rotation of the player in radians.
+		float angleCurrent = Mathf.Atan2(m_ferretMesh.transform.forward.x, m_ferretMesh.transform.forward.z) * Mathf.Rad2Deg;
+		float targetAngle = Mathf.Atan2(resultingForward.x, resultingForward.z) * Mathf.Rad2Deg;
+
+		m_AngleDiff = Mathf.DeltaAngle(angleCurrent, targetAngle);
+		m_TargetRotation = targetRotation;
+
+		// -------------------------------
+		// ----- UPDATE ORIENTATION -----
+		// -------------------------------
+		Vector3 localInput = new Vector3(m_hAxis_Button, 0f, m_vAxis_Button);
+		float groundedTurnSpeed = Mathf.Lerp(m_rotations.maxTurnSpeed, m_rotations.minTurnSpeed, m_states.m_walk.m_speed/* / m_DesiredForwardSpeed*/);
+		float actualTurnSpeed = CheckCollider(false) ? groundedTurnSpeed : Vector3.Angle(m_ferretMesh.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
+		m_TargetRotation = Quaternion.RotateTowards(m_ferretMesh.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
+
+		transform.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
+		m_ferretMesh.transform.rotation = m_TargetRotation;
+	}
+
+	public void SetLastStateMoveSpeed(){
+		if(m_sM.IsLastStateIndex(0)){
+			m_lastStateMoveSpeed = 0;
+		}else if(m_sM.IsLastStateIndex(1)){
+        	m_lastStateMoveSpeed = m_states.m_walk.m_speed;
+		}else if(m_sM.IsLastStateIndex(2)){
+			m_lastStateMoveSpeed = m_states.m_run.m_speed;
+		}else if(m_sM.IsLastStateIndex(5)){
+			m_lastStateMoveSpeed = m_states.m_crawl.m_speed;
+		}
+	}
+
+	public void StartClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation, bool enter = true){
+		StartCoroutine(ClimbInterpolation(enter, transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation));
+	}
+	IEnumerator ClimbInterpolation(bool enter, Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+		
+		m_canMoveOnClimb = false;
+
+		m_rigidbody.isKinematic = true;
+
+		AnimationCurve animationCurve = m_states.m_climb.m_interpolation.m_snapCurve;
+
+		float changePositionSpeed;
+		float changeRotationSpeed;
+
+		if(enter){
+			changePositionSpeed = m_states.m_climb.m_interpolation.m_enterChangePositionSpeed;
+			changeRotationSpeed = m_states.m_climb.m_interpolation.m_enterChangeRotationSpeed;
+		}else{
+			changePositionSpeed = m_states.m_climb.m_interpolation.m_exitChangePositionSpeed;
+			changeRotationSpeed = m_states.m_climb.m_interpolation.m_exitChangeRotationSpeed;
+		}
+
+		float moveJourneyLength;
+		float moveFracJourney = new float();
+		float rotateJourneyLength;
+		float rotateFracJourney = new float();
+
+		while(transform.position != toPosition){
+			// MovePosition
+			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
+			moveFracJourney += (Time.deltaTime) * changePositionSpeed / moveJourneyLength;
+			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, animationCurve.Evaluate(moveFracJourney));
+
+			// MoveRotation
+			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
+			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / rotateJourneyLength;
+			transformRotation.rotation = Quaternion.Slerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
+
+			yield return null;
+		}
+
+		m_rigidbody.isKinematic = false;
+
+		m_canMoveOnClimb = true;
+
+		m_endOfClimbInterpolation = true;
+		yield return new WaitForSeconds(0.5f);
+		m_endOfClimbInterpolation = false;
+
+        // Rotation du mesh pour qu'il soit bien droit
+		if(enter){
+			// m_ferretMesh.transform.rotation = Quaternion.Euler(-90, 0, 0);
+		}
+
+		//moveFracJourney = 0;
+		//rotateFracJourney = 0;
+	}
+	
+	public void StartRotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
+		StartCoroutine(RotateInterpolation(trans, fromRotation, toRotation));
+	}
+	IEnumerator RotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
+
+		float rotateJourneyLength;
+		float rotateFracJourney = new float();
+
+		while(transform.rotation != toRotation){
+			// MoveRotation
+			rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation);
+			rotateFracJourney += (Time.deltaTime) * m_states.m_climb.m_interpolation.m_enterChangeRotationSpeed / rotateJourneyLength;
+			trans.rotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_climb.m_interpolation.m_snapCurve.Evaluate(rotateFracJourney));
+
+			yield return null;
+		}
+	}
+
+
+	public RaycastHit rightClimbHit;
+	public RaycastHit leftClimbHit;
+	public bool RayCastForwardToStartClimbing(){
+		//Debug.Log("I touch " + hit.collider.gameObject.name);
+		
+		if(Physics.Raycast(m_raycasts.m_rightLeg.position, m_raycasts.m_rightLeg.transform.forward, out rightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)
+		&&
+		Physics.Raycast(m_raycasts.m_leftLeg.position, m_raycasts.m_leftLeg.transform.forward, out leftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	public bool RayCastDownToStartClimbing(){
+		//Debug.Log("I touch " + hit.collider.gameObject.name);
+		if(Physics.Raycast(m_raycasts.m_rightLeg.position, - m_raycasts.m_rightLeg.transform.up, out rightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)
+		||
+		Physics.Raycast(m_raycasts.m_leftLeg.position, - m_raycasts.m_leftLeg.transform.up, out leftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public void RayCastDownToStopSideScrollingMovement(){
+
+		// RIGHT check
+		if(Physics.Raycast(m_raycasts.m_rightLeg.position, - m_raycasts.m_rightLeg.transform.up, out rightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			if(rightClimbHit.collider.CompareTag("ClimbArea")){
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight = false;
+			}else{
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight = true;
+			}
+		}
+
+		// LEFT check
+		if(Physics.Raycast(m_raycasts.m_leftLeg.position, - m_raycasts.m_leftLeg.transform.up, out leftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			if(leftClimbHit.collider.CompareTag("ClimbArea")){
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft = false;
+			}else{
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft = true;
+			}
+		}
+
+		// BOT check
+		RaycastHit hit;
+		if(Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, out hit, m_raycasts.m_maxCastDistance, m_checkMask)){
+			if(hit.collider.CompareTag("ClimbArea")){
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = false;
+			}else{
+				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = true;
+			}
+		}
+	}
+
+	public void WhenCameraIsCloseToTheFerret(float distance){
+		if(distance < m_cameras.m_miniDistanceToSeeFurret){
+			m_mesh.SetActive(false);
+		}else{
+			m_mesh.SetActive(true);
+		}
+	}
+
+	public void WhenCameraGoToFirstPlayerMode(){
+		transform.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
 	}
 
 #endregion Public functions

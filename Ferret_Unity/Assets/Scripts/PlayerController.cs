@@ -52,15 +52,15 @@ public class PlayerController : MonoBehaviour {
 		public Color m_colorToRay = Color.magenta;
 	}
 
-	[SerializeField] private float m_jumpForce = 20;
-	[SerializeField] private bool m_useGravity = true;	
-	[SerializeField] private float m_gravity = 9.81f;
-	[SerializeField] private float m_rotateSpeed = 10;
+	[SerializeField] float m_jumpForce = 20;
+	[SerializeField] bool m_useGravity = true;	
+	[SerializeField] float m_gravity = 9.81f;
+	[SerializeField] float m_rotateSpeed = 10;
 
-	[SerializeField] private Transform m_pivot;
-	[SerializeField] private GameObject m_ferret;
-	[SerializeField] private GameObject m_ferretMesh;
-	[SerializeField] private GameObject m_ferretCrawlMesh;
+	[SerializeField] Transform m_pivot;
+	[SerializeField] GameObject m_ferret;
+	[SerializeField] GameObject m_ferretMesh;
+	[SerializeField] GameObject m_ferretCrawlMesh;
 	
 	#region I Do A Capacity ?
 		bool m_isWalking;
