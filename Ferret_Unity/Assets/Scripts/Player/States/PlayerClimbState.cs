@@ -25,8 +25,8 @@ public class PlayerClimbState : IState
       //RaycastHit hit;
       if(m_playerManager.RayCastForwardToStartClimbing()){
         // Calcul du millieu de la position à rejoindre entre les 2 pattes du furet
-        Vector3 lerpPosition =  Vector3.Lerp(m_playerManager.rightClimbHit.point, m_playerManager.leftClimbHit.point, 0.5f);
-        Quaternion rotationNormal = Quaternion.LookRotation(- m_playerManager.rightClimbHit.normal);
+        Vector3 lerpPosition =  Vector3.Lerp(m_playerManager.topRightClimbHit.point, m_playerManager.topLeftClimbHit.point, 0.5f);
+        Quaternion rotationNormal = Quaternion.LookRotation(- m_playerManager.topRightClimbHit.normal);
         // Debug.Log("Normal = " + rotationNormal);
 
         // Déplacement et rotation du Furret entier
@@ -66,8 +66,8 @@ public class PlayerClimbState : IState
         }
       }
       if(m_playerManager.m_jumpButton){
-		    // m_playerManager.transform.rotation = Quaternion.Euler(0, 0, 0);
-		    // m_playerManager.m_ferretMesh.transform.rotation = Quaternion.Euler(0, 0, 0);
+		    // m_playerManager.transform.rotation = Quaternion.Euler(0, m_playerManager.transform.rotation.y, m_playerManager.transform.rotation.z);
+		    // m_playerManager.m_ferretMesh.transform.rotation = Quaternion.Euler(0, m_playerManager.m_ferretMesh.transform.rotation.y, m_playerManager.m_ferretMesh.transform.rotation.z);
         m_playerManager.ChangeState(3);
       }
     }
