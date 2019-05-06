@@ -90,7 +90,8 @@ public class PlayerManager : MonoBehaviour {
 		public float m_gravity = 9.81f;
 
 		public Transform castCenter = null;
-		public float m_maxDistance = 1;
+		public float m_topMaxDistance = 1;
+		public float m_botMaxDistance = 1;
 	}	
 
 	[Header("Colliders")]
@@ -307,15 +308,15 @@ public class PlayerManager : MonoBehaviour {
 	void OnDrawGizmos(){
 		if (m_physics.castCenter != null){
 			Vector3 center = m_physics.castCenter.position;
-			Vector3 halfExtends = new Vector3(0.3f, 0.5f, 1.25f) / 2;
+			Vector3 halfExtends = new Vector3(0.3f, 0.25f, 1.25f) / 2;
 			Quaternion orientation = m_ferretMesh.transform.rotation;
 
 			Gizmos.color = Color.magenta;
 			Gizmos.DrawWireCube(center, halfExtends);
 
 			Gizmos.color = Color.yellow;
-			Gizmos.DrawWireCube(center + (Vector3.down * m_physics.m_maxDistance), halfExtends);
-			Gizmos.DrawWireCube(center + (Vector3.up * m_physics.m_maxDistance), halfExtends);
+			Gizmos.DrawWireCube(center + (Vector3.down * m_physics.m_botMaxDistance), halfExtends);
+			Gizmos.DrawWireCube(center + (Vector3.up * m_physics.m_topMaxDistance), halfExtends);
 		}
 		
 		if(m_raycasts.m_topRightLeg != null && m_raycasts.m_topLeftLeg != null && m_raycasts.m_botRightLeg != null && m_raycasts.m_botLeftLeg != null){
@@ -357,28 +358,41 @@ public class PlayerManager : MonoBehaviour {
 			return false;
 		}
 	}
+
 	public bool m_colliderOnTop = false;
 	public bool m_colliderOnBot = false;
 	void LateUpdate(){
 		m_colliderOnTop = CheckCollider(true);
 		m_colliderOnBot = CheckCollider(false);
 	}
+
 	public bool CheckCollider(bool top){
 		// Vector3 center = transform.position + new Vector3(0, top == true ? 0 : 0.1f , 0.075f);
 		Vector3 center = m_physics.castCenter.position;
-		Vector3 halfExtends = new Vector3(0.3f, 0.5f, 1.25f) / 2;
+		Vector3 halfExtends = new Vector3(0.3f, 0.25f, 1.25f) / 2;
 		
 		Vector3 direction = top == true ? Vector3.up : Vector3.down;
 
 		Quaternion orientation = m_ferretMesh.transform.rotation;
 		
-		if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_maxDistance, m_checkMask)){
-			//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
-			return true;
+		if(top){
+			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_topMaxDistance, m_checkMask)){
+				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
+				return true;
+			}else{
+				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
+				return false;
+			}
 		}else{
-			//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
-			return false;
+			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_botMaxDistance, m_checkMask)){
+				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
+				return true;
+			}else{
+				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
+				return false;
+			}
 		}
+
 	}
 
 	public void Crawl(bool isCrawling){
