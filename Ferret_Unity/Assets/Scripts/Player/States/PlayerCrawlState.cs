@@ -39,7 +39,7 @@ public class PlayerCrawlState : IState {
     }
 
     void Move(){
-      m_playerManager.MovePlayer(m_playerManager.m_states.m_run.m_speed);
+      m_playerManager.MovePlayer(m_playerManager.m_states.m_crawl.m_speed);
 
       if(SwitchCamera.Instance.ThirdPersonMode){
         if(m_playerManager.PlayerInputIsMoving()){

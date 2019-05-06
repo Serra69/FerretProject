@@ -47,7 +47,7 @@ public class PlayerClimbState : IState
     {
       if(m_playerManager.CanMoveOnClimb){
 
-        if( (m_playerManager.RayCastDownToStartClimbing() == false) && (!m_endOfClimbState) ){
+        if( (m_playerManager.RayCastDownToStopClimbing() == false) && (!m_endOfClimbState) ){
           // Debug.Log("j'arrive au bout");
           m_endOfClimbState = true;
           m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + Vector3.down * 2 + Vector3.up * 3, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(0, 0, 0), false);

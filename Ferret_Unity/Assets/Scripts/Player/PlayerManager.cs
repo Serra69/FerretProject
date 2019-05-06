@@ -29,6 +29,7 @@ public class PlayerManager : MonoBehaviour {
 
 		public Climb m_climb = new Climb();
 		[System.Serializable] public class Climb {
+			public LayerMask m_climbCollision;
 			public float m_speed = 2.25f;
 
 			public Interpolation m_interpolation = new Interpolation();
@@ -47,8 +48,10 @@ public class PlayerManager : MonoBehaviour {
 
 			public CheckCollision m_checkCollision = new CheckCollision();
 			[System.Serializable] public class CheckCollision {
-				public bool m_outOfClibingAreaInLeft = false;
-				public bool m_outOfClibingAreaInRight = false;
+				public bool m_outOfClibingAreaInTopLeft = false;
+				public bool m_outOfClibingAreaInBotLeft = false;
+				public bool m_outOfClibingAreaInTopRight = false;
+				public bool m_outOfClibingAreaInBotRight = false;
 				public bool m_outOfClibingAreaInBot = false;
 			}
 		}
@@ -354,7 +357,12 @@ public class PlayerManager : MonoBehaviour {
 			return false;
 		}
 	}
-
+	public bool m_colliderOnTop = false;
+	public bool m_colliderOnBot = false;
+	void LateUpdate(){
+		m_colliderOnTop = CheckCollider(true);
+		m_colliderOnBot = CheckCollider(false);
+	}
 	public bool CheckCollider(bool top){
 		// Vector3 center = transform.position + new Vector3(0, top == true ? 0 : 0.1f , 0.075f);
 		Vector3 center = m_physics.castCenter.position;
@@ -363,13 +371,12 @@ public class PlayerManager : MonoBehaviour {
 		Vector3 direction = top == true ? Vector3.up : Vector3.down;
 
 		Quaternion orientation = m_ferretMesh.transform.rotation;
-		int layerMask = m_checkMask;
 		
-		if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_maxDistance, layerMask)){
-			//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, layerMask)));
+		if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_maxDistance, m_checkMask)){
+			//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
 			return true;
 		}else{
-			//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, layerMask)));
+			//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
 			return false;
 		}
 	}
@@ -426,19 +433,19 @@ public class PlayerManager : MonoBehaviour {
 		MoveDirection.Normalize();
 
 		// X
-		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight){
+		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight){
 			if(m_moveDirection.x < 0){
 				m_moveDirection.x *= speed;
 			}else{
 				m_moveDirection.x = 0;
 			}
-		}else if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft){
+		}else if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopLeft || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotLeft){
 			if(m_moveDirection.x > 0){
 				m_moveDirection.x *= speed;
 			}else{
 				m_moveDirection.x = 0;
 			}
-		}else if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight && m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft){
+		}else if((m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight) && (m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopLeft || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotLeft)){
 			m_moveDirection.x *= speed;
 		}
 
@@ -599,54 +606,74 @@ public class PlayerManager : MonoBehaviour {
 	public bool RayCastForwardToStartClimbing(){
 		//Debug.Log("I touch " + hit.collider.gameObject.name);
 		
-		if(Physics.Raycast(m_raycasts.m_topRightLeg.position, m_raycasts.m_topRightLeg.transform.forward, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)
+		if(Physics.Raycast(m_raycasts.m_topRightLeg.position, m_raycasts.m_topRightLeg.transform.forward, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)
 		&&
-		Physics.Raycast(m_raycasts.m_topLeftLeg.position, m_raycasts.m_topLeftLeg.transform.forward, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+		Physics.Raycast(m_raycasts.m_topLeftLeg.position, m_raycasts.m_topLeftLeg.transform.forward, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)){
 			return true;
 		}else{
 			return false;
 		}
+		/*Physics.Raycast(m_raycasts.m_topRightLeg.position, m_raycasts.m_topRightLeg.transform.forward, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+		Physics.Raycast(m_raycasts.m_topLeftLeg.position, m_raycasts.m_topLeftLeg.transform.forward, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+		if(topRightClimbHit.collider.CompareTag("ClimbArea") && topLeftClimbHit.collider.CompareTag("ClimbArea")){
+			return true;
+		}else{
+			return false;
+		}*/
 	}
-	public bool RayCastDownToStartClimbing(){
+	public bool RayCastDownToStopClimbing(){
 		//Debug.Log("I touch " + hit.collider.gameObject.name);
-		if(Physics.Raycast(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)
+		if(Physics.Raycast(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)
 		||
-		Physics.Raycast(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+		Physics.Raycast(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)){
 			return true;
 		}else{
 			return false;
 		}
+		/*Physics.Raycast(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+		Physics.Raycast(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+		
+		if(topRightClimbHit.collider.CompareTag("ClimbArea") || topLeftClimbHit.collider.CompareTag("ClimbArea")){
+			return true;
+		}else{
+			return false;
+		}*/
 	}
 
 	public void RayCastDownToStopSideScrollingMovement(){
 
 		// RIGHT check
-		if(Physics.Raycast(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight = !Physics.Raycast(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight = !Physics.Raycast(m_raycasts.m_botRightLeg.position, - m_raycasts.m_botRightLeg.transform.up, out botRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+		/*if(Physics.Raycast(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)){
 			if(topRightClimbHit.collider.CompareTag("ClimbArea")){
 				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight = false;
 			}else{
 				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight = true;
 			}
-		}
+		}*/
 
 		// LEFT check
-		if(Physics.Raycast(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_checkMask)){
+		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopLeft = !Physics.Raycast(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotLeft = !Physics.Raycast(m_raycasts.m_botLeftLeg.position, - m_raycasts.m_botLeftLeg.transform.up, out boteftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+		/*if(Physics.Raycast(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)){
 			if(topLeftClimbHit.collider.CompareTag("ClimbArea")){
 				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft = false;
 			}else{
 				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft = true;
 			}
-		}
+		}*/
 
 		// BOT check
 		RaycastHit hit;
-		if(Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, out hit, m_raycasts.m_maxCastDistance, m_checkMask)){
+		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = !Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, out hit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+		/*if(Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, out hit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)){
 			if(hit.collider.CompareTag("ClimbArea")){
 				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = false;
 			}else{
 				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = true;
 			}
-		}
+		}*/
 	}
 
 	public void WhenCameraIsCloseToTheFerret(float distance){
@@ -672,23 +699,16 @@ public class PlayerManager : MonoBehaviour {
 			return;
 		}
 		StartCoroutine(DelayToTakeAnObject());
-		Debug.Log("GrappedObject");
-		
-		// m_states.m_takeObject.m_iHaveAnObject =! m_states.m_takeObject.m_iHaveAnObject;
+		if(m_states.m_takeObject.m_actualGrappedObject != null){
+			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(false);
+			m_states.m_takeObject.m_actualGrappedObject = null;
+		}
 
-		// if(m_states.m_takeObject.m_iHaveAnObject){
-
-			if(m_states.m_takeObject.m_actualGrappedObject != null){
-				m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(false);
-			}
-
-			if(m_states.m_takeObject.m_actualClosedObjectToBeGrapped != null){
-				m_states.m_takeObject.m_actualGrappedObject = m_states.m_takeObject.m_actualClosedObjectToBeGrapped;
-				m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(true);
-			}
-		// }else{
-			
-		// }
+		if(m_states.m_takeObject.m_actualClosedObjectToBeGrapped != null){
+			m_states.m_takeObject.m_actualGrappedObject = m_states.m_takeObject.m_actualClosedObjectToBeGrapped;
+			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(true);
+			m_states.m_takeObject.m_actualClosedObjectToBeGrapped = null;
+		}
 	}
 	IEnumerator DelayToTakeAnObject(){
 		m_states.m_takeObject.m_canITakeAnObject = false;

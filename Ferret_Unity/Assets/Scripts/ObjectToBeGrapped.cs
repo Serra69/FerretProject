@@ -27,7 +27,7 @@ public class ObjectToBeGrapped : MonoBehaviour {
 	}
 
 	public void On_ObjectIsTake(bool objectIsTake){
-		Debug.Log("My name is : " + gameObject.name + " : On_ObjectIsTake = " + objectIsTake);
+		// Debug.Log("My name is : " + gameObject.name + " : On_ObjectIsTake = " + objectIsTake);
 		m_followPlayer = objectIsTake;
 		On_SetGrappedObjectCharacteristic(objectIsTake);
 	}
