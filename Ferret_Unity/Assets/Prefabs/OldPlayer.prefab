@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 143579051890591150}
   - component: {fileID: 114407190608428168}
   m_Layer: 0
-  m_Name: Player
+  m_Name: OldPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1358,12 +1358,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1563013053a1b634c80def86768ece49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerMesh: {fileID: 1546582538957504}
-  m_moveSpeed: 5
+  m_mouvementSpeed:
+    walkSpeed: 0
+    runMultiplier: 0
+    climbMultiplier: 0
+    crawlMultiplier: 0
+  m_colliders:
+    m_normalColliders:
+      m_headColl: {fileID: 0}
+      m_bodyColl: {fileID: 0}
+    m_crawlColliders:
+      m_headColl: {fileID: 0}
+      m_bodyColl: {fileID: 0}
+  m_cameras:
+    m_thirdPersonCameraPos: {fileID: 0}
+    m_firstPersonCameraPos: {fileID: 0}
+    m_thirdPersonCamera: {fileID: 0}
+    m_firstPersonCamera: {fileID: 0}
+  m_layersMask:
+    m_whatIsGround:
+      serializedVersion: 2
+      m_Bits: 0
+    m_whatIsTopCollider:
+      serializedVersion: 2
+      m_Bits: 0
+  m_debugs:
+    m_showRayForGround: 0
+    m_colorToRay: {r: 1, g: 0, b: 1, a: 1}
   m_jumpForce: 5
-  m_gravityScale: 1
-  m_pivot: {fileID: 0}
+  m_useGravity: 1
+  m_gravity: 9.81
   m_rotateSpeed: 10
+  m_pivot: {fileID: 0}
+  m_ferret: {fileID: 0}
+  m_ferretMesh: {fileID: 0}
+  m_ferretCrawlMesh: {fileID: 0}
 --- !u!137 &137618097705487704
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
