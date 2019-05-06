@@ -16,9 +16,7 @@ public class CrawlTrigger : MonoBehaviour {
     }
 	
 	void OnTriggerEnter(Collider col){
-		print("ENTER");
 		if(col.CompareTag("Player")){
-			print("he enter");
 			SwitchCamera.Instance.SwitchCameraType();
 		}
 	}
