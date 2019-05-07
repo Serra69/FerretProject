@@ -359,12 +359,12 @@ public class PlayerManager : MonoBehaviour {
 		}
 	}
 
-	public bool m_colliderOnTop = false;
+	/*public bool m_colliderOnTop = false;
 	public bool m_colliderOnBot = false;
 	void LateUpdate(){
 		m_colliderOnTop = CheckCollider(true);
 		m_colliderOnBot = CheckCollider(false);
-	}
+	}*/
 
 	public bool CheckCollider(bool top){
 		// Vector3 center = transform.position + new Vector3(0, top == true ? 0 : 0.1f , 0.075f);
