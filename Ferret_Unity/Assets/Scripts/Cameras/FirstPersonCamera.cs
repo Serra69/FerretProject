@@ -23,14 +23,20 @@ public class FirstPersonCamera : MonoBehaviour {
 	[SerializeField] [Range(-90, 0)] float minClamp = -45;
 	[SerializeField] [Range(0, 90)] float maxClamp = 45;
 
+	[Header("Positions")]
+	[SerializeField] Transform m_topPosition;
+	[SerializeField] Transform m_botPosition;
+
 	Vector2 mouseLook;
     Vector2 smoothV;
 	float xAxisCLamp = 0;
     Transform playerTrans;
+	SwitchCamera m_switchCamera;
 
     void Start()
     {
         playerTrans = transform.parent.GetComponentInParent<PlayerManager>().transform;
+		m_switchCamera = SwitchCamera.Instance;
     }
 
     public void RotateCamera()
@@ -61,6 +67,14 @@ public class FirstPersonCamera : MonoBehaviour {
 		Vector3 eulerRotation = transform.eulerAngles;
 		eulerRotation.x = value;
 		transform.eulerAngles = eulerRotation;
+	}
+
+	void LateUpdate(){
+		if(m_switchCamera.ThirdPersonMode){
+			// transform.position = new Vector3()
+		}else{
+
+		}
 	}
 	
 }
