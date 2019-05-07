@@ -3361,9 +3361,9 @@ MonoBehaviour:
     m_crawl:
       m_speed: 1.5
     m_jump:
-      m_jumpForce: 8
-      m_minJumpTime: 0.25
-      m_jumpTime: 0.75
+      m_jumpForce: 7
+      m_minJumpTime: 0.35
+      m_jumpTime: 0.7
       m_jumpHeightCurve:
         serializedVersion: 2
         m_Curve:
