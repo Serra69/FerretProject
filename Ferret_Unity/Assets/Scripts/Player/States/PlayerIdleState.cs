@@ -55,6 +55,12 @@ public class PlayerIdleState : IState
         FirstPersonCamera.Instance.RotateCamera();
       }
 
+      if(m_playerManager.RayCastToCanPush()){
+        if(m_playerManager.m_pushButton){
+          m_playerManager.ChangeState(7);
+        }
+      }
+
     }
 
 }

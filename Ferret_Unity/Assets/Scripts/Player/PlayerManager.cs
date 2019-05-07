@@ -58,6 +58,7 @@ public class PlayerManager : MonoBehaviour {
 
 		public Crawl m_crawl = new Crawl();
 		[System.Serializable] public class Crawl {
+			[HideInInspector] public bool m_isCrawling = false;
 			public float m_speed = 1.5f;
 		}
 
@@ -81,6 +82,12 @@ public class PlayerManager : MonoBehaviour {
 			public ObjectToBeGrapped m_actualClosedObjectToBeGrapped;
 		}
 
+		public Push m_push = new Push();
+		[System.Serializable] public class Push {
+			public float m_speed = 1.5f;
+			public LayerMask m_pushLayer;
+			public RaycastHit m_hit;
+		}
 	}
 
 	[Header("Physics")]
@@ -92,6 +99,10 @@ public class PlayerManager : MonoBehaviour {
 		public Transform castCenter = null;
 		public float m_topMaxDistance = 1;
 		public float m_botMaxDistance = 1;
+
+		[Space]
+		public float m_maxCenterDistance = 2;
+
 	}	
 
 	[Header("Colliders")]
@@ -155,7 +166,7 @@ public class PlayerManager : MonoBehaviour {
 #region Public Variables
 
 	public GameObject m_ferretMesh;
-	public LayerMask m_checkMask;
+	public LayerMask m_checkLayer;
 
 #endregion Public Variables
 
@@ -168,6 +179,7 @@ public class PlayerManager : MonoBehaviour {
 	[HideInInspector] public bool m_jumpHeldButton;
 	[HideInInspector] public bool m_crawlButton;
 	[HideInInspector] public bool m_takeButton;
+	[HideInInspector] public bool m_pushButton;
 
 #endregion Input Buttons
 
@@ -258,7 +270,8 @@ public class PlayerManager : MonoBehaviour {
 			new PlayerJumpState(this),		// 3 = Jump
 			new PlayerFallState(this),		// 4 = Fall
 			new PlayerCrawlState(this), 	// 5 = Crawl
-			new PlayerClimbState(this), 	// 6 = Climb		
+			new PlayerClimbState(this), 	// 6 = Climb
+			new PlayerPushState(this),		// 7 = Push
 		});
 
 		m_rigidbody = GetComponent<Rigidbody>();
@@ -289,10 +302,11 @@ public class PlayerManager : MonoBehaviour {
 		m_jumpButton = Input.GetButtonDown("Jump");
 		m_jumpHeldButton = Input.GetButton("Jump");
 		m_crawlButton = Input.GetButtonDown("Crawl");
-		m_takeButton = Input.GetButtonDown("Take");
+		m_takeButton = Input.GetButtonDown("Action");
+		m_pushButton = Input.GetButton("Action");
 	}
 
-	public bool m_iAmOnAClimbArea = false;
+	/*public bool m_iAmOnAClimbArea = false;
 	void OnTriggerEnter(Collider col){
 		if(col.GetComponent<ClimbArea>()){
 			// print("JE VAIS MONTER !!!");
@@ -302,8 +316,8 @@ public class PlayerManager : MonoBehaviour {
 	void OnTriggerExit(Collider col){
 		if(col.GetComponent<ClimbArea>()){
 			m_iAmOnAClimbArea = false;
-		}
-	}
+		}*
+	}*/
 
 	void OnDrawGizmos(){
 		if (m_physics.castCenter != null){
@@ -317,6 +331,8 @@ public class PlayerManager : MonoBehaviour {
 			Gizmos.color = Color.yellow;
 			Gizmos.DrawWireCube(center + (Vector3.down * m_physics.m_botMaxDistance), halfExtends);
 			Gizmos.DrawWireCube(center + (Vector3.up * m_physics.m_topMaxDistance), halfExtends);
+
+			Debug.DrawRay(center, m_physics.castCenter.forward * m_physics.m_maxCenterDistance, Color.black, 0.01f);
 		}
 		
 		if(m_raycasts.m_topRightLeg != null && m_raycasts.m_topLeftLeg != null && m_raycasts.m_botRightLeg != null && m_raycasts.m_botLeftLeg != null){
@@ -376,19 +392,19 @@ public class PlayerManager : MonoBehaviour {
 		Quaternion orientation = m_ferretMesh.transform.rotation;
 		
 		if(top){
-			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_topMaxDistance, m_checkMask)){
-				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
+			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_topMaxDistance, m_checkLayer)){
+				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
 				return true;
 			}else{
-				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
+				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
 				return false;
 			}
 		}else{
-			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_botMaxDistance, m_checkMask)){
-				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
+			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_botMaxDistance, m_checkLayer)){
+				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
 				return true;
 			}else{
-				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkMask)));
+				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
 				return false;
 			}
 		}
@@ -396,6 +412,8 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	public void Crawl(bool isCrawling){
+			m_states.m_crawl.m_isCrawling = isCrawling;
+
 		if(isCrawling){
 			m_colliders.m_base.m_headColl.enabled = false;
 			m_colliders.m_base.m_bodyColl.enabled = false;
@@ -427,7 +445,7 @@ public class PlayerManager : MonoBehaviour {
 	Quaternion m_normal;
 	public void InclinePlayer(){
 		RaycastHit hit;
-		if(Physics.Raycast(transform.position, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_checkMask)){
+		if(Physics.Raycast(transform.position, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_checkLayer)){
 			m_normal = Quaternion.Euler(Quaternion.Euler(hit.normal).x, m_ferretMesh.transform.rotation.y, m_ferretMesh.transform.rotation.z);
 			// m_ferretMesh.transform.rotation = m_normal;
 
@@ -475,6 +493,15 @@ public class PlayerManager : MonoBehaviour {
 			}
 		}
 
+	}
+
+	public void PushMove(float speed){
+		MoveDirection = new Vector3(0, 0, m_vAxis_Button);
+		MoveDirection = transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
+		m_moveDirection.x *= speed;
+		m_moveDirection.z *= speed;
+		m_moveDirection.y *= speed;
 	}
 
 	public void RotatePlayer(){
@@ -690,6 +717,10 @@ public class PlayerManager : MonoBehaviour {
 		}*/
 	}
 
+	public bool RayCastToCanPush(){
+		return Physics.Raycast(m_physics.castCenter.position, m_physics.castCenter.forward, out m_states.m_push.m_hit, m_physics.m_maxCenterDistance, m_states.m_push.m_pushLayer);
+	}
+
 	public void WhenCameraIsCloseToTheFerret(float distance){
 		if(distance < m_cameras.m_miniDistanceToSeeFurret){
 			m_mesh.SetActive(false);
@@ -702,22 +733,25 @@ public class PlayerManager : MonoBehaviour {
 		transform.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
 	}
 
-	public void SetClosedObjectToBeGrapped(ObjectToBeGrapped obj){
-		if(m_states.m_takeObject.m_actualGrappedObject != obj){
+	public void SetClosedObjectToBeGrapped(bool isClosedObject, ObjectToBeGrapped obj){
+		if(m_states.m_takeObject.m_actualGrappedObject != obj && isClosedObject){
 			m_states.m_takeObject.m_actualClosedObjectToBeGrapped = obj;
+		}else if(!isClosedObject && m_states.m_takeObject.m_actualClosedObjectToBeGrapped == obj){
+			m_states.m_takeObject.m_actualClosedObjectToBeGrapped = null;
 		}
 	}
 
-	public void GrappedObject(){
+	public void GrappedObject()
+	{
 		if(!m_states.m_takeObject.m_canITakeAnObject){
 			return;
 		}
 		StartCoroutine(DelayToTakeAnObject());
+
 		if(m_states.m_takeObject.m_actualGrappedObject != null){
 			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(false);
 			m_states.m_takeObject.m_actualGrappedObject = null;
 		}
-
 		if(m_states.m_takeObject.m_actualClosedObjectToBeGrapped != null){
 			m_states.m_takeObject.m_actualGrappedObject = m_states.m_takeObject.m_actualClosedObjectToBeGrapped;
 			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(true);

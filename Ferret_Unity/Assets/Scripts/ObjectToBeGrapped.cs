@@ -40,10 +40,9 @@ public class ObjectToBeGrapped : MonoBehaviour {
 
 	void CheckPlayerPosition(){
 		if(Vector3.Distance(transform.position, m_playerManager.transform.position) <= m_takingRange){
-			m_playerManager.SetClosedObjectToBeGrapped(this);
-			if(m_playerManager.m_takeButton){
-				m_playerManager.GrappedObject();
-			}
+			m_playerManager.SetClosedObjectToBeGrapped(true, this);
+		}else{
+			m_playerManager.SetClosedObjectToBeGrapped(false, this);
 		}
 	}
 
