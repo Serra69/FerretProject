@@ -36,7 +36,7 @@ public class PlayerFallState : IState
     if(m_playerManager.CheckCollider(false)){
       m_playerManager.ChangeState(0);
     }
-    if(/*(m_playerManager.m_iAmOnAClimbArea) && */m_playerManager.RayCastForwardToStartClimbing()){
+    if(m_playerManager.RayCastForwardToStartClimbing() && m_playerManager.m_states.m_climb.m_canClimb){
       m_playerManager.ChangeState(6);
     }
   }

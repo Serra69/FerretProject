@@ -29,6 +29,9 @@ public class PlayerManager : MonoBehaviour {
 
 		public Climb m_climb = new Climb();
 		[System.Serializable] public class Climb {
+			public bool m_canClimb = true;
+			public float m_timeToCanReClimb = 0.1f;
+			[Space]
 			public LayerMask m_climbCollision;
 			public float m_speed = 2.25f;
 
@@ -68,8 +71,14 @@ public class PlayerManager : MonoBehaviour {
 			public float m_jumpForce = 10f;
 			public float m_minJumpTime = 0.1f;
 			public float m_jumpTime = 0.5f;
-
 			public AnimationCurve m_jumpHeightCurve = null;
+
+			public MovementSpeed m_movementSpeed = new MovementSpeed();
+			[System.Serializable] public class MovementSpeed {
+				public float m_fromIdle = 1.5f;
+				public float m_fromWalk = 3;
+				public float m_fromRun = 6;
+			}
 		}
 
 		public TakeObject m_takeObject = new TakeObject();
@@ -87,15 +96,15 @@ public class PlayerManager : MonoBehaviour {
 			public float m_speed = 1.5f;
 			public LayerMask m_pushLayer;
 			public RaycastHit m_hit;
+			public Transform m_objectTrans;
 		}
 	}
 
 	[Header("Physics")]
 	public PhysicsVar m_physics = new PhysicsVar();
 	[System.Serializable] public class PhysicsVar {
-		public bool m_useGravity = true;
-		public float m_gravity = 9.81f;
-
+		// public bool m_useGravity = true;
+		// public float m_gravity = 9.81f;
 		public Transform castCenter = null;
 		public float m_topMaxDistance = 1;
 		public float m_botMaxDistance = 1;
@@ -364,7 +373,7 @@ public class PlayerManager : MonoBehaviour {
 
 	public void ChangeState(int index){
 		m_sM.ChangeState(index);
-		SetLastStateMoveSpeed();
+		SetLastStateMoveSpeedForJump();
 	}
 
 	public bool PlayerInputIsMoving(){
@@ -552,15 +561,13 @@ public class PlayerManager : MonoBehaviour {
 		m_ferretMesh.transform.rotation = m_TargetRotation;
 	}
 
-	public void SetLastStateMoveSpeed(){
+	public void SetLastStateMoveSpeedForJump(){
 		if(m_sM.IsLastStateIndex(0)){
-			m_lastStateMoveSpeed = 0;
+			m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromIdle;
 		}else if(m_sM.IsLastStateIndex(1)){
-        	m_lastStateMoveSpeed = m_states.m_walk.m_speed;
+        	m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromWalk;
 		}else if(m_sM.IsLastStateIndex(2)){
-			m_lastStateMoveSpeed = m_states.m_run.m_speed;
-		}else if(m_sM.IsLastStateIndex(5)){
-			m_lastStateMoveSpeed = m_states.m_crawl.m_speed;
+			m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromRun;
 		}
 	}
 
@@ -613,13 +620,17 @@ public class PlayerManager : MonoBehaviour {
 		yield return new WaitForSeconds(0.5f);
 		m_endOfClimbInterpolation = false;
 
-        // Rotation du mesh pour qu'il soit bien droit
-		if(enter){
-			// m_ferretMesh.transform.rotation = Quaternion.Euler(-90, 0, 0);
-		}
-
 		//moveFracJourney = 0;
 		//rotateFracJourney = 0;
+	}
+
+	public void StartClimbCooldown(){
+		StartCoroutine(ClimbCooldownCorout());
+	}
+	IEnumerator ClimbCooldownCorout(){
+		m_states.m_climb.m_canClimb = false;
+		yield return new WaitForSeconds(m_states.m_climb.m_timeToCanReClimb);
+		m_states.m_climb.m_canClimb = true;
 	}
 	
 	public void StartRotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
@@ -764,6 +775,11 @@ public class PlayerManager : MonoBehaviour {
 		m_states.m_takeObject.m_canITakeAnObject = true;
 	}
 
-#endregion Public functions
+	public void SetObjectInChildrenOfFerret(Transform fromTrans, Transform toTrans = null){
+		fromTrans.SetParent(toTrans);
+	}
 
+#endregion Public functions
+public GameObject m_rightHit;
+public GameObject m_leftHit;
 }

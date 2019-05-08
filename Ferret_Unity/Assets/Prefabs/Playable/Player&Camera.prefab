@@ -86,6 +86,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1053330872351520
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4631109309513506}
+  m_Layer: 9
+  m_Name: PushObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1055675597321296
 GameObject:
   m_ObjectHideFlags: 1
@@ -2046,6 +2061,19 @@ Transform:
   m_Father: {fileID: 4186299365937674}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 1.3487337, y: -111.53535, z: 3.436585}
+--- !u!4 &4631109309513506
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1053330872351520}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4726755844706952}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4641722953768496
 Transform:
   m_ObjectHideFlags: 1
@@ -2065,7 +2093,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: 0.011257672, y: 0.000000017254, z: -0.0000000015388922, w: 0.9999367}
+  m_LocalRotation: {x: 0.011257668, y: -0.000000017223725, z: -0.0000000011507847,
+    w: 0.9999367}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2149,7 +2178,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: 0.064592496, y: -0.000000004249249, z: -3.9208597e-10, w: 0.9979118}
+  m_LocalRotation: {x: 0.06459249, y: 0.000000004335977, z: -9.477875e-10, w: 0.9979118}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2183,6 +2212,7 @@ Transform:
   - {fileID: 4313863512019552}
   - {fileID: 4222472016079204}
   - {fileID: 4143300893170828}
+  - {fileID: 4631109309513506}
   m_Father: {fileID: 4228686498102366}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2251,7 +2281,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701019898918854}
-  m_LocalRotation: {x: 0.038623005, y: 4.7746692e-11, z: -0.0000000012353039, w: 0.99925387}
+  m_LocalRotation: {x: 0.038623, y: 0.000000003770258, z: -0.0000000013791858, w: 0.99925387}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2431,7 +2461,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1681364742312364}
-  m_LocalRotation: {x: 0.038623024, y: -0.0000000037225112, z: 1.4388199e-10, w: 0.99925387}
+  m_LocalRotation: {x: 0.038623013, y: 0.0000000037225112, z: -1.4388195e-10, w: 0.99925387}
   m_LocalPosition: {x: 0, y: 2.8, z: -3.2499914}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3379,6 +3409,8 @@ MonoBehaviour:
     m_run:
       m_speed: 6
     m_climb:
+      m_canClimb: 1
+      m_timeToCanReClimb: 0.25
       m_climbCollision:
         serializedVersion: 2
         m_Bits: 2048
@@ -3467,6 +3499,10 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
+      m_movementSpeed:
+        m_fromIdle: 2
+        m_fromWalk: 3
+        m_fromRun: 6
     m_takeObject:
       m_delayToTakeAnObject: 0.15
       m_canITakeAnObject: 1
@@ -3479,9 +3515,8 @@ MonoBehaviour:
       m_pushLayer:
         serializedVersion: 2
         m_Bits: 4096
+      m_objectTrans: {fileID: 4631109309513506}
   m_physics:
-    m_useGravity: 1
-    m_gravity: 9.81
     castCenter: {fileID: 4345800815733880}
     m_topMaxDistance: 0.35
     m_botMaxDistance: 0.29
@@ -3525,6 +3560,8 @@ MonoBehaviour:
   m_crawlButton: 0
   m_takeButton: 0
   m_pushButton: 0
+  m_rightHit: {fileID: 0}
+  m_leftHit: {fileID: 0}
 --- !u!114 &114597434695966978
 MonoBehaviour:
   m_ObjectHideFlags: 1
