@@ -12,17 +12,16 @@ public class PlayerPushState : IState
     m_playerManager = playerManager;
   }
 
-  PushableObject m_pushableObject;
-
   public void Enter()
   {
-    m_pushableObject = m_playerManager.m_states.m_push.m_hit.collider.GetComponent<PushableObject>();
-    Transform toPos = m_pushableObject.On_PlayerSnapToObject();
+    m_playerManager.PushableObject = m_playerManager.m_states.m_push.m_hit.collider.GetComponent<PushableObject>();
+    m_playerManager.PushableObject.On_ObjectIsPushing(true);
+    Transform toPos = m_playerManager.PushableObject.On_PlayerSnapToObject();
     m_playerManager.transform.position = toPos.position;
     m_playerManager.transform.rotation = toPos.rotation;
     m_playerManager.m_ferretMesh.transform.localRotation = Quaternion.identity;
 
-    m_playerManager.SetObjectInChildrenOfFerret(m_pushableObject.transform, m_playerManager.m_states.m_push.m_objectTrans);
+    m_playerManager.SetObjectInChildrenOfFerret(m_playerManager.PushableObject.transform, m_playerManager.m_states.m_push.m_objectTrans);
   }
 
   public void Update()
@@ -40,7 +39,8 @@ public class PlayerPushState : IState
 
   public void Exit()
   {
-    m_playerManager.SetObjectInChildrenOfFerret(m_pushableObject.transform);
+    m_playerManager.PushableObject.On_ObjectIsPushing(false);
+    m_playerManager.SetObjectInChildrenOfFerret(m_playerManager.PushableObject.transform);
   }
 
 }

@@ -36,6 +36,11 @@ public class PlayerCrawlState : IState {
           m_playerManager.ChangeState(0);
         }
       }
+      if(m_playerManager.m_jumpButton){
+        if(!m_playerManager.CheckCollider(true)){
+          m_playerManager.ChangeState(3);
+        }
+      }
     }
 
     void Move(){

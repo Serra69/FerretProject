@@ -46,7 +46,11 @@ public class PlayerManager : MonoBehaviour {
 
 				[Header("Exit Speeds")]
 				public float m_exitChangePositionSpeed = 5;
-				public float m_exitChangeRotationSpeed = 5;					
+				public float m_exitChangeRotationSpeed = 5;
+
+				[Header("Fall Speeds")]
+				public float m_fallPositionSpeed = 5;
+				public float m_fallRotationSpeed = 5;					
 			}
 
 			public CheckCollision m_checkCollision = new CheckCollision();
@@ -78,6 +82,7 @@ public class PlayerManager : MonoBehaviour {
 				public float m_fromIdle = 1.5f;
 				public float m_fromWalk = 3;
 				public float m_fromRun = 6;
+				public float m_fromCrawl = 1.5f;
 			}
 		}
 
@@ -243,6 +248,28 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
+	bool m_isInLerpRotation = false;
+	public bool IsInLerpRotation
+    {
+        get
+        {
+            return m_isInLerpRotation;
+        }
+		set
+        {
+            m_isInLerpRotation = value;
+        }
+    }
+
+	bool m_endOfOrientationAfterClimb = false;
+	public bool EndOfOrientationAfterClimb
+    {
+        get
+        {
+            return m_endOfOrientationAfterClimb;
+        }
+    }
+
 	bool m_endOfClimbInterpolation = false;
     public bool EndOfClimbInterpolation
     {
@@ -251,10 +278,23 @@ public class PlayerManager : MonoBehaviour {
             return m_endOfClimbInterpolation;
         }
     }
-  
-	// ----------------------------
-	// ----- FOR THE ROTATION -----
-	const float k_InverseOneEighty = 1f / 180f;
+
+    PushableObject m_pushableObject;
+    public PushableObject PushableObject
+    {
+        get
+        {
+            return m_pushableObject;
+        }
+        set
+        {
+            m_pushableObject = value;
+        }
+    }
+
+    // ----------------------------
+    // ----- FOR THE ROTATION -----
+    const float k_InverseOneEighty = 1f / 180f;
 	const float k_AirborneTurnSpeedProportion = 5.4f;
 	protected float m_AngleDiff;
 	Quaternion m_TargetRotation;
@@ -314,19 +354,6 @@ public class PlayerManager : MonoBehaviour {
 		m_takeButton = Input.GetButtonDown("Action");
 		m_pushButton = Input.GetButton("Action");
 	}
-
-	/*public bool m_iAmOnAClimbArea = false;
-	void OnTriggerEnter(Collider col){
-		if(col.GetComponent<ClimbArea>()){
-			// print("JE VAIS MONTER !!!");
-			m_iAmOnAClimbArea = true;
-		}
-	}
-	void OnTriggerExit(Collider col){
-		if(col.GetComponent<ClimbArea>()){
-			m_iAmOnAClimbArea = false;
-		}*
-	}*/
 
 	void OnDrawGizmos(){
 		if (m_physics.castCenter != null){
@@ -505,12 +532,41 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	public void PushMove(float speed){
+
+		Vector3 worldDirection = new Vector3(0, 0, m_vAxis_Button);
+		worldDirection.Normalize();
+
 		MoveDirection = new Vector3(0, 0, m_vAxis_Button);
 		MoveDirection = transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
-		m_moveDirection.x *= speed;
-		m_moveDirection.z *= speed;
-		m_moveDirection.y *= speed;
+
+		// m_moveDirection.x *= speed;
+		// m_moveDirection.y *= speed;
+
+		// Debug.Log("worldDirection = " + worldDirection);
+
+		if(RaycastFromFerretAss()){
+			m_moveDirection.z *= speed;
+		}else{
+			if(worldDirection.z > 0){
+				m_moveDirection.x *= speed;
+				m_moveDirection.z *= speed;
+			}else{
+				m_moveDirection.x = 0;
+				m_moveDirection.z = 0;
+			}
+		}
+
+		if(!PushableObject.CanMove){
+			if(worldDirection.z < 0){
+				m_moveDirection.x *= speed;
+				m_moveDirection.z *= speed;
+			}else{
+				m_moveDirection.x = 0;
+				m_moveDirection.z = 0;
+			}
+		}
+
 	}
 
 	public void RotatePlayer(){
@@ -568,6 +624,8 @@ public class PlayerManager : MonoBehaviour {
         	m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromWalk;
 		}else if(m_sM.IsLastStateIndex(2)){
 			m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromRun;
+		}else if(m_sM.IsLastStateIndex(5)){
+			m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromCrawl;
 		}
 	}
 
@@ -777,6 +835,59 @@ public class PlayerManager : MonoBehaviour {
 
 	public void SetObjectInChildrenOfFerret(Transform fromTrans, Transform toTrans = null){
 		fromTrans.SetParent(toTrans);
+	}
+
+	public bool RaycastFromFerretAss(){
+		return Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, m_raycasts.m_maxCastDistance, m_checkLayer);
+	}
+
+	public void StartOrientationAfterClimb(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+		StartCoroutine(OrientationAfterClimb(transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation));
+	}
+	IEnumerator OrientationAfterClimb(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+		
+		m_isInLerpRotation = false;
+
+		// m_rigidbody.isKinematic = true;
+
+		AnimationCurve animationCurve = m_states.m_climb.m_interpolation.m_snapCurve;
+
+		float changePositionSpeed;
+		float changeRotationSpeed;
+
+		changePositionSpeed = m_states.m_climb.m_interpolation.m_fallPositionSpeed;
+		changeRotationSpeed = m_states.m_climb.m_interpolation.m_fallRotationSpeed;
+
+		float moveJourneyLength;
+		float moveFracJourney = new float();
+		float rotateJourneyLength;
+		float rotateFracJourney = new float();
+
+		while(transform.position != toPosition){
+			// MovePosition
+			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
+			moveFracJourney += (Time.deltaTime) * changePositionSpeed / moveJourneyLength;
+			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, animationCurve.Evaluate(moveFracJourney));
+
+			// MoveRotation
+			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
+			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / rotateJourneyLength;
+			transformRotation.rotation = Quaternion.Lerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
+
+			print("transform.position != toPosition");
+
+			// yield return null;
+		}
+
+		print("transform.position == toPosition");
+
+		// m_rigidbody.isKinematic = false;
+
+		m_isInLerpRotation = true;
+
+		m_endOfOrientationAfterClimb = true;
+		yield return new WaitForSeconds(0.5f);
+		m_endOfOrientationAfterClimb = false;
 	}
 
 #endregion Public functions

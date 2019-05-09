@@ -31,11 +31,13 @@ public class PlayerClimbState : IState
       m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, 0, 0));
       
       // Rotation du mesh pour qu'il soit bien droit
-      // m_playerManager.StartClimbInterpolation(m_playerManager.m_ferretMesh.transform, m_playerManager.m_ferretMesh.transform.position, m_playerManager.m_ferretMesh.transform.position, m_playerManager.m_ferretMesh.transform, m_playerManager.m_ferretMesh.transform.rotation, Quaternion.Euler(0, 0, 0));
       m_playerManager.StartRotateInterpolation(m_playerManager.m_ferretMesh.transform, m_playerManager.m_ferretMesh.transform.rotation, Quaternion.Euler(-90, 0, 0));
 
+      // For debug
       m_playerManager.m_rightHit.transform.position = m_playerManager.topRightClimbHit.point;
       m_playerManager.m_leftHit.transform.position = m_playerManager.topLeftClimbHit.point;
+
+      m_playerManager.IsInLerpRotation = false;
     }
 
     public void Exit()
@@ -46,9 +48,8 @@ public class PlayerClimbState : IState
     public void FixedUpdate()
     {
       if(m_playerManager.CanMoveOnClimb){
-
-        if( (m_playerManager.RayCastDownToStopClimbing() == false) && (!m_endOfClimbState)){
-          Debug.Log("j'arrive au bout");
+        if( (m_playerManager.RayCastDownToStopClimbing() == false) && (!m_endOfClimbState) && !m_playerManager.IsInLerpRotation){
+          // Debug.Log("j'arrive au bout");
           m_endOfClimbState = true;
           m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + Vector3.down * 2 + Vector3.up * 3, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(0, 0, 0), false);
         }
@@ -64,7 +65,8 @@ public class PlayerClimbState : IState
           m_playerManager.ChangeState(0);
         }
       }
-      if(m_playerManager.m_jumpButton){
+
+      /*if(m_playerManager.m_jumpButton){
         m_playerManager.StartClimbCooldown();
 
 		    m_playerManager.transform.rotation = Quaternion.Euler(0, m_playerManager.transform.rotation.y, m_playerManager.transform.rotation.z);
@@ -74,6 +76,14 @@ public class PlayerClimbState : IState
         m_playerManager.transform.position = newPosition;
         
         m_playerManager.ChangeState(3);
+      }*/
+
+      if(m_playerManager.CanMoveOnClimb && m_playerManager.m_jumpButton && !m_playerManager.IsInLerpRotation){
+        m_playerManager.StartOrientationAfterClimb(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + m_playerManager.transform.up * 1, m_playerManager.transform, m_playerManager.transform.localRotation, Quaternion.Euler(0, m_playerManager.transform.localRotation.y, m_playerManager.transform.localRotation.z));
+      }
+      if(m_playerManager.EndOfOrientationAfterClimb){
+        Debug.Log("FINI LA STATE");
+        m_playerManager.ChangeState(4);
       }
     }
 
