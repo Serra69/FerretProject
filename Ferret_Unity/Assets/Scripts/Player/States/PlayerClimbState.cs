@@ -43,6 +43,7 @@ public class PlayerClimbState : IState
     public void Exit()
     {
 		  m_playerManager.Rigidbody.useGravity = true;
+      m_playerManager.StartClimbCooldown();
     }
 
     public void FixedUpdate()
@@ -52,6 +53,7 @@ public class PlayerClimbState : IState
           // Debug.Log("j'arrive au bout");
           m_endOfClimbState = true;
           m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + Vector3.down * 2 + Vector3.up * 3, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(0, 0, 0), false);
+          Debug.Log("Je part en montant comme un connard");
         }
         m_playerManager.RayCastDownToStopSideScrollingMovement();
 		    m_playerManager.ClimbMove(m_playerManager.m_states.m_climb.m_speed);

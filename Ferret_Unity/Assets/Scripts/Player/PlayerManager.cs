@@ -50,7 +50,7 @@ public class PlayerManager : MonoBehaviour {
 
 				[Header("Fall Speeds")]
 				public float m_fallPositionSpeed = 5;
-				public float m_fallRotationSpeed = 5;					
+				public float m_fallRotationSpeed = 5;
 			}
 
 			public CheckCollision m_checkCollision = new CheckCollision();
@@ -548,7 +548,7 @@ public class PlayerManager : MonoBehaviour {
 		if(RaycastFromFerretAss()){
 			m_moveDirection.z *= speed;
 		}else{
-			if(worldDirection.z > 0){
+			if(m_moveDirection.z > 0){
 				m_moveDirection.x *= speed;
 				m_moveDirection.z *= speed;
 			}else{
@@ -558,7 +558,7 @@ public class PlayerManager : MonoBehaviour {
 		}
 
 		if(!PushableObject.CanMove){
-			if(worldDirection.z < 0){
+			if(m_moveDirection.z < 0){
 				m_moveDirection.x *= speed;
 				m_moveDirection.z *= speed;
 			}else{
@@ -846,7 +846,7 @@ public class PlayerManager : MonoBehaviour {
 	}
 	IEnumerator OrientationAfterClimb(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
 		
-		m_isInLerpRotation = false;
+		m_isInLerpRotation = true;
 
 		// m_rigidbody.isKinematic = true;
 
@@ -863,6 +863,9 @@ public class PlayerManager : MonoBehaviour {
 		float rotateJourneyLength;
 		float rotateFracJourney = new float();
 
+		float t = Vector3.Distance(fromPosition, toPosition) / changePositionSpeed;
+		StartCoroutine(OrientationAfterClimb(t));
+
 		while(transform.position != toPosition){
 			// MovePosition
 			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
@@ -874,17 +877,22 @@ public class PlayerManager : MonoBehaviour {
 			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / rotateJourneyLength;
 			transformRotation.rotation = Quaternion.Lerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
 
-			print("transform.position != toPosition");
-
-			// yield return null;
+			yield return null;
 		}
 
-		print("transform.position == toPosition");
+		m_rigidbody.isKinematic = false;
+		m_rigidbody.useGravity = true;
 
-		// m_rigidbody.isKinematic = false;
+		m_isInLerpRotation = false;
 
-		m_isInLerpRotation = true;
+		m_endOfOrientationAfterClimb = true;
+		yield return new WaitForSeconds(0.5f);
+		m_endOfOrientationAfterClimb = false;
+	}
 
+	IEnumerator OrientationAfterClimb(float timeToWait){
+		yield return new WaitForSeconds(timeToWait);
+		m_isInLerpRotation = false;
 		m_endOfOrientationAfterClimb = true;
 		yield return new WaitForSeconds(0.5f);
 		m_endOfOrientationAfterClimb = false;

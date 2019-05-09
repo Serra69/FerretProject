@@ -1652,7 +1652,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1224760707849188}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.427, y: 0.32990402, z: 16.441}
+  m_LocalPosition: {x: 14.75, y: 0.32990402, z: 18.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4167524301695216}
@@ -2093,7 +2093,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: 0.011257672, y: 0.000000017254, z: -0.0000000015389633, w: 0.9999367}
+  m_LocalRotation: {x: 0.01125767, y: 0.000000017362936, z: -0.0000000015301213, w: 0.99993664}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2177,7 +2177,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: 0.06459249, y: 0.000000004335977, z: -9.477875e-10, w: 0.9979118}
+  m_LocalRotation: {x: 0.0645925, y: -0.0000000042478767, z: -4.1330006e-10, w: 0.99791175}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2280,7 +2280,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701019898918854}
-  m_LocalRotation: {x: 0.038623005, y: 4.7746692e-11, z: -0.0000000012353039, w: 0.99925387}
+  m_LocalRotation: {x: 0.038622998, y: 0.000000003769398, z: -0.0000000013569418,
+    w: 0.9992539}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2460,7 +2461,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1681364742312364}
-  m_LocalRotation: {x: 0.038623024, y: -0.0000000037225112, z: 1.4388199e-10, w: 0.99925387}
+  m_LocalRotation: {x: 0.038623013, y: 0.0000000037225112, z: -1.4388195e-10, w: 0.99925387}
   m_LocalPosition: {x: 0, y: 2.8, z: -3.2499914}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3409,7 +3410,7 @@ MonoBehaviour:
       m_speed: 6
     m_climb:
       m_canClimb: 1
-      m_timeToCanReClimb: 0.25
+      m_timeToCanReClimb: 0.5
       m_climbCollision:
         serializedVersion: 2
         m_Bits: 2048
@@ -3443,6 +3444,8 @@ MonoBehaviour:
         m_enterChangeRotationSpeed: 3
         m_exitChangePositionSpeed: 0.75
         m_exitChangeRotationSpeed: 0.75
+        m_fallPositionSpeed: 5
+        m_fallRotationSpeed: 5
       m_checkCollision:
         m_outOfClibingAreaInTopLeft: 0
         m_outOfClibingAreaInBotLeft: 0
