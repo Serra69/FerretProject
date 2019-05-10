@@ -26,17 +26,19 @@ public class FirstPersonCamera : MonoBehaviour {
 	[Header("Positions")]
 	[SerializeField] Transform m_topPosition;
 	[SerializeField] Transform m_botPosition;
+	[Space]
+	[SerializeField] float m_smoothSpeed = 0.5f;
 
 	Vector2 mouseLook;
     Vector2 smoothV;
 	float xAxisCLamp = 0;
     Transform playerTrans;
-	SwitchCamera m_switchCamera;
+	PlayerManager m_playerManager;
 
     void Start()
     {
         playerTrans = transform.parent.GetComponentInParent<PlayerManager>().transform;
-		m_switchCamera = SwitchCamera.Instance;
+		m_playerManager = PlayerManager.Instance;
     }
 
     public void RotateCamera()
@@ -70,11 +72,14 @@ public class FirstPersonCamera : MonoBehaviour {
 	}
 
 	void LateUpdate(){
-		if(m_switchCamera.ThirdPersonMode){
-			// transform.position = new Vector3()
+		Vector3 desiredPosition;
+		if(m_playerManager.m_states.m_crawl.m_isCrawling){
+			desiredPosition = new Vector3(transform.position.x, m_botPosition.position.y, transform.position.z);
 		}else{
-
+			desiredPosition = new Vector3(transform.position.x, m_topPosition.position.y, transform.position.z);
 		}
+		Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, m_smoothSpeed);
+		transform.position = smoothedPosition;
 	}
 	
 }

@@ -52,7 +52,7 @@ public class PlayerWalkState : IState
       if(!m_playerManager.CheckCollider(false)){
         m_playerManager.ChangeState(4);
       }
-      
+
     }
 
     void Move(){

@@ -50,10 +50,6 @@ public class PlayerJumpState : IState
   public void Update()
   {
     m_isJumpButtonHeld = m_playerManager.m_jumpHeldButton;
-
-    // if((m_playerManager.m_iAmOnAClimbArea) && m_playerManager.RayCastForwardToStartClimbing()){
-    //   m_playerManager.ChangeState(6);
-    // }
   }
 
   void MoveCamera(){
