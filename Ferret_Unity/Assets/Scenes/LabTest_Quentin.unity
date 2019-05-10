@@ -6927,7 +6927,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh6948
+  m_Name: pb_Mesh6946
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -7867,15 +7867,15 @@ Prefab:
       objectReference: {fileID: 1971008999}
     - target: {fileID: 4695131428004772, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0.064592496
+      value: 0.0645925
       objectReference: {fileID: 0}
     - target: {fileID: 4695131428004772, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0.0000000043373487
+      value: -0.0000000042478767
       objectReference: {fileID: 0}
     - target: {fileID: 4695131428004772, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -9.690017e-10
+      value: -4.1330006e-10
       objectReference: {fileID: 0}
     - target: {fileID: 4931067033763904, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
       propertyPath: m_LocalRotation.x
@@ -7912,6 +7912,11 @@ Prefab:
     - target: {fileID: 4649011635109966, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
       propertyPath: m_LocalRotation.z
       value: -0.0000000011417668
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_climb.m_timeToCanReClimb
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}

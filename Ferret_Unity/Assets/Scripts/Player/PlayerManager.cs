@@ -51,6 +51,8 @@ public class PlayerManager : MonoBehaviour {
 				[Header("Fall Speeds")]
 				public float m_fallPositionSpeed = 5;
 				public float m_fallRotationSpeed = 5;
+				[Space]
+				public float m_fallingDistance = 1.5f;
 			}
 
 			public CheckCollision m_checkCollision = new CheckCollision();
@@ -677,9 +679,6 @@ public class PlayerManager : MonoBehaviour {
 		m_endOfClimbInterpolation = true;
 		yield return new WaitForSeconds(0.5f);
 		m_endOfClimbInterpolation = false;
-
-		//moveFracJourney = 0;
-		//rotateFracJourney = 0;
 	}
 
 	public void StartClimbCooldown(){
@@ -847,6 +846,8 @@ public class PlayerManager : MonoBehaviour {
 	IEnumerator OrientationAfterClimb(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
 		
 		m_isInLerpRotation = true;
+
+		m_canMoveOnClimb = false;
 
 		// m_rigidbody.isKinematic = true;
 
