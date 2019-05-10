@@ -30,7 +30,7 @@ public class PlayerManager : MonoBehaviour {
 		public Climb m_climb = new Climb();
 		[System.Serializable] public class Climb {
 			public bool m_canClimb = true;
-			public float m_timeToCanReClimb = 0.1f;
+			// public float m_timeToCanReClimb = 0.1f;
 			[Space]
 			public LayerMask m_climbCollision;
 			public float m_speed = 2.25f;
@@ -51,6 +51,8 @@ public class PlayerManager : MonoBehaviour {
 				[Header("Fall Speeds")]
 				public float m_fallPositionSpeed = 5;
 				public float m_fallRotationSpeed = 5;
+				[Space]
+				public float m_fallingDistance = 1.5f;
 			}
 
 			public CheckCollision m_checkCollision = new CheckCollision();
@@ -164,6 +166,10 @@ public class PlayerManager : MonoBehaviour {
 	[Header("Raycasts")]
 	public Raycasts m_raycasts = new Raycasts();
 	[System.Serializable] public class Raycasts {
+		public Transform m_forwardTopRightLeg;
+		public Transform m_forwardTopLeftLeg;
+		public float m_forwardDistance = 0.5f;
+		[Space]
 		public Transform m_topRightLeg;
 		public Transform m_topLeftLeg;
 		public Transform m_botRightLeg;
@@ -371,10 +377,13 @@ public class PlayerManager : MonoBehaviour {
 			Debug.DrawRay(center, m_physics.castCenter.forward * m_physics.m_maxCenterDistance, Color.black, 0.01f);
 		}
 		
-		if(m_raycasts.m_topRightLeg != null && m_raycasts.m_topLeftLeg != null && m_raycasts.m_botRightLeg != null && m_raycasts.m_botLeftLeg != null){
+		if(m_raycasts.m_forwardTopRightLeg != null && m_raycasts.m_forwardTopLeftLeg != null){
 			// Forward
-			Debug.DrawRay(m_raycasts.m_topRightLeg.position, m_raycasts.m_topRightLeg.transform.forward * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
-			Debug.DrawRay(m_raycasts.m_topLeftLeg.position, m_raycasts.m_topLeftLeg.transform.forward * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+			Debug.DrawRay(m_raycasts.m_forwardTopRightLeg.position, m_raycasts.m_forwardTopRightLeg.transform.forward * m_raycasts.m_forwardDistance, m_raycasts.m_color, .05f);
+			Debug.DrawRay(m_raycasts.m_forwardTopLeftLeg.position, m_raycasts.m_forwardTopLeftLeg.transform.forward * m_raycasts.m_forwardDistance, m_raycasts.m_color, .05f);
+		}
+
+		if(m_raycasts.m_topRightLeg != null && m_raycasts.m_topLeftLeg != null && m_raycasts.m_botRightLeg != null && m_raycasts.m_botLeftLeg != null){
 			// Down
 			Debug.DrawRay(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
 			Debug.DrawRay(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
@@ -438,6 +447,7 @@ public class PlayerManager : MonoBehaviour {
 		}else{
 			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_botMaxDistance, m_checkLayer)){
 				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
+				m_states.m_climb.m_canClimb = true;
 				return true;
 			}else{
 				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
@@ -546,6 +556,7 @@ public class PlayerManager : MonoBehaviour {
 		// Debug.Log("worldDirection = " + worldDirection);
 
 		if(RaycastFromFerretAss()){
+			m_moveDirection.x *= speed;
 			m_moveDirection.z *= speed;
 		}else{
 			if(m_moveDirection.z > 0){
@@ -677,19 +688,16 @@ public class PlayerManager : MonoBehaviour {
 		m_endOfClimbInterpolation = true;
 		yield return new WaitForSeconds(0.5f);
 		m_endOfClimbInterpolation = false;
-
-		//moveFracJourney = 0;
-		//rotateFracJourney = 0;
 	}
 
-	public void StartClimbCooldown(){
+	/*public void StartClimbCooldown(){
 		StartCoroutine(ClimbCooldownCorout());
 	}
 	IEnumerator ClimbCooldownCorout(){
 		m_states.m_climb.m_canClimb = false;
 		yield return new WaitForSeconds(m_states.m_climb.m_timeToCanReClimb);
 		m_states.m_climb.m_canClimb = true;
-	}
+	}*/
 	
 	public void StartRotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
 		StartCoroutine(RotateInterpolation(trans, fromRotation, toRotation));
@@ -699,14 +707,42 @@ public class PlayerManager : MonoBehaviour {
 		float rotateJourneyLength;
 		float rotateFracJourney = new float();
 
-		while(transform.rotation != toRotation){
+		while(trans.rotation != toRotation){
 			// MoveRotation
 			rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation);
-			rotateFracJourney += (Time.deltaTime) * m_states.m_climb.m_interpolation.m_enterChangeRotationSpeed / rotateJourneyLength;
+			rotateFracJourney += (Time.deltaTime) * m_states.m_climb.m_interpolation.m_fallRotationSpeed / rotateJourneyLength;
 			trans.rotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_climb.m_interpolation.m_snapCurve.Evaluate(rotateFracJourney));
 
 			yield return null;
 		}
+	}
+
+	bool m_exitAction = false;
+	public void StartLocalRotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
+		StartCoroutine(LocalRotateInterpolation(trans, fromRotation, toRotation));
+	}
+	IEnumerator LocalRotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
+
+		m_exitAction = false;
+
+		StartCoroutine(TimeToExitAction());
+
+		float rotateJourneyLength;
+		float rotateFracJourney = new float();
+
+		while(trans.localRotation != toRotation && !m_exitAction){
+			// MoveRotation
+			rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation);
+			rotateFracJourney += (Time.deltaTime) * m_states.m_climb.m_interpolation.m_fallRotationSpeed * 2 / rotateJourneyLength;
+			trans.localRotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_climb.m_interpolation.m_snapCurve.Evaluate(rotateFracJourney));
+
+			yield return null;
+		}
+		Debug.Log("Je m'exit");
+	}
+	IEnumerator TimeToExitAction(){
+		yield return new WaitForSeconds(.5f);
+		m_exitAction = true;
 	}
 
 	public RaycastHit topRightClimbHit;
@@ -848,6 +884,8 @@ public class PlayerManager : MonoBehaviour {
 		
 		m_isInLerpRotation = true;
 
+		m_canMoveOnClimb = false;
+
 		// m_rigidbody.isKinematic = true;
 
 		AnimationCurve animationCurve = m_states.m_climb.m_interpolation.m_snapCurve;
@@ -899,6 +937,6 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 #endregion Public functions
-public GameObject m_rightHit;
-public GameObject m_leftHit;
+// public GameObject m_rightHit;
+// public GameObject m_leftHit;
 }

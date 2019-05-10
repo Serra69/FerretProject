@@ -15,7 +15,8 @@ public class PushableObject : MonoBehaviour {
 	[SerializeField] Color m_gizmosColor = Color.black;
 	[SerializeField] LayerMask m_whatIsGround;
 	[SerializeField] Transform[] m_raycastPositions;
-	[HideInInspector] public bool[] m_raycastReturn;
+	
+	bool[] m_raycastReturn;
 
 	PlayerManager m_playerManager;
 	float actualClosedDistance;
