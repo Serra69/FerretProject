@@ -5,6 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : MonoBehaviour {
 
+	public PlayerDebugs m_playerDebugs = new PlayerDebugs();
+	[System.Serializable] public class PlayerDebugs {
+		public bool m_playerCanDie = true;
+	}
+
 	public static PlayerManager Instance;
 
 #region Public [System.Serializable] Variables
@@ -225,6 +230,10 @@ public class PlayerManager : MonoBehaviour {
         {
             return m_rigidbody;
         }
+		set
+        {
+            m_rigidbody = value;
+        }
     }
 
 	float m_lastStateMoveSpeed = 0;
@@ -298,6 +307,20 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
+    bool m_playerIsDead = false;
+    public bool PlayerIsDead
+    {
+        get
+        {
+            return m_playerIsDead;
+        }
+		set
+        {
+            m_playerIsDead = value;
+        }
+    }
+
+
     // ----------------------------
     // ----- FOR THE ROTATION -----
     const float k_InverseOneEighty = 1f / 180f;
@@ -327,6 +350,7 @@ public class PlayerManager : MonoBehaviour {
 			new PlayerCrawlState(this), 	// 5 = Crawl
 			new PlayerClimbState(this), 	// 6 = Climb
 			new PlayerPushState(this),		// 7 = Push
+			new PlayerDeathState(this),		// 8 = Death
 		});
 
 		m_rigidbody = GetComponent<Rigidbody>();
@@ -934,6 +958,13 @@ public class PlayerManager : MonoBehaviour {
 		m_endOfOrientationAfterClimb = true;
 		yield return new WaitForSeconds(0.5f);
 		m_endOfOrientationAfterClimb = false;
+	}
+
+	public void On_PlayerDie(){
+		if(!m_playerDebugs.m_playerCanDie){
+			return;
+		}
+		ChangeState(8);
 	}
 
 #endregion Public functions

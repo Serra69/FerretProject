@@ -18,26 +18,36 @@ public class Projectile : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		m_rigidbody.velocity = transform.forward * m_speed * Time.deltaTime;
+		m_rigidbody.velocity = transform.forward * m_speed;
 	}
 
-	void OnTriggerEnter(Collider col){
+	void OnCollisionEnter(Collision col){
+		// print("colission with : " + col.gameObject.name);
 
-		if(!m_isStick){
-			transform.parent = col.gameObject.transform;
-			print("colission with : " + col.gameObject.name);
+		if(m_isStick){
+			return;
+		}
 
-			On_ProjectileIsStuck();
-
-			if(col.gameObject.GetComponentInParent<PlayerManager>() != null){
-				print("I shoot the player !");
+		if(col.gameObject.CompareTag("Player")){
+			PlayerManager playerManager = col.gameObject.GetComponentInParent<PlayerManager>();
+			if(!playerManager.PlayerIsDead){
+				// transform.parent = col.gameObject.transform;
+				playerManager.On_PlayerDie();
 			}
 		}
+
+		if(col.gameObject.CompareTag("Untagged")){
+			transform.parent = col.gameObject.transform;
+		}
+
+		On_ProjectileIsStuck();
+
 	}
 
 	void On_ProjectileIsStuck(){
 		m_isStick = true;
 		m_rigidbody.isKinematic = true;
+		m_rigidbody.Sleep();
 		m_collider.enabled = false;
 	}
 	

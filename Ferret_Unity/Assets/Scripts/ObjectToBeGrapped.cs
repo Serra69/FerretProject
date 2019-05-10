@@ -18,7 +18,21 @@ public class ObjectToBeGrapped : MonoBehaviour {
 	Transform m_posToFollow;
 	bool m_followPlayer = false;
 
-	void Start(){
+	bool m_canBeGrapped = true;
+    public bool CanBeGrapped
+    {
+        get
+        {
+            return m_canBeGrapped;
+        }
+
+        set
+        {
+            m_canBeGrapped = value;
+        }
+    }
+
+    void Start(){
 		m_playerManager = PlayerManager.Instance;
 		m_posToFollow = m_playerManager.m_states.m_takeObject.m_objectPosition;
 
@@ -33,8 +47,11 @@ public class ObjectToBeGrapped : MonoBehaviour {
 	}
 
 	void Update(){
-		if(!m_followPlayer){
+		if(!m_followPlayer && m_canBeGrapped){
 			CheckPlayerPosition();
+		}
+		if(!m_canBeGrapped){
+			m_playerManager.SetClosedObjectToBeGrapped(false, this);
 		}
 	}
 
