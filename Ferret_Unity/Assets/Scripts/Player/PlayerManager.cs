@@ -320,6 +320,23 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
+    SwitchCamera m_switchCamera;
+    public SwitchCamera SwitchCamera
+    {
+        get
+        {
+            return m_switchCamera;
+        }
+    }
+
+	FirstPersonCamera m_firstPersonCamera;
+    public FirstPersonCamera FirstPersonCamera
+    {
+        get
+        {
+            return m_firstPersonCamera;
+        }
+    }
 
     // ----------------------------
     // ----- FOR THE ROTATION -----
@@ -356,6 +373,10 @@ public class PlayerManager : MonoBehaviour {
 		m_rigidbody = GetComponent<Rigidbody>();
 		m_animator = GetComponentInChildren<Animator>();
 	}
+	void Start(){
+		m_switchCamera = SwitchCamera.Instance;
+		m_firstPersonCamera = FirstPersonCamera.Instance;
+	}
 	void OnEnable(){
 		ChangeState(0);
 	}
@@ -365,6 +386,10 @@ public class PlayerManager : MonoBehaviour {
 		UpdateInputButtons();
 		if(m_takeButton){
 			GrappedObject();
+		}
+
+		if(Input.GetKeyDown(KeyCode.A)){
+			m_switchCamera.SwitchCameraType();
 		}
 	}
 
@@ -506,6 +531,14 @@ public class PlayerManager : MonoBehaviour {
 	public void MovePlayer(float speed, float y = 0, float jumpSpeed = 0){
 		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
 		MoveDirection = transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
+		m_moveDirection.x *= speed;
+		m_moveDirection.z *= speed;
+		m_moveDirection.y *= jumpSpeed;
+	}
+	public void MoveFirstPersonPlayer(float speed, float y = 0, float jumpSpeed = 0){
+		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
+		MoveDirection = m_firstPersonCamera.transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
 		m_moveDirection.x *= speed;
 		m_moveDirection.z *= speed;
@@ -762,7 +795,7 @@ public class PlayerManager : MonoBehaviour {
 
 			yield return null;
 		}
-		Debug.Log("Je m'exit");
+		// Debug.Log("Je m'exit");
 	}
 	IEnumerator TimeToExitAction(){
 		yield return new WaitForSeconds(.5f);

@@ -40,9 +40,11 @@ GameObject:
   - component: {fileID: 33442004720227402}
   - component: {fileID: 23411656854844688}
   - component: {fileID: 65930059381630566}
+  - component: {fileID: 65203041855359678}
+  - component: {fileID: 65846184385623238}
   m_Layer: 10
   m_Name: Box
-  m_TagString: Untagged
+  m_TagString: NoCameraCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -124,6 +126,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1410380178620280
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4764523281267812}
+  m_Layer: 0
+  m_Name: ___PutObjectsHere
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1488958030848982
 GameObject:
   m_ObjectHideFlags: 1
@@ -171,7 +188,7 @@ GameObject:
   - component: {fileID: 114675719802602838}
   - component: {fileID: 54162633994474422}
   - component: {fileID: 135982153140697134}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SphereToBeGrapped
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232,12 +249,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1566719709843308}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.18939392, y: 0.013665448, z: 0.00000008940697}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.30303028, y: 0.30303028, z: 0.30303028}
   m_Children:
   - {fileID: 4144847674882396}
-  m_Father: {fileID: 4790342629725252}
-  m_RootOrder: 2
+  m_Father: {fileID: 4764523281267812}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4144847674882396
 Transform:
@@ -335,6 +352,20 @@ Transform:
   m_Father: {fileID: 4652310396140176}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4764523281267812
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1410380178620280}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.18939392, y: 0.006120502, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4099562349795066}
+  m_Father: {fileID: 4790342629725252}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4790342629725252
 Transform:
   m_ObjectHideFlags: 1
@@ -347,7 +378,7 @@ Transform:
   m_Children:
   - {fileID: 4819637651449264}
   - {fileID: 4660513635868384}
-  - {fileID: 4099562349795066}
+  - {fileID: 4764523281267812}
   m_Father: {fileID: 4754188952918352}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -632,6 +663,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &65203041855359678
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1185198809899762}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.59999996, y: 0.12760122, z: 0.59999996}
+  m_Center: {x: 0.29683363, y: 0.18536906, z: -0.29683363}
 --- !u!65 &65665534814381316
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -656,6 +699,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.008061638, y: 0.11499832, z: 0.29510334}
   m_Center: {x: 0.0040308237, y: 0.05749915, z: -0.14841636}
+--- !u!65 &65846184385623238
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1185198809899762}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.59999996, y: 0.24916972, z: 0.15467556}
+  m_Center: {x: 0.29683363, y: 0.124584846, z: -0.51949584}
 --- !u!65 &65868538496815712
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -678,8 +733,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.59999996, y: 0.24916972, z: 0.59999996}
-  m_Center: {x: 0.29683363, y: 0.124584846, z: -0.29683363}
+  m_Size: {x: 0.59999996, y: 0.24916972, z: 0.15186554}
+  m_Center: {x: 0.29683363, y: 0.124584846, z: -0.07276643}
 --- !u!95 &95593750197994044
 Animator:
   serializedVersion: 3
@@ -709,6 +764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d752e0ad5214ce8448f084568b5f6900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_objectIsUsable: 0
   m_takingRange: 1
   m_showGizmos: 1
   m_color: {r: 1, g: 1, b: 1, a: 1}
@@ -751,8 +807,23 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_onBoxIsOpen:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114675719802602838}
+        m_MethodName: SetIfObjectIsUsable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   m_showGizmos: 1
-  m_boxColl: {fileID: 65665534814381316}
   m_colorGizmos: {r: 1, g: 0, b: 1, a: 1}
 --- !u!135 &135982153140697134
 SphereCollider:

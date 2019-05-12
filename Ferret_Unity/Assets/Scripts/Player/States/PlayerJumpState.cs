@@ -32,7 +32,13 @@ public class PlayerJumpState : IState
     {   
       float proportionCompleted = m_timer / m_playerManager.m_states.m_jump.m_jumpTime;
       float yDirection = m_playerManager.m_states.m_jump.m_jumpHeightCurve.Evaluate(proportionCompleted);
-      m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed, yDirection, m_playerManager.m_states.m_jump.m_jumpForce);
+
+      if(m_playerManager.SwitchCamera.ThirdPersonMode){
+        m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed, yDirection, m_playerManager.m_states.m_jump.m_jumpForce);
+      }else{
+        m_playerManager.MoveFirstPersonPlayer(m_playerManager.LastStateMoveSpeed, yDirection, m_playerManager.m_states.m_jump.m_jumpForce);
+      }
+
       m_timer += Time.deltaTime;
     }
     else
@@ -54,13 +60,16 @@ public class PlayerJumpState : IState
 
   void MoveCamera(){
     
-    if(SwitchCamera.Instance.ThirdPersonMode){
+    if(m_playerManager.SwitchCamera.ThirdPersonMode){
       if(m_playerManager.PlayerInputIsMoving()){
         m_playerManager.RotatePlayer();
       }
     }else{
-      FirstPersonCamera.Instance.RotateCamera();
+      if(!m_playerManager.SwitchCamera.CameraIsSwitching){
+        m_playerManager.FirstPersonCamera.RotateCamera();
+      }
     }
+
   }
 
 }

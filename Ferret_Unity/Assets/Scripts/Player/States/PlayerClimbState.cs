@@ -54,6 +54,10 @@ public class PlayerClimbState : IState
       m_playerManager.RayCastDownToStopSideScrollingMovement();
       m_playerManager.ClimbMove(m_playerManager.m_states.m_climb.m_speed);
     }
+
+    if(!m_playerManager.SwitchCamera.CameraIsSwitching){
+      m_playerManager.FirstPersonCamera.RotateCamera(true);
+    }
   }
 
   public void Update()

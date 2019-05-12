@@ -20,6 +20,7 @@ public class SwitchCamera : MonoBehaviour {
 
 	[Header("Curve")]
 	[SerializeField] AnimationCurve m_positionCurve;
+	[SerializeField] AnimationCurve m_rotationCurve;
 
 	[Header("Positions")]
 	[SerializeField] Transform m_firstPersonTrans;
@@ -38,6 +39,8 @@ public class SwitchCamera : MonoBehaviour {
 	PlayerManager m_playerManager;
 	float m_moveJourneyLength;
 	float m_moveFracJourney;
+	float m_rotateFracJourney;
+	FirstPersonCamera m_firstPersonCamera;
 
 	bool m_thirdPersonMode = true;
 	public bool ThirdPersonMode
@@ -48,12 +51,23 @@ public class SwitchCamera : MonoBehaviour {
         }
     }
 
+    bool m_cameraIsSwitching = false;
+    public bool CameraIsSwitching
+    {
+        get
+        {
+            return m_cameraIsSwitching;
+        }
+    }
+
+
 	bool m_canChangePosition = true;
 
 	bool m_cameraBrainType = true;
 	Transform m_cameraBrainParent;
 
     void Start(){
+		m_firstPersonCamera = FirstPersonCamera.Instance;
 		m_camera = GetComponent<Camera>();
 		m_camera.enabled = false;
 		m_cameraBrain = m_thirdPersonCam.GetComponent<CinemachineBrain>();
@@ -62,7 +76,6 @@ public class SwitchCamera : MonoBehaviour {
 	}
 
 	void Update(){
-		//SwitchCameraWithButton();
 		if(m_thirdPersonMode){
 			m_playerManager.WhenCameraIsCloseToTheFerret(Vector3.Distance(m_playerManager.transform.position, m_cameraBrain.transform.position));
 		}
@@ -71,25 +84,17 @@ public class SwitchCamera : MonoBehaviour {
 	public void SwitchCameraType(){
 		if(m_canChangePosition){
 			if(m_thirdPersonMode){
-				StartCoroutine(MoveCamera(m_thirdPersonTrans.position, m_firstPersonTrans));
+				StartCoroutine(MoveCamera(false, m_thirdPersonTrans.position, m_firstPersonTrans, m_thirdPersonTrans.rotation, m_firstPersonTrans));
 			}else{
-				StartCoroutine(MoveCamera(m_firstPersonTrans.position, m_thirdPersonTrans));
+				StartCoroutine(MoveCamera(true, m_firstPersonTrans.position, m_thirdPersonTrans, m_firstPersonTrans.rotation, m_thirdPersonTrans));
 			}
 		}
 	}
 
-	void SwitchCameraWithButton(){
-		if(m_canChangePosition && Input.GetButtonDown("Fire1")){
-			if(m_thirdPersonMode){
-				StartCoroutine(MoveCamera(m_thirdPersonTrans.position, m_firstPersonTrans));
-			}else{
-				StartCoroutine(MoveCamera(m_firstPersonTrans.position, m_thirdPersonTrans));
-			}
-		}
-	}
-
-	IEnumerator MoveCamera(Vector3 fromPosition, Transform toPosition){
+	IEnumerator MoveCamera(bool toThirdPersonMode, Vector3 fromPosition, Transform toPosition, Quaternion fromRotation, Transform toRotation){
 		
+		m_cameraIsSwitching = true;
+
 		ChangeCameraBrainType();
 
 		transform.rotation = m_thirdPersonTrans.rotation;
@@ -104,6 +109,15 @@ public class SwitchCamera : MonoBehaviour {
 			m_moveFracJourney += (Time.deltaTime) * m_changePositionSpeed / m_moveJourneyLength;
 			transform.position = Vector3.Lerp(fromPosition, toPosition.position, m_positionCurve.Evaluate(m_moveFracJourney));
 
+			// MoveRotation
+			if(toThirdPersonMode){
+				m_rotateFracJourney += (Time.deltaTime) * m_changeRotationSpeed / m_moveJourneyLength;
+				transform.rotation = Quaternion.Lerp(toRotation.rotation, fromRotation, m_rotationCurve.Evaluate(1 - m_rotateFracJourney));
+			}else{
+				m_rotateFracJourney += (Time.deltaTime) * m_changeRotationSpeed / m_moveJourneyLength;
+				transform.rotation = Quaternion.Lerp(fromRotation, toRotation.rotation, m_rotationCurve.Evaluate(m_rotateFracJourney));
+			}
+
 			yield return null;
 		}
 		m_canChangePosition = true;
@@ -111,11 +125,17 @@ public class SwitchCamera : MonoBehaviour {
 		ChangePersonMod();
 
 		m_moveFracJourney = 0;
-		m_firstPersonTrans.rotation = transform.rotation;
+
+		m_rotateFracJourney = 0;
+
+		// m_firstPersonTrans.rotation = transform.rotation;
+		m_firstPersonCamera.ResetCameraOrientation();
 
 		m_camera.enabled = false;
 
 		ChangeCameraBrainType();
+
+		m_cameraIsSwitching = false;
 	}
 
 	void ChangePersonMod(){
@@ -125,7 +145,7 @@ public class SwitchCamera : MonoBehaviour {
 			m_firstPersonCam.depth = 0;
 			m_thirdPersonCam.depth = 1;
 		}else{
-			m_playerManager.WhenCameraGoToFirstPlayerMode();
+			// m_playerManager.WhenCameraGoToFirstPlayerMode();
 			m_firstPersonCam.depth = 1;
 			m_thirdPersonCam.depth = 0;
 		}

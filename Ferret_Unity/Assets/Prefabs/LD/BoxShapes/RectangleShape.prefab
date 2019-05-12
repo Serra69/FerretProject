@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65127449145429742}
   - component: {fileID: 54904464228695226}
   - component: {fileID: 114367578801615328}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RectangleShape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -166,6 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d752e0ad5214ce8448f084568b5f6900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_objectIsUsable: 1
   m_takingRange: 1
   m_showGizmos: 1
   m_color: {r: 1, g: 1, b: 1, a: 1}

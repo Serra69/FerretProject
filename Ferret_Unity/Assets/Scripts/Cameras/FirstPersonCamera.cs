@@ -26,22 +26,33 @@ public class FirstPersonCamera : MonoBehaviour {
 	[Header("Positions")]
 	[SerializeField] Transform m_topPosition;
 	[SerializeField] Transform m_botPosition;
-	[Space]
-	[SerializeField] float m_smoothSpeed = 0.5f;
+	[SerializeField, Range(0,1)] float m_smoothSpeed = 0.5f;
 
+	[Header("In 1st person when climb")]
+	[SerializeField] Transform m_lookAtPoint;
+	[SerializeField] Vector3 m_pointOffset = new Vector3(0, 0.5f, 0.5f);
+	[SerializeField] float m_movePointDistance = 1f;
+	[SerializeField, Range(0, 1)] float m_smoothLerp = 0.5f;
+
+	Vector3 m_startPosition;
+	Quaternion m_startRotation;
 	Vector2 mouseLook;
     Vector2 smoothV;
 	float xAxisCLamp = 0;
     Transform playerTrans;
 	PlayerManager m_playerManager;
+	Vector3 m_inputDirection = Vector3.zero;
+
 
     void Start()
     {
+		m_startPosition = transform.localPosition;
+		m_startRotation = transform.localRotation;
         playerTrans = transform.parent.GetComponentInParent<PlayerManager>().transform;
 		m_playerManager = PlayerManager.Instance;
     }
 
-    public void RotateCamera()
+    public void RotateCamera(bool whenClimb = false)
     {
 		// float mouseX = Input.GetAxisRaw("Mouse X") * Xsensitivity * Time.deltaTime;
 		// float mouseY = Input.GetAxisRaw("Mouse Y") * Ysensitivity * Time.deltaTime;
@@ -60,10 +71,25 @@ public class FirstPersonCamera : MonoBehaviour {
 			mouseY = 0;
 			ClampXAxisRotationToValue(360 - minClamp);
 		}
+		
+		if(!whenClimb){
+			transform.Rotate(Vector3.left * mouseY);
+			playerTrans.Rotate(Vector3.up * mouseX);
+		}else{
+			m_inputDirection.x = Input.GetAxis("CameraX") * m_movePointDistance;
+			m_inputDirection.y = Input.GetAxis("CameraY") * m_movePointDistance;
 
-		transform.Rotate(Vector3.left * mouseY);
-		playerTrans.Rotate(Vector3.up * mouseX);
+			Vector3 desiredPos = transform.position + m_inputDirection + m_pointOffset;
+			Vector3 smoothedPosition = Vector3.Lerp(m_lookAtPoint.position, desiredPos, m_smoothLerp);
+			m_lookAtPoint.transform.position = smoothedPosition;
+			transform.LookAt(m_lookAtPoint);
+		}
     }
+
+	public void ResetCameraOrientation(){
+		transform.localPosition = m_startPosition;
+		transform.localRotation = m_startRotation; 
+	}
 
 	void ClampXAxisRotationToValue(float value){
 		Vector3 eulerRotation = transform.eulerAngles;

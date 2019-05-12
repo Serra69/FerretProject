@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ObjectToBeGrapped : MonoBehaviour {
 
+	[Header("At the start")]
+	[SerializeField] bool m_objectIsUsable = true;
+
 	[Header("Range")]
 	[SerializeField] float m_takingRange = 1;
 
@@ -38,6 +41,8 @@ public class ObjectToBeGrapped : MonoBehaviour {
 
 		m_collider = GetComponent<Collider>();
 		m_rbody = GetComponent<Rigidbody>();
+
+		m_rbody.isKinematic = m_objectIsUsable ? false : true;
 	}
 
 	public void On_ObjectIsTake(bool objectIsTake){
@@ -47,7 +52,7 @@ public class ObjectToBeGrapped : MonoBehaviour {
 	}
 
 	void Update(){
-		if(!m_followPlayer && m_canBeGrapped){
+		if(!m_followPlayer && m_canBeGrapped && m_objectIsUsable){
 			CheckPlayerPosition();
 		}
 		if(!m_canBeGrapped){
@@ -92,6 +97,19 @@ public class ObjectToBeGrapped : MonoBehaviour {
 		if(m_showGizmos){
 			Gizmos.color = m_color;
 			Gizmos.DrawWireSphere(transform.position, m_takingRange);
+		}
+	}
+
+	public void SetIfObjectIsUsable(bool b){
+		m_objectIsUsable = b;
+		m_rbody.isKinematic = !b;
+	}
+
+	public void SetAnUnusableobject(bool b){
+		if(b){
+			m_rbody.isKinematic = true;
+		}else{
+			m_rbody.isKinematic = false;
 		}
 	}
 

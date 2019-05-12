@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33162957231310028}
   - component: {fileID: 23386480913326530}
   m_Layer: 0
-  m_Name: cylinder
+  m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 64172290297697966}
   - component: {fileID: 54016273828377572}
   - component: {fileID: 114689224951223372}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: CircleShape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,6 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d752e0ad5214ce8448f084568b5f6900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_objectIsUsable: 1
   m_takingRange: 1
   m_showGizmos: 1
   m_color: {r: 1, g: 1, b: 1, a: 1}
