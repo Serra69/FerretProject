@@ -40,7 +40,6 @@ public class TrainController : TrainPathsTypes {
 		m_train.LookAt(targetPos);
 
 		// StartCoroutine(Move(m_train, m_train.position, m_points[m_nextPoint].transform.position));
-		ChoseNextTarget();
 	}
 
 	void Update(){
@@ -68,20 +67,9 @@ public class TrainController : TrainPathsTypes {
 
 				PistonController m_pistonController = m_trainPoint.GetComponent<PistonController>();
 
-				switch(m_pistonController.m_pistonType){ 
-					case PistonTypes.Rotate:
-						m_pistonController.RotatePiston();
-						m_pistonController.TrainController = this;
-					break;
-					case PistonTypes.Move:
-						
-					break;
-					case PistonTypes.MoveAndRotate:
-						
-					break;
-				}
+				m_pistonController.DoYourJob();
+				m_pistonController.TrainController = this;
 
-				// StartCoroutine(WaitTimeOnAPoint(m_trainPoint.m_timeToWait));
 			break;
 			case PointTypes.Wait:
 				
@@ -97,14 +85,7 @@ public class TrainController : TrainPathsTypes {
 		m_trainPoint = m_points[m_nextPoint];
 		m_nextPoint ++;
 	}
-
-	IEnumerator WaitTimeOnAPoint(float timeToWait){
-		yield return new WaitForSeconds(timeToWait);
-		// print("on chsois la neext target");
-		transform.SetParent(m_myParent);
-		ChoseNextTarget();
-	}
-
+	
 	void OnDrawGizmosSelected(){
 		Gizmos.color = m_gizmosColor;
 
