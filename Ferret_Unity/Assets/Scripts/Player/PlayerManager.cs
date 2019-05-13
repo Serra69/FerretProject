@@ -5,6 +5,16 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : MonoBehaviour {
 
+	// Utiliser ça pour faire tout les changements de "transform.position"
+	/*Vector3 TransformPosition{
+		get{
+			return transform.position;
+		}
+		set{
+			transform.position = value;
+		}
+	}*/
+
 	public PlayerDebugs m_playerDebugs = new PlayerDebugs();
 	[System.Serializable] public class PlayerDebugs {
 		public bool m_playerCanDie = true;
@@ -211,17 +221,7 @@ public class PlayerManager : MonoBehaviour {
 #region Private Variables
 
 	Vector3 m_moveDirection = Vector3.zero;
-	public Vector3 MoveDirection
-    {
-        get
-        {
-            return m_moveDirection;
-        }
-        set
-        {
-            m_moveDirection = value;
-        }
-    }
+	Quaternion m_desiredRotation = Quaternion.identity;
 
 	Rigidbody m_rigidbody;
     public Rigidbody Rigidbody
@@ -394,15 +394,30 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		MoveDirection = Vector3.zero;
+		m_moveDirection = Vector3.zero;
 		m_sM.FixedUpdate();
 		DoMove();
+		DoRotate();
+		m_desiredRotation = transform.rotation;
 	}
 
 	void UpdateInputButtons(){
 		m_hAxis_Button = Input.GetAxis("Horizontal");
 		m_vAxis_Button = Input.GetAxis("Vertical");
-		m_runButton = Input.GetButton("Run");
+		// m_runButton = Input.GetButton("Run");
+
+		float f = Input.GetAxisRaw("Run");
+
+		print("f = " + f);
+
+		// m_runButton = f == 1 : true ? false;
+
+		if(f != 0){
+			m_runButton = true;	
+		}else{
+			m_runButton = false;
+		}
+
 		m_jumpButton = Input.GetButtonDown("Jump");
 		m_jumpHeldButton = Input.GetButton("Jump");
 		m_crawlButton = Input.GetButtonDown("Crawl");
@@ -529,43 +544,58 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	public void MovePlayer(float speed, float y = 0, float jumpSpeed = 0){
-		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
-		MoveDirection = transform.TransformDirection(MoveDirection);
-		MoveDirection.Normalize();
+		m_moveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
+		m_moveDirection = transform.TransformDirection(m_moveDirection);
+		m_moveDirection.Normalize();
 		m_moveDirection.x *= speed;
 		m_moveDirection.z *= speed;
 		m_moveDirection.y *= jumpSpeed;
 	}
 	public void MoveFirstPersonPlayer(float speed, float y = 0, float jumpSpeed = 0){
-		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
-		MoveDirection = m_firstPersonCamera.transform.TransformDirection(MoveDirection);
-		MoveDirection.Normalize();
+		m_moveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
+		m_moveDirection = m_firstPersonCamera.transform.TransformDirection(m_moveDirection);
+		m_moveDirection.Normalize();
 		m_moveDirection.x *= speed;
 		m_moveDirection.z *= speed;
 		m_moveDirection.y *= jumpSpeed;
 	}
 
-	Quaternion m_normal;
 	public void InclinePlayer(){
 		RaycastHit hit;
-		if(Physics.Raycast(transform.position, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_checkLayer)){
-			m_normal = Quaternion.Euler(Quaternion.Euler(hit.normal).x, m_ferretMesh.transform.rotation.y, m_ferretMesh.transform.rotation.z);
-			// m_ferretMesh.transform.rotation = m_normal;
-
-			// Debug.Log("Normal map = " + m_normal.eulerAngles);
+		Vector3 desiredOrigin = transform.position + (transform.up * 3);
+		if(Physics.Raycast(desiredOrigin, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_checkLayer)){
+			// m_normal = Quaternion.Euler(Quaternion.Euler(hit.normal).x, m_ferretMesh.transform.rotation.y, m_ferretMesh.transform.rotation.z);
+			
+			Debug.Log("Normal map = " + hit.normal);
+			
+			// transform.rotation = Quaternion.Euler(hit.normal);
+			m_desiredRotation = Quaternion.FromToRotation(transform.up, hit.normal) * m_rigidbody.rotation;
+			Debug.Log("m_desiredRotation  = " + m_desiredRotation.eulerAngles );
+			Debug.DrawLine(desiredOrigin, transform.position + (m_desiredRotation * hit.normal) * 10, Color.magenta, 10f);
+			// float angle = Vector3.Angle(hit.normal, Vector3.up);
+			// transform.rotation = Quaternion.Euler(angle, transform.rotation.y, transform.rotation.z);
+		}
+		else
+		{
+			Debug.LogError("Raycast doesnt work");
 		}
 	}
 
 	public void DoMove(){
-		if(MoveDirection != Vector3.zero){
-			m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
+		if(m_moveDirection != Vector3.zero){
+			m_rigidbody.MovePosition(transform.position + m_moveDirection * Time.fixedDeltaTime);
 		}
+	}
+	
+	private void DoRotate()
+	{
+		m_rigidbody.rotation = m_desiredRotation;
 	}
 
 	public void ClimbMove(float speed){
-		MoveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button);		// Monter/descendre + déplacements latéraux
-		MoveDirection = transform.TransformDirection(MoveDirection);
-		MoveDirection.Normalize();
+		m_moveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button);		// Monter/descendre + déplacements latéraux
+		m_moveDirection = transform.TransformDirection(m_moveDirection);
+		m_moveDirection.Normalize();
 
 		// X
 		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight){
@@ -603,9 +633,9 @@ public class PlayerManager : MonoBehaviour {
 		Vector3 worldDirection = new Vector3(0, 0, m_vAxis_Button);
 		worldDirection.Normalize();
 
-		MoveDirection = new Vector3(0, 0, m_vAxis_Button);
-		MoveDirection = transform.TransformDirection(MoveDirection);
-		MoveDirection.Normalize();
+		m_moveDirection = new Vector3(0, 0, m_vAxis_Button);
+		m_moveDirection = transform.TransformDirection(m_moveDirection);
+		m_moveDirection.Normalize();
 
 		// m_moveDirection.x *= speed;
 		// m_moveDirection.y *= speed;
@@ -681,7 +711,7 @@ public class PlayerManager : MonoBehaviour {
 		float actualTurnSpeed = CheckCollider(false) ? groundedTurnSpeed : Vector3.Angle(m_ferretMesh.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
 		m_TargetRotation = Quaternion.RotateTowards(m_ferretMesh.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
 
-		transform.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
+		transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, m_rotations.m_pivot.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
 		m_ferretMesh.transform.rotation = m_TargetRotation;
 	}
 
@@ -1004,3 +1034,4 @@ public class PlayerManager : MonoBehaviour {
 // public GameObject m_rightHit;
 // public GameObject m_leftHit;
 }
+

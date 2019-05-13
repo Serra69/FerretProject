@@ -4,9 +4,9 @@ using UnityEngine.AI;
 
 public class PathMove : MonoBehaviour {
 
-	[SerializeField] private Color m_pathColor = Color.yellow;
-	[SerializeField] private float m_timeToWaitOnAWaitPath = 2;
-	[SerializeField] private Transform[] m_pathList;
+	[SerializeField] Color m_pathColor = Color.yellow;
+	[SerializeField] float m_timeToWaitOnAWaitPath = 2;
+	[SerializeField] Transform[] m_pathList;
 
 	RobotPusher m_robotPusher;
 	RobotDoctor m_robotDoctor;

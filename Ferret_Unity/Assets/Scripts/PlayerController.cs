@@ -161,35 +161,6 @@ public class PlayerController : MonoBehaviour {
 		m_rbody.MovePosition(transform.position + m_moveDirection * Time.deltaTime); //c'est bien ça !
 	}
 
-	/*void MovePlayer(){
-		//float yStore = m_moveDirection.y;
-		m_moveDirection = (transform.forward * m_vAxis_Button) + (transform.right * m_hAxis_Button);
-		m_moveDirection = m_moveDirection.normalized * m_currentMoveSpeed;
-		//m_moveDirection.y = yStore;
-
-		/*if(m_isGrounded){
-			if(m_jumpButton){
-				//Debug.Log("Jump");
-				StartCoroutine(UngroundDelay());
-				m_ySpeed = m_jumpForce;
-			}else{
-				m_ySpeed = 0;
-			}
-		}
-
-		m_ySpeed -= m_gravity * Time.deltaTime;*
-
-		if(m_jumpButton){
-			m_rbody.velocity = Vector3.up * m_jumpForce;
-		}
-
-		//m_moveDirection.y = m_moveDirection.y + (Physics.gravity.y * m_gravity * Time.deltaTime);
-
-		//m_moveDirection.y = m_ySpeed;
-
-		m_rbody.velocity = m_moveDirection * Time.deltaTime;
-	}*/
-
 	void RotatePlayer(){
 		// Rotate the player in different directions based on camera look direction
 		if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0){
