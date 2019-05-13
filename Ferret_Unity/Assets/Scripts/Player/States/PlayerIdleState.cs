@@ -39,9 +39,6 @@ public class PlayerIdleState : IState
           m_playerManager.ChangeState(5);
         }
       }
-      if(Input.GetKeyDown(KeyCode.A)){
-        SwitchCamera.Instance.SwitchCameraType();
-      }
 
       if(m_playerManager.m_jumpButton){
         m_playerManager.ChangeState(3);
@@ -51,8 +48,8 @@ public class PlayerIdleState : IState
         m_playerManager.ChangeState(4);
       }
       
-      if(!SwitchCamera.Instance.ThirdPersonMode){
-        FirstPersonCamera.Instance.RotateCamera();
+      if(!m_playerManager.SwitchCamera.ThirdPersonMode && !m_playerManager.SwitchCamera.CameraIsSwitching){
+        m_playerManager.FirstPersonCamera.RotateCamera();
       }
 
       if(m_playerManager.m_pushButton){

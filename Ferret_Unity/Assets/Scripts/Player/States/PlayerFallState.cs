@@ -42,13 +42,17 @@ public class PlayerFallState : IState
   }
 
   void Move(){
-    m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed);
 
-    if(SwitchCamera.Instance.ThirdPersonMode){
+    if(m_playerManager.SwitchCamera.ThirdPersonMode){
+      m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed);
       m_playerManager.RotatePlayer();
     }else{
-      FirstPersonCamera.Instance.RotateCamera();
+      m_playerManager.MoveFirstPersonPlayer(m_playerManager.LastStateMoveSpeed);
+      if(!m_playerManager.SwitchCamera.CameraIsSwitching){
+        m_playerManager.FirstPersonCamera.RotateCamera();
+      }
     }
+
   }
 
 }

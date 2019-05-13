@@ -9,16 +9,17 @@ public class Shoot : MonoBehaviour {
 	[SerializeField] Transform m_projectileSpawnPoint;
 
 	FieldOfView m_fov;
-
 	bool m_canShoot = true;
+	PlayerManager m_playerManager;
 
 	void Start(){
 		m_fov = GetComponent<FieldOfView>();
+		m_playerManager = PlayerManager.Instance;
 	}
 
 	void Update(){
 		if(m_fov.m_playerTarget != null){
-			if(m_canShoot){
+			if(m_canShoot && !m_playerManager.PlayerIsDead){
 				Fire();
 			}
 		}

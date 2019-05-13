@@ -5,6 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : MonoBehaviour {
 
+	public PlayerDebugs m_playerDebugs = new PlayerDebugs();
+	[System.Serializable] public class PlayerDebugs {
+		public bool m_playerCanDie = true;
+	}
+
 	public static PlayerManager Instance;
 
 #region Public [System.Serializable] Variables
@@ -225,6 +230,10 @@ public class PlayerManager : MonoBehaviour {
         {
             return m_rigidbody;
         }
+		set
+        {
+            m_rigidbody = value;
+        }
     }
 
 	float m_lastStateMoveSpeed = 0;
@@ -298,6 +307,37 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
+    bool m_playerIsDead = false;
+    public bool PlayerIsDead
+    {
+        get
+        {
+            return m_playerIsDead;
+        }
+		set
+        {
+            m_playerIsDead = value;
+        }
+    }
+
+    SwitchCamera m_switchCamera;
+    public SwitchCamera SwitchCamera
+    {
+        get
+        {
+            return m_switchCamera;
+        }
+    }
+
+	FirstPersonCamera m_firstPersonCamera;
+    public FirstPersonCamera FirstPersonCamera
+    {
+        get
+        {
+            return m_firstPersonCamera;
+        }
+    }
+
     // ----------------------------
     // ----- FOR THE ROTATION -----
     const float k_InverseOneEighty = 1f / 180f;
@@ -327,10 +367,15 @@ public class PlayerManager : MonoBehaviour {
 			new PlayerCrawlState(this), 	// 5 = Crawl
 			new PlayerClimbState(this), 	// 6 = Climb
 			new PlayerPushState(this),		// 7 = Push
+			new PlayerDeathState(this),		// 8 = Death
 		});
 
 		m_rigidbody = GetComponent<Rigidbody>();
 		m_animator = GetComponentInChildren<Animator>();
+	}
+	void Start(){
+		m_switchCamera = SwitchCamera.Instance;
+		m_firstPersonCamera = FirstPersonCamera.Instance;
 	}
 	void OnEnable(){
 		ChangeState(0);
@@ -341,6 +386,10 @@ public class PlayerManager : MonoBehaviour {
 		UpdateInputButtons();
 		if(m_takeButton){
 			GrappedObject();
+		}
+
+		if(Input.GetKeyDown(KeyCode.A)){
+			m_switchCamera.SwitchCameraType();
 		}
 	}
 
@@ -482,6 +531,14 @@ public class PlayerManager : MonoBehaviour {
 	public void MovePlayer(float speed, float y = 0, float jumpSpeed = 0){
 		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
 		MoveDirection = transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
+		m_moveDirection.x *= speed;
+		m_moveDirection.z *= speed;
+		m_moveDirection.y *= jumpSpeed;
+	}
+	public void MoveFirstPersonPlayer(float speed, float y = 0, float jumpSpeed = 0){
+		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
+		MoveDirection = m_firstPersonCamera.transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
 		m_moveDirection.x *= speed;
 		m_moveDirection.z *= speed;
@@ -738,7 +795,7 @@ public class PlayerManager : MonoBehaviour {
 
 			yield return null;
 		}
-		Debug.Log("Je m'exit");
+		// Debug.Log("Je m'exit");
 	}
 	IEnumerator TimeToExitAction(){
 		yield return new WaitForSeconds(.5f);
@@ -934,6 +991,13 @@ public class PlayerManager : MonoBehaviour {
 		m_endOfOrientationAfterClimb = true;
 		yield return new WaitForSeconds(0.5f);
 		m_endOfOrientationAfterClimb = false;
+	}
+
+	public void On_PlayerDie(){
+		if(!m_playerDebugs.m_playerCanDie){
+			return;
+		}
+		ChangeState(8);
 	}
 
 #endregion Public functions

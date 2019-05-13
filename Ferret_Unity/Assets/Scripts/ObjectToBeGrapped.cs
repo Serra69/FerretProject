@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ObjectToBeGrapped : MonoBehaviour {
 
+	[Header("At the start")]
+	[SerializeField] bool m_objectIsUsable = true;
+
 	[Header("Range")]
 	[SerializeField] float m_takingRange = 1;
 
@@ -18,12 +21,28 @@ public class ObjectToBeGrapped : MonoBehaviour {
 	Transform m_posToFollow;
 	bool m_followPlayer = false;
 
-	void Start(){
+	bool m_canBeGrapped = true;
+    public bool CanBeGrapped
+    {
+        get
+        {
+            return m_canBeGrapped;
+        }
+
+        set
+        {
+            m_canBeGrapped = value;
+        }
+    }
+
+    void Start(){
 		m_playerManager = PlayerManager.Instance;
 		m_posToFollow = m_playerManager.m_states.m_takeObject.m_objectPosition;
 
 		m_collider = GetComponent<Collider>();
 		m_rbody = GetComponent<Rigidbody>();
+
+		m_rbody.isKinematic = m_objectIsUsable ? false : true;
 	}
 
 	public void On_ObjectIsTake(bool objectIsTake){
@@ -33,8 +52,11 @@ public class ObjectToBeGrapped : MonoBehaviour {
 	}
 
 	void Update(){
-		if(!m_followPlayer){
+		if(!m_followPlayer && m_canBeGrapped && m_objectIsUsable){
 			CheckPlayerPosition();
+		}
+		if(!m_canBeGrapped){
+			m_playerManager.SetClosedObjectToBeGrapped(false, this);
 		}
 	}
 
@@ -75,6 +97,19 @@ public class ObjectToBeGrapped : MonoBehaviour {
 		if(m_showGizmos){
 			Gizmos.color = m_color;
 			Gizmos.DrawWireSphere(transform.position, m_takingRange);
+		}
+	}
+
+	public void SetIfObjectIsUsable(bool b){
+		m_objectIsUsable = b;
+		m_rbody.isKinematic = !b;
+	}
+
+	public void SetAnUnusableobject(bool b){
+		if(b){
+			m_rbody.isKinematic = true;
+		}else{
+			m_rbody.isKinematic = false;
 		}
 	}
 

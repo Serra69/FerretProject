@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Path
   - ClimbArea
+  - NoCameraCollision
   layers:
   - Default
   - TransparentFX
@@ -20,8 +21,8 @@ TagManager:
   - Environment
   - ClimbArea
   - PushableObject
-  - 
-  - 
+  - Projectile
+  - ObjectToBeGrapped
   - 
   - 
   - 

@@ -5,30 +5,34 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class CrawlTrigger : MonoBehaviour {
 
+	SwitchCamera m_switchCamera;
+
 	BoxCollider m_boxCollider;
     BoxCollider BoxCollider{
-        get{
+        get
+		{
             return GetComponent<BoxCollider>();
-        }
-		set{
-            m_boxCollider = value;
         }
     }
 	
+	void Start(){
+		m_switchCamera = SwitchCamera.Instance;
+	}
+
 	void OnTriggerEnter(Collider col){
 		if(col.CompareTag("Player")){
-			SwitchCamera.Instance.SwitchCameraType();
+			m_switchCamera.SwitchCameraType();
 		}
 	}
-	void OnTriggerExit(Collider col){
+	/*void OnTriggerExit(Collider col){
 		if(col.CompareTag("Player")){
-			SwitchCamera.Instance.SwitchCameraType();
+			m_switchCamera.SwitchCameraType();
 		}
-	}
+	}*/
 
 	void OnDrawGizmos(){
 		Gizmos.color = Color.magenta;
-		Gizmos.DrawWireCube(transform.position + BoxCollider.center, BoxCollider.size);
+		Gizmos.DrawCube(transform.position + BoxCollider.center, BoxCollider.size);
 	}
 
 }
