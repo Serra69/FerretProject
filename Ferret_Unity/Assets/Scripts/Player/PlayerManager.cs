@@ -221,6 +221,17 @@ public class PlayerManager : MonoBehaviour {
 #region Private Variables
 
 	Vector3 m_moveDirection = Vector3.zero;
+	public Vector3 MoveDirection
+    {
+        get
+        {
+            return m_moveDirection;
+        }
+        set
+        {
+            m_moveDirection = value;
+        }
+    }
 	Quaternion m_desiredRotation = Quaternion.identity;
 
 	Rigidbody m_rigidbody;
@@ -394,7 +405,7 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		m_moveDirection = Vector3.zero;
+		MoveDirection = Vector3.zero;
 		m_sM.FixedUpdate();
 		DoMove();
 		// DoRotate();
@@ -543,17 +554,17 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	public void MovePlayer(float speed, float y = 0, float jumpSpeed = 0){
-		m_moveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
-		m_moveDirection = transform.TransformDirection(m_moveDirection);
-		m_moveDirection.Normalize();
+		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
+		MoveDirection = transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
 		m_moveDirection.x *= speed;
 		m_moveDirection.z *= speed;
 		m_moveDirection.y *= jumpSpeed;
 	}
 	public void MoveFirstPersonPlayer(float speed, float y = 0, float jumpSpeed = 0){
-		m_moveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
-		m_moveDirection = m_firstPersonCamera.transform.TransformDirection(m_moveDirection);
-		m_moveDirection.Normalize();
+		MoveDirection = new Vector3(m_hAxis_Button, y, m_vAxis_Button);
+		MoveDirection = m_firstPersonCamera.transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
 		m_moveDirection.x *= speed;
 		m_moveDirection.z *= speed;
 		m_moveDirection.y *= jumpSpeed;
@@ -589,8 +600,9 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	public void DoMove(){
-		if(m_moveDirection != Vector3.zero){
-			m_rigidbody.MovePosition(transform.position + m_moveDirection * Time.fixedDeltaTime);
+		if(MoveDirection != Vector3.zero){
+			m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
+			// m_rigidbody.velocity = transform.position + MoveDirection * Time.fixedDeltaTime;
 		}
 	}
 	
@@ -600,9 +612,9 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	public void ClimbMove(float speed){
-		m_moveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button);		// Monter/descendre + déplacements latéraux
-		m_moveDirection = transform.TransformDirection(m_moveDirection);
-		m_moveDirection.Normalize();
+		MoveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button);		// Monter/descendre + déplacements latéraux
+		MoveDirection = transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
 
 		// X
 		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight){
@@ -640,9 +652,9 @@ public class PlayerManager : MonoBehaviour {
 		Vector3 worldDirection = new Vector3(0, 0, m_vAxis_Button);
 		worldDirection.Normalize();
 
-		m_moveDirection = new Vector3(0, 0, m_vAxis_Button);
-		m_moveDirection = transform.TransformDirection(m_moveDirection);
-		m_moveDirection.Normalize();
+		MoveDirection = new Vector3(0, 0, m_vAxis_Button);
+		MoveDirection = transform.TransformDirection(MoveDirection);
+		MoveDirection.Normalize();
 
 		// m_moveDirection.x *= speed;
 		// m_moveDirection.y *= speed;

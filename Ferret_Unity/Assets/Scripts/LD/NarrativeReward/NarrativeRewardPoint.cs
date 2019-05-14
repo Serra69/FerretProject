@@ -23,13 +23,15 @@ public class NarrativeRewardPoint : MonoBehaviour {
     }
 
 	NarrativeRewardManager m_narrativeRewardManager;
+	bool m_pointIsUsed = false;
 
 	void Start(){
 		m_narrativeRewardManager = NarrativeRewardManager.Instance;
 	}
 
 	void OnTriggerEnter(Collider col){
-		if(col.CompareTag("Player")){
+		if(col.CompareTag("Player") && !m_pointIsUsed){
+			m_pointIsUsed = true;
 			m_narrativeRewardManager.On_NarrativeRewardIsDiscovered(m_rewardNumber);
 		}
 	}

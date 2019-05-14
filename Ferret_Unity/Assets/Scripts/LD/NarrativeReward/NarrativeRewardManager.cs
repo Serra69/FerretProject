@@ -16,8 +16,21 @@ public class NarrativeRewardManager : MonoBehaviour {
 	}
 #endregion //Singleton
 
-	[SerializeField] private float m_timeToShowReward = 5.0f;
-	[SerializeField] private Animator m_rewardAnimator;
+	[Header("Animations")]
+	public Animations m_animations = new Animations();
+	[System.Serializable] public class Animations {
+		public float m_timeToShowReward = 5.0f;
+		[Space]
+		public float m_moveSpeed = 5.0f;
+		public AnimationCurve m_movementCurve;
+		[Space]
+		public Transform m_objectToAnimate;
+
+		[Header("Positions")]
+		public Vector3 m_startPos;
+		public Vector3 m_endPos;
+	}
+
 
 	[Header("Rewards")]
 	public NarrativeRewards m_narrativeRewards = new NarrativeRewards();
@@ -44,11 +57,6 @@ public class NarrativeRewardManager : MonoBehaviour {
 		m_narrativeUI.m_narrativeRewardCanvas.SetActive(false);
 	}
 
-	void Update(){
-		if(Input.GetButton("Fire2")){
-			On_NarrativeRewardIsDiscovered(0);
-		}
-	}
 	public void On_NarrativeRewardIsDiscovered(int rewardNumber){
 		ChangeNarrativeRewardImages(m_narrativeRewards.m_rewards[rewardNumber].m_name, m_narrativeRewards.m_rewards[rewardNumber].m_image, m_narrativeRewards.m_rewards[rewardNumber].m_descriptionText);
 		StartCoroutine(ShowReward());
@@ -61,10 +69,22 @@ public class NarrativeRewardManager : MonoBehaviour {
 	}
 
 	IEnumerator ShowReward(){
+		m_animations.m_objectToAnimate.localPosition = m_animations.m_startPos;
 		m_narrativeUI.m_narrativeRewardCanvas.SetActive(true);
-		yield return new WaitForSeconds(m_timeToShowReward);
-		m_rewardAnimator.SetTrigger("TakeReward");
-		yield return new WaitForSeconds(2);
+		yield return new WaitForSeconds(m_animations.m_timeToShowReward);
+		StartCoroutine(MoveRewardUI());
+	}
+
+	IEnumerator MoveRewardUI(){
+		float moveJourneyLength;
+		float moveFracJourney = new float();
+		while(m_animations.m_objectToAnimate.localPosition != m_animations.m_endPos){
+			moveJourneyLength = Vector3.Distance(m_animations.m_objectToAnimate.localPosition, m_animations.m_endPos);
+			moveFracJourney += (Time.deltaTime) * m_animations.m_moveSpeed / moveJourneyLength;
+			
+			m_animations.m_objectToAnimate.localPosition = Vector3.Lerp(m_animations.m_objectToAnimate.localPosition, m_animations.m_endPos, m_animations.m_movementCurve.Evaluate(moveFracJourney));
+			yield return null;
+		}
 		m_narrativeUI.m_narrativeRewardCanvas.SetActive(false);
 	}
 

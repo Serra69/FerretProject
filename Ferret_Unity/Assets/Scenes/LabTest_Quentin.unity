@@ -2217,7 +2217,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4649011635109966, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0.000000017291992
+      value: 0.000000017291995
       objectReference: {fileID: 0}
     - target: {fileID: 4649011635109966, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
       propertyPath: m_LocalRotation.z
@@ -2287,7 +2287,7 @@ Prefab:
         type: 2}
       propertyPath: transformProut
       value: 
-      objectReference: {fileID: 1484310971}
+      objectReference: {fileID: 0}
     - target: {fileID: 4726755844706952, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
       propertyPath: m_RootOrder
       value: 2
@@ -2295,6 +2295,11 @@ Prefab:
     - target: {fileID: 4167524301695216, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_checkLayer.m_Bits
+      value: 7168
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
@@ -5241,9 +5246,66 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 909762515}
+  - {fileID: 627214012}
   m_Father: {fileID: 1790688480}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &627214011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 627214012}
+  - component: {fileID: 627214014}
+  - component: {fileID: 627214013}
+  m_Layer: 0
+  m_Name: NarrativeRewardPoint (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &627214012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 627214011}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 17.065, y: 0.32990402, z: 13.79}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 579387857}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &627214013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 627214011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 010ee66ec385e9b41a6da5d538219564, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_rewardNumber: 1
+  m_manageGizmos:
+    m_color: {r: 0, g: 0, b: 1, a: 1}
+--- !u!65 &627214014
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 627214011}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 0.5, z: 2}
+  m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!1001 &678501565
 Prefab:
   m_ObjectHideFlags: 0
@@ -7362,7 +7424,7 @@ GameObject:
   - component: {fileID: 909762514}
   - component: {fileID: 909762513}
   m_Layer: 0
-  m_Name: NarrativeRewardPoint
+  m_Name: NarrativeRewardPoint (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7418,7 +7480,6 @@ GameObject:
   - component: {fileID: 935898330}
   - component: {fileID: 935898329}
   - component: {fileID: 935898328}
-  - component: {fileID: 935898327}
   m_Layer: 0
   m_Name: Parent
   m_TagString: Untagged
@@ -7426,25 +7487,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &935898327
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 95825610313935348, guid: fb458f5aefd4e374084dba8dd1663fe4,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 935898326}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 60acac1e6245eff4c88839316f25fb11, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &935898328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7498,9 +7540,9 @@ RectTransform:
   m_Father: {fileID: 764241585}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -250, y: 100}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 710, y: -440}
   m_SizeDelta: {x: 400, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &937379186
@@ -15096,8 +15138,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa07e516676e5a442b7c08908bf8f7c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_timeToShowReward: 5
-  m_rewardAnimator: {fileID: 935898327}
+  m_animations:
+    m_timeToShowReward: 5
+    m_moveSpeed: 10
+    m_movementCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_objectToAnimate: {fileID: 935898330}
+    m_startPos: {x: 710, y: -440, z: 0}
+    m_endPos: {x: 710, y: -640, z: 0}
   m_narrativeRewards:
     m_rewards:
     - m_name: "Exercice n\xB01"
@@ -15107,7 +15177,7 @@ MonoBehaviour:
       m_image: {fileID: 0}
       m_descriptionText: "L\xE0 c'est un exercice !"
   m_narrativeUI:
-    m_narrativeRewardCanvas: {fileID: 764241584}
+    m_narrativeRewardCanvas: {fileID: 935898326}
     m_titleTextReward: {fileID: 1051789638}
     m_imageReward: {fileID: 1290641941}
     m_descriptionTextReward: {fileID: 937379188}
