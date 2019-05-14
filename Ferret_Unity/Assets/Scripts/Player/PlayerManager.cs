@@ -718,8 +718,7 @@ public class PlayerManager : MonoBehaviour {
 		float actualTurnSpeed = CheckCollider(false) ? groundedTurnSpeed : Vector3.Angle(m_ferretMesh.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
 		m_TargetRotation = Quaternion.RotateTowards(m_ferretMesh.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
 
-
-		transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, m_rotations.m_pivot.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+		transform.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
 		m_ferretMesh.transform.rotation = m_TargetRotation;
 	}
 
