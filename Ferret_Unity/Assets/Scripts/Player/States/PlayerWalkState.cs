@@ -58,6 +58,7 @@ public class PlayerWalkState : IState
     void Move(){
       if(m_playerManager.SwitchCamera.ThirdPersonMode){
         m_playerManager.MovePlayer(m_playerManager.m_states.m_walk.m_speed);
+        // m_playerManager.RotatePlayerWithSlope();
         m_playerManager.RotatePlayer();
       }else{
         m_playerManager.MoveFirstPersonPlayer(m_playerManager.m_states.m_walk.m_speed);
@@ -65,7 +66,6 @@ public class PlayerWalkState : IState
           m_playerManager.FirstPersonCamera.RotateCamera();
         }
       }
-      m_playerManager.InclinePlayer();
     }
 
 }

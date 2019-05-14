@@ -2171,8 +2171,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: 0.011257674, y: 0.000000017191285, z: -0.0000000019281956,
-    w: 0.9999367}
+  m_LocalRotation: {x: 0.011257669, y: -0.000000017219332, z: -0.0000000015407885,
+    w: 0.99993664}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2269,8 +2269,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: 0.064592496, y: -0.000000003978261, z: -0.0000000045787014,
-    w: 0.9979118}
+  m_LocalRotation: {x: 0.064592496, y: 0.000000004606965, z: -0.000000005134401, w: 0.99791175}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2297,7 +2296,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1764841934354098}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2373,7 +2372,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701019898918854}
-  m_LocalRotation: {x: 0.038623, y: 9.903566e-11, z: -0.000000002562226, w: 0.9992539}
+  m_LocalRotation: {x: 0.038623, y: -0.0000000036234775, z: -0.0000000024183122, w: 0.99925387}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2578,7 +2577,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1681364742312364}
-  m_LocalRotation: {x: 0.038623024, y: 0.0000000037225112, z: -1.4388199e-10, w: 0.99925387}
+  m_LocalRotation: {x: 0.038623013, y: -0.0000000037225112, z: 1.4388195e-10, w: 0.99925387}
   m_LocalPosition: {x: 0, y: 2.8, z: -3.2499914}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

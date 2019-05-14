@@ -6,6 +6,7 @@ public class PistonController : TrainPathsTypes {
 
 	[Header("Type of piston")]
 	public PistonTypes m_pistonType = PistonTypes.MoveAndRotate;
+	public bool m_rotateBeforeMove = true;
 
 	[Header("Rotate")]
 	public Rotate m_rotate = new Rotate();
@@ -51,8 +52,11 @@ public class PistonController : TrainPathsTypes {
 				StartCoroutine(MoveCorout());
 			break;
 			case PistonTypes.MoveAndRotate:
-				StartCoroutine(RotateCorout());
-				StartCoroutine(MoveCorout());
+				if(m_rotateBeforeMove){
+					StartCoroutine(RotateCorout());
+				}else{
+					StartCoroutine(MoveAndRotateCorout());
+				}
 			break;
 		}
 	}
@@ -70,14 +74,19 @@ public class PistonController : TrainPathsTypes {
 			yield return null;
 		}
 
-		if(m_pistonType != PistonTypes.MoveAndRotate){
-			m_trainController.ChoseNextTarget();
-		}else{
-			m_rotateIsFinished = true;
-			CheckPositionAndRotation();
+		switch(m_pistonType){ 
+			case PistonTypes.Rotate:
+				m_trainController.ChoseNextTarget();
+				m_trainController.ResetTrainParent();
+			break;
+			case PistonTypes.MoveAndRotate:
+				if(m_rotateBeforeMove){
+					StartCoroutine(MoveCorout());
+				}
+			break;
 		}
+		
 	}
-
 	IEnumerator MoveCorout(){
 		float moveJourneyLength;
 		float moveFracJourney = new float();
@@ -87,13 +96,29 @@ public class PistonController : TrainPathsTypes {
 			m_move.m_transforme.localPosition = Vector3.Lerp(m_move.m_transforme.localPosition, m_move.m_toLocalePosition, m_move.m_curve.Evaluate(moveFracJourney));
 			yield return null;
 		}
+		m_trainController.ChoseNextTarget();
+	}
 
-		if(m_pistonType != PistonTypes.MoveAndRotate){
-			m_trainController.ChoseNextTarget();
-		}else{
-			m_moveIsFinished = true;
-			CheckPositionAndRotation();
+	IEnumerator MoveAndRotateCorout(){
+		float moveJourneyLength;
+		float moveFracJourney = new float();
+		float rotateFracJourney = new float();
+
+		while(m_move.m_transforme.localPosition != m_move.m_toLocalePosition){
+			// Move
+			moveJourneyLength = Vector3.Distance(m_move.m_transforme.localPosition, m_move.m_toLocalePosition);
+			moveFracJourney += (Time.deltaTime) * m_move.m_speed / moveJourneyLength;
+			m_move.m_transforme.localPosition = Vector3.Lerp(m_move.m_transforme.localPosition, m_move.m_toLocalePosition, m_move.m_curve.Evaluate(moveFracJourney));
+
+			// Rotate
+			rotateFracJourney += (Time.deltaTime) * m_rotate.m_speed / moveJourneyLength;
+			Quaternion toRotation = Quaternion.Euler(m_rotate.m_toRotation);
+			m_rotate.m_transforme.rotation = Quaternion.Lerp(m_rotate.m_transforme.rotation, toRotation, m_rotate.m_curve.Evaluate(rotateFracJourney));
+
+			yield return null;
 		}
+		m_trainController.ChoseNextTarget();
+		m_trainController.ResetTrainParent();
 	}
 
 	void CheckPositionAndRotation(){

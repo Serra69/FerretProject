@@ -14,7 +14,7 @@ public class PlayerManager : MonoBehaviour {
 			transform.position = value;
 		}
 	}*/
-
+ [SerializeField]Transform transformProut;
 	public PlayerDebugs m_playerDebugs = new PlayerDebugs();
 	[System.Serializable] public class PlayerDebugs {
 		public bool m_playerCanDie = true;
@@ -397,8 +397,7 @@ public class PlayerManager : MonoBehaviour {
 		m_moveDirection = Vector3.zero;
 		m_sM.FixedUpdate();
 		DoMove();
-		DoRotate();
-		m_desiredRotation = transform.rotation;
+		// DoRotate();
 	}
 
 	void UpdateInputButtons(){
@@ -560,18 +559,26 @@ public class PlayerManager : MonoBehaviour {
 		m_moveDirection.y *= jumpSpeed;
 	}
 
-	public void InclinePlayer(){
+	public void RotatePlayerWithSlope(){
+		Vector3 moveInput = new Vector2(m_hAxis_Button, m_vAxis_Button).normalized;
+		moveInput.z = moveInput.y;
+		moveInput.y =0;
+
+		Vector3 moveDirection = m_rotations.m_pivot.TransformDirection(moveInput);
+		Quaternion rotation = Quaternion.LookRotation(moveDirection, transform.up);
+		rotation.eulerAngles = new Vector3(0, rotation.eulerAngles.y, rotation.eulerAngles.z);
+		transformProut.rotation = rotation;
+
 		RaycastHit hit;
 		Vector3 desiredOrigin = transform.position + (transform.up * 3);
 		if(Physics.Raycast(desiredOrigin, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_checkLayer)){
 			// m_normal = Quaternion.Euler(Quaternion.Euler(hit.normal).x, m_ferretMesh.transform.rotation.y, m_ferretMesh.transform.rotation.z);
 			
 			Debug.Log("Normal map = " + hit.normal);
-			
 			// transform.rotation = Quaternion.Euler(hit.normal);
-			m_desiredRotation = Quaternion.FromToRotation(transform.up, hit.normal) * m_rigidbody.rotation;
-			Debug.Log("m_desiredRotation  = " + m_desiredRotation.eulerAngles );
-			Debug.DrawLine(desiredOrigin, transform.position + (m_desiredRotation * hit.normal) * 10, Color.magenta, 10f);
+			// m_desiredRotation *= Quaternion.FromToRotation(transform.up, hit.normal) * m_rigidbody.rotation;
+			// Debug.Log("m_desiredRotation  = " + m_desiredRotation.eulerAngles );
+			// Debug.DrawLine(desiredOrigin, transform.position + (m_desiredRotation * hit.normal) * 10, Color.magenta, 10f);
 			// float angle = Vector3.Angle(hit.normal, Vector3.up);
 			// transform.rotation = Quaternion.Euler(angle, transform.rotation.y, transform.rotation.z);
 		}
@@ -589,7 +596,7 @@ public class PlayerManager : MonoBehaviour {
 	
 	private void DoRotate()
 	{
-		m_rigidbody.rotation = m_desiredRotation;
+		// m_rigidbody.rotation = m_desiredRotation;
 	}
 
 	public void ClimbMove(float speed){
@@ -710,6 +717,7 @@ public class PlayerManager : MonoBehaviour {
 		float groundedTurnSpeed = Mathf.Lerp(m_rotations.maxTurnSpeed, m_rotations.minTurnSpeed, m_states.m_walk.m_speed/* / m_DesiredForwardSpeed*/);
 		float actualTurnSpeed = CheckCollider(false) ? groundedTurnSpeed : Vector3.Angle(m_ferretMesh.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
 		m_TargetRotation = Quaternion.RotateTowards(m_ferretMesh.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
+
 
 		transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, m_rotations.m_pivot.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
 		m_ferretMesh.transform.rotation = m_TargetRotation;
@@ -919,10 +927,6 @@ public class PlayerManager : MonoBehaviour {
 		}else{
 			m_mesh.SetActive(true);
 		}
-	}
-
-	public void WhenCameraGoToFirstPlayerMode(){
-		transform.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
 	}
 
 	public void SetClosedObjectToBeGrapped(bool isClosedObject, ObjectToBeGrapped obj){

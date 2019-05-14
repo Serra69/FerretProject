@@ -85,6 +85,10 @@ public class TrainController : TrainPathsTypes {
 		m_trainPoint = m_points[m_nextPoint];
 		m_nextPoint ++;
 	}
+
+	public void ResetTrainParent(){
+		transform.SetParent(m_myParent.transform);
+	}
 	
 	void OnDrawGizmosSelected(){
 		Gizmos.color = m_gizmosColor;
