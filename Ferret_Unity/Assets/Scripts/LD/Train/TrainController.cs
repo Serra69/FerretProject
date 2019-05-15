@@ -63,9 +63,9 @@ public class TrainController : TrainPathsTypes {
 
 		switch(m_trainPoint.m_pointTypes){ 
 			case PointTypes.WaitSeconds:
-				transform.SetParent(m_trainPoint.transform);
-
 				PistonController m_pistonController = m_trainPoint.GetComponent<PistonController>();
+
+				transform.SetParent(m_pistonController.m_rotate.m_transforme);
 
 				m_pistonController.DoYourJob();
 				m_pistonController.TrainController = this;
