@@ -33,6 +33,16 @@ public class PushableObject : MonoBehaviour {
 
     }
 
+    int m_closedPosition;
+    public int ClosedPosition
+    {
+        get
+        {
+            return m_closedPosition;
+        }
+    }
+
+
     void Start(){
 		m_raycastReturn = new bool[m_raycastPositions.Length];
 		m_playerManager = PlayerManager.Instance;
@@ -77,6 +87,7 @@ public class PushableObject : MonoBehaviour {
 
 				if(distance < actualClosedDistance){
 					m_closedTransform = m_snapPositions[i];
+					m_closedPosition = i;
 				}
 
 			}else{

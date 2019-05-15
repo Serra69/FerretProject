@@ -37,7 +37,7 @@ public class NarrativeRewardManager : MonoBehaviour {
 	[System.Serializable] public class NarrativeRewards {
 		public Reward[] m_rewards;
 		[System.Serializable] public class Reward {
-			private bool m_isFound;
+			// private bool m_isFound;
 			public string m_name = "Title";
 			public Image m_image;
 			[TextArea(2,6)] public string m_descriptionText = "Description text of the narrative reward!";

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerManager : MonoBehaviour {
+public class PlayerManager : ClimbTypesArea {
 
 	// Utiliser ça pour faire tout les changements de "transform.position"
 	/*Vector3 TransformPosition{
@@ -14,7 +14,7 @@ public class PlayerManager : MonoBehaviour {
 			transform.position = value;
 		}
 	}*/
- [SerializeField]Transform transformProut;
+ 	[SerializeField]Transform transformProut;
 	public PlayerDebugs m_playerDebugs = new PlayerDebugs();
 	[System.Serializable] public class PlayerDebugs {
 		public bool m_playerCanDie = true;
@@ -357,6 +357,7 @@ public class PlayerManager : MonoBehaviour {
 	Quaternion m_TargetRotation;
 	// ----------------------------
 
+	ClimbArea m_climbArea;
 
 #endregion Private Variables
 
@@ -417,10 +418,6 @@ public class PlayerManager : MonoBehaviour {
 		// m_runButton = Input.GetButton("Run");
 
 		float f = Input.GetAxisRaw("Run");
-
-		print("f = " + f);
-
-		// m_runButton = f == 1 : true ? false;
 
 		if(f != 0){
 			m_runButton = true;	
@@ -616,27 +613,83 @@ public class PlayerManager : MonoBehaviour {
 		MoveDirection = transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
 
-		// X
+		Debug.Log("m_moveDirection = " + m_moveDirection);
+
+		
+		switch(m_climbArea.m_climbType){ 
+			case ClimbTypes.forward:
+				
+			break;
+			case ClimbTypes.right:
+				
+			break;
+			case ClimbTypes.backward:
+				
+			break;
+			case ClimbTypes.left:
+				
+			break;
+		}
+
 		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight){
-			if(m_moveDirection.x < 0){
-				m_moveDirection.x *= speed;
+			
+			if(m_climbArea.m_climbType == ClimbTypes.forward || m_climbArea.m_climbType == ClimbTypes.right){
+				if(m_moveDirection.x < 0){
+					m_moveDirection.x *= speed;
+				}else{
+					m_moveDirection.x = 0;
+				}
+
+				if(m_moveDirection.z < 0){
+					m_moveDirection.z = 0;
+				}else{
+					m_moveDirection.z *= speed;
+				}
 			}else{
-				m_moveDirection.x = 0;
+				if(m_moveDirection.x > 0){
+					m_moveDirection.x *= speed;
+				}else{
+					m_moveDirection.x = 0;
+				}
+
+				if(m_moveDirection.z > 0){
+					m_moveDirection.z = 0;
+				}else{
+					m_moveDirection.z *= speed;
+				}
 			}
 		}else if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopLeft || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotLeft){
-			if(m_moveDirection.x > 0){
-				m_moveDirection.x *= speed;
+
+			if(m_climbArea.m_climbType == ClimbTypes.backward || m_climbArea.m_climbType == ClimbTypes.left){
+				if(m_moveDirection.x < 0){
+					m_moveDirection.x *= speed;
+				}else{
+					m_moveDirection.x = 0;
+				}
+
+				if(m_moveDirection.z < 0){
+					m_moveDirection.z = 0;
+				}else{
+					m_moveDirection.z *= speed;
+				}
 			}else{
-				m_moveDirection.x = 0;
+				if(m_moveDirection.x > 0){
+					m_moveDirection.x *= speed;
+				}else{
+					m_moveDirection.x = 0;
+				}
+
+				if(m_moveDirection.z > 0){
+					m_moveDirection.z = 0;
+				}else{
+					m_moveDirection.z *= speed;
+				}
 			}
 		}else if((m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight) && (m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopLeft || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotLeft)){
 			m_moveDirection.x *= speed;
+			m_moveDirection.z *= speed;
 		}
 
-		// Y
-		m_moveDirection.z *= speed;
-
-		// Z
 		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot){
 			if(m_moveDirection.y > 0){
 				m_moveDirection.y *= speed;
@@ -656,31 +709,62 @@ public class PlayerManager : MonoBehaviour {
 		MoveDirection = transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
 
-		// m_moveDirection.x *= speed;
-		// m_moveDirection.y *= speed;
-
-		// Debug.Log("worldDirection = " + worldDirection);
+		// Debug.Log("m_moveDirection = " + m_moveDirection);
 
 		if(RaycastFromFerretAss()){
 			m_moveDirection.x *= speed;
 			m_moveDirection.z *= speed;
 		}else{
-			if(m_moveDirection.z > 0){
-				m_moveDirection.x *= speed;
-				m_moveDirection.z *= speed;
+
+			if(m_pushableObject.ClosedPosition == 2 || m_pushableObject.ClosedPosition == 3){
+				if(m_moveDirection.z > 0){
+					m_moveDirection.z *= speed;
+				}else{
+					m_moveDirection.z = 0;
+				}
+				if(m_moveDirection.x > 0){
+					m_moveDirection.x *= speed;
+				}else{
+					m_moveDirection.x = 0;
+				}
 			}else{
-				m_moveDirection.x = 0;
-				m_moveDirection.z = 0;
+				if(m_moveDirection.z < 0){
+					m_moveDirection.z *= speed;
+				}else{
+					m_moveDirection.z = 0;
+				}
+				if(m_moveDirection.x < 0){
+					m_moveDirection.x *= speed;
+				}else{
+					m_moveDirection.x = 0;
+				}
 			}
 		}
 
 		if(!PushableObject.CanMove){
-			if(m_moveDirection.z < 0){
-				m_moveDirection.x *= speed;
-				m_moveDirection.z *= speed;
+
+			if(m_pushableObject.ClosedPosition == 2 || m_pushableObject.ClosedPosition == 3){
+				if(m_moveDirection.z > 0){
+					m_moveDirection.z = 0;
+				}else{
+					m_moveDirection.z *= speed;
+				}
+				if(m_moveDirection.x > 0){
+					m_moveDirection.x = 0;
+				}else{
+					m_moveDirection.x *= speed;
+				}
 			}else{
-				m_moveDirection.x = 0;
-				m_moveDirection.z = 0;
+				if(m_moveDirection.z < 0){
+					m_moveDirection.z = 0;
+				}else{
+					m_moveDirection.z *= speed;
+				}
+				if(m_moveDirection.x < 0){
+					m_moveDirection.x = 0;
+				}else{
+					m_moveDirection.x *= speed;
+				}
 			}
 		}
 
@@ -813,11 +897,11 @@ public class PlayerManager : MonoBehaviour {
 		float rotateJourneyLength;
 		float rotateFracJourney = new float();
 
-		while(trans.rotation != toRotation){
+		while(trans.localRotation != toRotation){
 			// MoveRotation
 			rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation);
 			rotateFracJourney += (Time.deltaTime) * m_states.m_climb.m_interpolation.m_fallRotationSpeed / rotateJourneyLength;
-			trans.rotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_climb.m_interpolation.m_snapCurve.Evaluate(rotateFracJourney));
+			trans.localRotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_climb.m_interpolation.m_snapCurve.Evaluate(rotateFracJourney));
 
 			yield return null;
 		}
@@ -861,6 +945,7 @@ public class PlayerManager : MonoBehaviour {
 		if(Physics.Raycast(m_raycasts.m_topRightLeg.position, m_raycasts.m_topRightLeg.transform.forward, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)
 		&&
 		Physics.Raycast(m_raycasts.m_topLeftLeg.position, m_raycasts.m_topLeftLeg.transform.forward, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)){
+			m_climbArea = topRightClimbHit.collider.GetComponent<ClimbArea>();
 			return true;
 		}else{
 			return false;
@@ -1046,7 +1131,25 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 #endregion Public functions
-// public GameObject m_rightHit;
-// public GameObject m_leftHit;
+
+	public int CheckClimbAreaType(){
+		int i = new int();
+		switch(m_climbArea.m_climbType){ 
+			case ClimbTypes.forward:
+				i = 0;
+			break;
+			case ClimbTypes.right:
+				i = 1;
+			break;
+			case ClimbTypes.backward:
+				i = 2;
+			break;
+			case ClimbTypes.left:
+				i = 3;
+			break;
+		}
+		return i;
+	}
+
 }
 
