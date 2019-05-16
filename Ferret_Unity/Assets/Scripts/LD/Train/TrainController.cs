@@ -16,7 +16,7 @@ public class TrainController : TrainPathsTypes {
 	[SerializeField] TrainPoint[] m_points;
 
 	[Header("Move")]
-	[SerializeField] float m_moveSpeed = 5;
+	[SerializeField] float[] m_moveSpeeds;
 	[SerializeField] AnimationCurve m_moveCurve;
 
 	[Header("Gizmos")]
@@ -28,6 +28,11 @@ public class TrainController : TrainPathsTypes {
 	Rigidbody m_rbody;
 
 	void Start(){
+
+		if(m_moveSpeeds.Length != m_points.Length){
+			Debug.LogError("You need to have the same length of array in Points & Move Speeds");
+		}
+
 		m_rbody = m_train.GetComponent<Rigidbody>();
 
 		if(m_startTPAtFirstPoint){
@@ -43,9 +48,17 @@ public class TrainController : TrainPathsTypes {
 	}
 
 	void Update(){
-		/*if(Input.GetKeyDown(KeyCode.Space)){
+		if(Input.GetKeyDown(KeyCode.Space)){
 			ChoseNextTarget();
-		}*/
+		}
+	}
+
+	float GetTrainSpeed(){
+		if(m_nextPoint - 1 >= 0){
+			return m_moveSpeeds[m_nextPoint - 1];
+		}else{
+			return m_moveSpeeds[m_nextPoint];
+		}
 	}
 
 	IEnumerator Move(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition){
@@ -56,7 +69,7 @@ public class TrainController : TrainPathsTypes {
 		while(transformPosition.position != toPosition){
 			// MovePosition
 			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
-			moveFracJourney += (Time.deltaTime) * m_moveSpeed / moveJourneyLength;
+			moveFracJourney += (Time.deltaTime) * GetTrainSpeed() / moveJourneyLength;
 			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, m_moveCurve.Evaluate(moveFracJourney));
 			yield return null;
 		}
