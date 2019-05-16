@@ -30,7 +30,7 @@ public class FirstPersonCamera : MonoBehaviour {
 
 	[Header("In 1st person when climb")]
 	[SerializeField] Transform m_lookAtPoint;
-	[SerializeField] Vector3 m_pointOffset = new Vector3(0, 0.5f, 0.5f);
+	[SerializeField] float m_pointOffset = 0.25f;
 	[SerializeField] float m_movePointDistance = 1f;
 	[SerializeField, Range(0, 1)] float m_smoothLerp = 0.5f;
 
@@ -42,7 +42,7 @@ public class FirstPersonCamera : MonoBehaviour {
     Transform playerTrans;
 	PlayerManager m_playerManager;
 	Vector3 m_inputDirection = Vector3.zero;
-
+	Vector3 m_offestPoint;
 
     void Start()
     {
@@ -71,15 +71,36 @@ public class FirstPersonCamera : MonoBehaviour {
 			mouseY = 0;
 			ClampXAxisRotationToValue(360 - minClamp);
 		}
-		
+
 		if(!whenClimb){
 			transform.Rotate(Vector3.left * mouseY);
+			// transform.Rotate(- m_playerManager.transform.right * mouseY);
 			playerTrans.Rotate(Vector3.up * mouseX);
+			// playerTrans.Rotate(m_playerManager.transform.up * mouseX);
 		}else{
+
 			m_inputDirection.x = Input.GetAxis("CameraX") * m_movePointDistance;
 			m_inputDirection.y = Input.GetAxis("CameraY") * m_movePointDistance;
 
-			Vector3 desiredPos = transform.position + m_inputDirection + m_pointOffset;
+			Vector3 moveDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+			moveDirection = m_playerManager.transform.TransformDirection(moveDirection);
+
+			switch(m_playerManager.CheckClimbAreaType()){ 
+				case 0:
+					m_offestPoint = new Vector3(0, 0, m_pointOffset);
+				break;
+				case 1:
+					m_offestPoint = new Vector3(0, 0, 0);
+				break;
+				case 2:
+					m_offestPoint = new Vector3(0, 0, -m_pointOffset);
+				break;
+				case 3:
+					m_offestPoint = new Vector3(-m_pointOffset, 0, 0);
+				break;
+			}
+
+			Vector3 desiredPos = transform.position + moveDirection + m_offestPoint;
 			Vector3 smoothedPosition = Vector3.Lerp(m_lookAtPoint.position, desiredPos, m_smoothLerp);
 			m_lookAtPoint.transform.position = smoothedPosition;
 			transform.LookAt(m_lookAtPoint);

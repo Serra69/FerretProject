@@ -14,7 +14,7 @@ public class PlayerManager : ClimbTypesArea {
 			transform.position = value;
 		}
 	}*/
- 	[SerializeField]Transform transformProut;
+
 	public PlayerDebugs m_playerDebugs = new PlayerDebugs();
 	[System.Serializable] public class PlayerDebugs {
 		public bool m_playerCanDie = true;
@@ -575,7 +575,6 @@ public class PlayerManager : ClimbTypesArea {
 		Vector3 moveDirection = m_rotations.m_pivot.TransformDirection(moveInput);
 		Quaternion rotation = Quaternion.LookRotation(moveDirection, transform.up);
 		rotation.eulerAngles = new Vector3(0, rotation.eulerAngles.y, rotation.eulerAngles.z);
-		transformProut.rotation = rotation;
 
 		RaycastHit hit;
 		Vector3 desiredOrigin = transform.position + (transform.up * 3);
@@ -797,13 +796,13 @@ public class PlayerManager : ClimbTypesArea {
 		}
 
 		// The desired forward direction of Ellen.
-		Vector3 resultingForward = targetRotation * Vector3.forward;
+		/*Vector3 resultingForward = targetRotation * Vector3.forward;
 
 		// Find the difference between the current rotation of the player and the desired rotation of the player in radians.
 		float angleCurrent = Mathf.Atan2(m_ferretMesh.transform.forward.x, m_ferretMesh.transform.forward.z) * Mathf.Rad2Deg;
 		float targetAngle = Mathf.Atan2(resultingForward.x, resultingForward.z) * Mathf.Rad2Deg;
 
-		m_AngleDiff = Mathf.DeltaAngle(angleCurrent, targetAngle);
+		m_AngleDiff = Mathf.DeltaAngle(angleCurrent, targetAngle);*/
 		m_TargetRotation = targetRotation;
 
 		// -------------------------------
