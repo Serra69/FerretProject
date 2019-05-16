@@ -43,9 +43,9 @@ public class TrainController : TrainPathsTypes {
 	}
 
 	void Update(){
-		if(Input.GetKeyDown(KeyCode.Space)){
+		/*if(Input.GetKeyDown(KeyCode.Space)){
 			ChoseNextTarget();
-		}
+		}*/
 	}
 
 	IEnumerator Move(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition){
