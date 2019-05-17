@@ -126,15 +126,12 @@ public class PlayerManager : ClimbTypesArea {
 	[Header("Physics")]
 	public PhysicsVar m_physics = new PhysicsVar();
 	[System.Serializable] public class PhysicsVar {
-		// public bool m_useGravity = true;
-		// public float m_gravity = 9.81f;
 		public Transform castCenter = null;
 		public float m_topMaxDistance = 1;
 		public float m_botMaxDistance = 1;
-
-		[Space]
 		public float m_maxCenterDistance = 2;
-
+		[Space]
+		public LayerMask m_groundLayer;
 	}	
 
 	[Header("Colliders")]
@@ -201,12 +198,6 @@ public class PlayerManager : ClimbTypesArea {
 	[Space]
 
 #endregion Public [System.Serializable] Variables
-
-#region Public Variables
-
-	public LayerMask m_groundLayer;
-
-#endregion Public Variables
 
 #region Input Buttons
 
@@ -521,7 +512,7 @@ public class PlayerManager : ClimbTypesArea {
 		Quaternion orientation = m_meshes.m_rotateFerret.transform.rotation;
 		
 		if(top){
-			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_topMaxDistance, m_groundLayer)){
+			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_topMaxDistance, m_physics.m_groundLayer)){
 				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
 				return true;
 			}else{
@@ -529,7 +520,7 @@ public class PlayerManager : ClimbTypesArea {
 				return false;
 			}
 		}else{
-			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_botMaxDistance, m_groundLayer)){
+			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_botMaxDistance, m_physics.m_groundLayer)){
 				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
 				m_states.m_climb.m_canClimb = true;
 				return true;
@@ -585,7 +576,7 @@ public class PlayerManager : ClimbTypesArea {
 
 		RaycastHit hit;
 		Vector3 desiredOrigin = transform.position + (transform.up * 3);
-		if(Physics.Raycast(desiredOrigin, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_groundLayer)){
+		if(Physics.Raycast(desiredOrigin, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_physics.m_groundLayer)){
 			// m_normal = Quaternion.Euler(Quaternion.Euler(hit.normal).x, m_ferretMesh.transform.rotation.y, m_ferretMesh.transform.rotation.z);
 			
 			Debug.Log("Normal map = " + hit.normal);
@@ -1016,7 +1007,7 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public bool RaycastFromFerretAss(){
-		return Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, m_raycasts.m_maxCastDistance, m_groundLayer);
+		return Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, m_raycasts.m_maxCastDistance, m_physics.m_groundLayer);
 	}
 
 	public void StartOrientationAfterClimb(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
