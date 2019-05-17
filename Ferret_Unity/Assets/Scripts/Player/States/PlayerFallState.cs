@@ -17,13 +17,13 @@ public class PlayerFallState : IState
   {
     //Debug.LogFormat("{0} : Enter()", GetType().Name);
     m_playerManager.Animator.SetTrigger("Fall");
-    m_playerManager.m_colliders.m_base.m_headColl.enabled = false;
+    //m_playerManager.m_colliders.m_base.m_headColl.enabled = false;
   }
 
   public void Exit()
   {
     //Debug.LogFormat("{0} : Exit()", GetType().Name);
-    m_playerManager.m_colliders.m_base.m_headColl.enabled = true;
+    //m_playerManager.m_colliders.m_base.m_headColl.enabled = true;
   }
 
   public void FixedUpdate()
