@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : ClimbTypesArea {
 
+	public static PlayerManager Instance;
+
 	// Utiliser ça pour faire tout les changements de "transform.position"
 	/*Vector3 TransformPosition{
 		get{
@@ -15,14 +17,12 @@ public class PlayerManager : ClimbTypesArea {
 		}
 	}*/
 
+#region Public [System.Serializable] Variables
+
 	public PlayerDebugs m_playerDebugs = new PlayerDebugs();
 	[System.Serializable] public class PlayerDebugs {
 		public bool m_playerCanDie = true;
 	}
-
-	public static PlayerManager Instance;
-
-#region Public [System.Serializable] Variables
 
 	public StateMachine m_sM = new StateMachine(); 
 
@@ -72,6 +72,7 @@ public class PlayerManager : ClimbTypesArea {
 
 			public CheckCollision m_checkCollision = new CheckCollision();
 			[System.Serializable] public class CheckCollision {
+				public bool m_outOfClibingAreaInTopMiddle = false;
 				public bool m_outOfClibingAreaInTopLeft = false;
 				public bool m_outOfClibingAreaInBotLeft = false;
 				public bool m_outOfClibingAreaInTopRight = false;
@@ -139,23 +140,17 @@ public class PlayerManager : ClimbTypesArea {
 	[Header("Colliders")]
 	public Colliders m_colliders = new Colliders();
 	[System.Serializable] public class Colliders {
-
-		public Base m_base = new Base();
-		[System.Serializable] public class Base {
-			public SphereCollider m_headColl;
-			public CapsuleCollider m_bodyColl;
-		}
-
-		public Crawl m_crawl = new Crawl();
-		[System.Serializable] public class Crawl {
-			public SphereCollider m_headColl;
-			public CapsuleCollider m_bodyColl;
-		}
-
+		public CapsuleCollider m_baseColl;
+		public CapsuleCollider m_crawlColl;
 	}
 
 	[Header("Meshes")]
-	public GameObject m_mesh;
+	public Meshes m_meshes = new Meshes();
+	[System.Serializable] public class Meshes {
+		public GameObject m_rotateFerret;
+		public GameObject m_ferretMesh;
+		public GameObject m_meshSkin;
+	}
 
 	[Header("Cameras")]
 	public EditCamera m_cameras = new EditCamera();
@@ -193,6 +188,7 @@ public class PlayerManager : ClimbTypesArea {
 		public Transform m_forwardTopLeftLeg;
 		public float m_forwardDistance = 0.5f;
 		[Space]
+		public Transform m_topMiddleLeg;
 		public Transform m_topRightLeg;
 		public Transform m_topLeftLeg;
 		public Transform m_botRightLeg;
@@ -208,8 +204,7 @@ public class PlayerManager : ClimbTypesArea {
 
 #region Public Variables
 
-	public GameObject m_ferretMesh;
-	public LayerMask m_checkLayer;
+	public LayerMask m_groundLayer;
 
 #endregion Public Variables
 
@@ -357,6 +352,15 @@ public class PlayerManager : ClimbTypesArea {
         }
     }
 
+	ClimbArea m_climbArea;
+    public ClimbArea ClimbArea
+    {
+        get
+        {
+            return m_climbArea;
+        }
+    }
+
     // ----------------------------
     // ----- FOR THE ROTATION -----
     const float k_InverseOneEighty = 1f / 180f;
@@ -365,7 +369,6 @@ public class PlayerManager : ClimbTypesArea {
 	Quaternion m_TargetRotation;
 	// ----------------------------
 
-	ClimbArea m_climbArea;
 
 #endregion Private Variables
 
@@ -444,7 +447,7 @@ public class PlayerManager : ClimbTypesArea {
 		if (m_physics.castCenter != null){
 			Vector3 center = m_physics.castCenter.position;
 			Vector3 halfExtends = new Vector3(0.3f, 0.25f, 1.25f) / 2;
-			Quaternion orientation = m_ferretMesh.transform.rotation;
+			Quaternion orientation = m_meshes.m_rotateFerret.transform.rotation;
 
 			Gizmos.color = Color.magenta;
 			Gizmos.DrawWireCube(center, halfExtends);
@@ -462,13 +465,15 @@ public class PlayerManager : ClimbTypesArea {
 			Debug.DrawRay(m_raycasts.m_forwardTopLeftLeg.position, m_raycasts.m_forwardTopLeftLeg.transform.forward * m_raycasts.m_forwardDistance, m_raycasts.m_color, .05f);
 		}
 
-		if(m_raycasts.m_topRightLeg != null && m_raycasts.m_topLeftLeg != null && m_raycasts.m_botRightLeg != null && m_raycasts.m_botLeftLeg != null){
+		if(m_raycasts.m_topRightLeg != null && m_raycasts.m_topLeftLeg != null && m_raycasts.m_botRightLeg != null && m_raycasts.m_botLeftLeg != null && m_raycasts.m_topMiddleLeg != null){
 			// Down
 			Debug.DrawRay(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
 			Debug.DrawRay(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
 
 			Debug.DrawRay(m_raycasts.m_botRightLeg.position, - m_raycasts.m_botRightLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
 			Debug.DrawRay(m_raycasts.m_botLeftLeg.position, - m_raycasts.m_botLeftLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
+
+			Debug.DrawRay(m_raycasts.m_topMiddleLeg.position, - m_raycasts.m_topMiddleLeg.transform.up * m_raycasts.m_maxCastDistance, m_raycasts.m_color, .05f);
 		}
 
 		// Middle ass
@@ -513,10 +518,10 @@ public class PlayerManager : ClimbTypesArea {
 		
 		Vector3 direction = top == true ? Vector3.up : Vector3.down;
 
-		Quaternion orientation = m_ferretMesh.transform.rotation;
+		Quaternion orientation = m_meshes.m_rotateFerret.transform.rotation;
 		
 		if(top){
-			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_topMaxDistance, m_checkLayer)){
+			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_topMaxDistance, m_groundLayer)){
 				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
 				return true;
 			}else{
@@ -524,7 +529,7 @@ public class PlayerManager : ClimbTypesArea {
 				return false;
 			}
 		}else{
-			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_botMaxDistance, m_checkLayer)){
+			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_botMaxDistance, m_groundLayer)){
 				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
 				m_states.m_climb.m_canClimb = true;
 				return true;
@@ -540,21 +545,15 @@ public class PlayerManager : ClimbTypesArea {
 			m_states.m_crawl.m_isCrawling = isCrawling;
 
 		if(isCrawling){
-			// m_colliders.m_base.m_headColl.enabled = false;
-			m_colliders.m_base.m_bodyColl.enabled = false;
+			m_colliders.m_baseColl.enabled = false;
+			m_colliders.m_crawlColl.enabled = true;
 
-			// m_colliders.m_crawl.m_headColl.enabled = true;
-			m_colliders.m_crawl.m_bodyColl.enabled = true;
-
-			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y / 2, m_mesh.transform.localScale.z);
+			m_meshes.m_ferretMesh.transform.localScale = new Vector3(m_meshes.m_ferretMesh.transform.localScale.x, m_meshes.m_ferretMesh.transform.localScale.y / 2, m_meshes.m_ferretMesh.transform.localScale.z);
 		}else{
-			// m_colliders.m_base.m_headColl.enabled = true;
-			m_colliders.m_base.m_bodyColl.enabled = true;
+			m_colliders.m_baseColl.enabled = true;
+			m_colliders.m_crawlColl.enabled = false;
 
-			// m_colliders.m_crawl.m_headColl.enabled = false;
-			m_colliders.m_crawl.m_bodyColl.enabled = false;
-
-			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y * 2, m_mesh.transform.localScale.z);
+			m_meshes.m_ferretMesh.transform.localScale = new Vector3(m_meshes.m_ferretMesh.transform.localScale.x, m_meshes.m_ferretMesh.transform.localScale.y * 2, m_meshes.m_ferretMesh.transform.localScale.z);
 		}
 	}
 
@@ -586,7 +585,7 @@ public class PlayerManager : ClimbTypesArea {
 
 		RaycastHit hit;
 		Vector3 desiredOrigin = transform.position + (transform.up * 3);
-		if(Physics.Raycast(desiredOrigin, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_checkLayer)){
+		if(Physics.Raycast(desiredOrigin, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_groundLayer)){
 			// m_normal = Quaternion.Euler(Quaternion.Euler(hit.normal).x, m_ferretMesh.transform.rotation.y, m_ferretMesh.transform.rotation.z);
 			
 			Debug.Log("Normal map = " + hit.normal);
@@ -620,27 +619,9 @@ public class PlayerManager : ClimbTypesArea {
 		MoveDirection = transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
 
-		Debug.Log("m_moveDirection = " + m_moveDirection);
-
-		
-		switch(m_climbArea.m_climbType){ 
-			case ClimbTypes.forward:
-				
-			break;
-			case ClimbTypes.right:
-				
-			break;
-			case ClimbTypes.backward:
-				
-			break;
-			case ClimbTypes.left:
-				
-			break;
-		}
-
 		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight){
 			
-			if(m_climbArea.m_climbType == ClimbTypes.forward || m_climbArea.m_climbType == ClimbTypes.right){
+			if(ClimbArea.m_climbType == ClimbTypes.forward || ClimbArea.m_climbType == ClimbTypes.right){
 				if(m_moveDirection.x < 0){
 					m_moveDirection.x *= speed;
 				}else{
@@ -667,7 +648,7 @@ public class PlayerManager : ClimbTypesArea {
 			}
 		}else if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopLeft || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotLeft){
 
-			if(m_climbArea.m_climbType == ClimbTypes.backward || m_climbArea.m_climbType == ClimbTypes.left){
+			if(ClimbArea.m_climbType == ClimbTypes.backward || ClimbArea.m_climbType == ClimbTypes.left){
 				if(m_moveDirection.x < 0){
 					m_moveDirection.x *= speed;
 				}else{
@@ -702,6 +683,12 @@ public class PlayerManager : ClimbTypesArea {
 				m_moveDirection.y *= speed;
 			}else{
 				m_moveDirection.y = 0;
+			}
+		}else if(!m_climbArea.m_areaCanBeFinishedClimbable && m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopMiddle){
+			if(m_moveDirection.y > 0){
+				m_moveDirection.y = 0;
+			}else{
+				m_moveDirection.y *= speed;
 			}
 		}
 
@@ -813,11 +800,11 @@ public class PlayerManager : ClimbTypesArea {
 			groundedTurnSpeed = Mathf.Lerp(m_rotations.m_maxTurnSpeedWithoutGronuded, m_rotations.m_minTurnSpeedWithoutGronuded, m_rotations.m_turnSpeedWithoutGrounded);
 		}
 
-		float actualTurnSpeed = CheckCollider(false) ? groundedTurnSpeed : Vector3.Angle(m_ferretMesh.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
-		m_TargetRotation = Quaternion.RotateTowards(m_ferretMesh.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
+		float actualTurnSpeed = CheckCollider(false) ? groundedTurnSpeed : Vector3.Angle(m_meshes.m_rotateFerret.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
+		m_TargetRotation = Quaternion.RotateTowards(m_meshes.m_rotateFerret.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
 
 		m_rigidbody.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
-		m_ferretMesh.transform.rotation = m_TargetRotation;
+		m_meshes.m_rotateFerret.transform.rotation = m_TargetRotation;
 	}
 
 	public void SetLastStateMoveSpeedForJump(){
@@ -940,7 +927,7 @@ public class PlayerManager : ClimbTypesArea {
 	public RaycastHit topRightClimbHit;
 	public RaycastHit topLeftClimbHit;
 	public RaycastHit botRightClimbHit;
-	public RaycastHit boteftClimbHit;
+	public RaycastHit botftClimbHit;
 	public bool RayCastForwardToStartClimbing(){
 		//Debug.Log("I touch " + hit.collider.gameObject.name);
 		
@@ -952,13 +939,6 @@ public class PlayerManager : ClimbTypesArea {
 		}else{
 			return false;
 		}
-		/*Physics.Raycast(m_raycasts.m_topRightLeg.position, m_raycasts.m_topRightLeg.transform.forward, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
-		Physics.Raycast(m_raycasts.m_topLeftLeg.position, m_raycasts.m_topLeftLeg.transform.forward, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
-		if(topRightClimbHit.collider.CompareTag("ClimbArea") && topLeftClimbHit.collider.CompareTag("ClimbArea")){
-			return true;
-		}else{
-			return false;
-		}*/
 	}
 	public bool RayCastDownToStopClimbing(){
 		//Debug.Log("I touch " + hit.collider.gameObject.name);
@@ -969,50 +949,23 @@ public class PlayerManager : ClimbTypesArea {
 		}else{
 			return false;
 		}
-		/*Physics.Raycast(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
-		Physics.Raycast(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
-		
-		if(topRightClimbHit.collider.CompareTag("ClimbArea") || topLeftClimbHit.collider.CompareTag("ClimbArea")){
-			return true;
-		}else{
-			return false;
-		}*/
 	}
 
 	public void RayCastDownToStopSideScrollingMovement(){
-
 		// RIGHT check
 		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight = !Physics.Raycast(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
 		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight = !Physics.Raycast(m_raycasts.m_botRightLeg.position, - m_raycasts.m_botRightLeg.transform.up, out botRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
-		/*if(Physics.Raycast(m_raycasts.m_topRightLeg.position, - m_raycasts.m_topRightLeg.transform.up, out topRightClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)){
-			if(topRightClimbHit.collider.CompareTag("ClimbArea")){
-				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight = false;
-			}else{
-				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInRight = true;
-			}
-		}*/
 
 		// LEFT check
 		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopLeft = !Physics.Raycast(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
-		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotLeft = !Physics.Raycast(m_raycasts.m_botLeftLeg.position, - m_raycasts.m_botLeftLeg.transform.up, out boteftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
-		/*if(Physics.Raycast(m_raycasts.m_topLeftLeg.position, - m_raycasts.m_topLeftLeg.transform.up, out topLeftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)){
-			if(topLeftClimbHit.collider.CompareTag("ClimbArea")){
-				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft = false;
-			}else{
-				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInLeft = true;
-			}
-		}*/
+		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotLeft = !Physics.Raycast(m_raycasts.m_botLeftLeg.position, - m_raycasts.m_botLeftLeg.transform.up, out botftClimbHit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
+
+		// Middle check
+		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopMiddle = !Physics.Raycast(m_raycasts.m_topMiddleLeg.position, - m_raycasts.m_topMiddleLeg.transform.up, /*out botftClimbHit,*/ m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
 
 		// BOT check
 		RaycastHit hit;
 		m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = !Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, out hit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision);
-		/*if(Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, out hit, m_raycasts.m_maxCastDistance, m_states.m_climb.m_climbCollision)){
-			if(hit.collider.CompareTag("ClimbArea")){
-				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = false;
-			}else{
-				m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBot = true;
-			}
-		}*/
 	}
 
 	public bool RayCastToCanPush(){
@@ -1021,9 +974,9 @@ public class PlayerManager : ClimbTypesArea {
 
 	public void WhenCameraIsCloseToTheFerret(float distance){
 		if(distance < m_cameras.m_miniDistanceToSeeFurret){
-			m_mesh.SetActive(false);
+			m_meshes.m_meshSkin.SetActive(false);
 		}else{
-			m_mesh.SetActive(true);
+			m_meshes.m_meshSkin.SetActive(true);
 		}
 	}
 
@@ -1063,7 +1016,7 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public bool RaycastFromFerretAss(){
-		return Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, m_raycasts.m_maxCastDistance, m_checkLayer);
+		return Physics.Raycast(m_raycasts.m_middleAss.position, - m_raycasts.m_middleAss.transform.up, m_raycasts.m_maxCastDistance, m_groundLayer);
 	}
 
 	public void StartOrientationAfterClimb(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
@@ -1136,7 +1089,7 @@ public class PlayerManager : ClimbTypesArea {
 
 	public int CheckClimbAreaType(){
 		int i = new int();
-		switch(m_climbArea.m_climbType){ 
+		switch(ClimbArea.m_climbType){ 
 			case ClimbTypes.forward:
 				i = 0;
 			break;

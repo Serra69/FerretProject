@@ -19,7 +19,7 @@ public class PlayerPushState : IState
     Transform toPos = m_playerManager.PushableObject.On_PlayerSnapToObject();
     m_playerManager.transform.position = toPos.position;
     m_playerManager.transform.rotation = toPos.rotation;
-    m_playerManager.m_ferretMesh.transform.localRotation = Quaternion.identity;
+    m_playerManager.m_meshes.m_rotateFerret.transform.localRotation = Quaternion.identity;
 
     m_playerManager.SetObjectInChildrenOfFerret(m_playerManager.PushableObject.transform, m_playerManager.m_states.m_push.m_objectTrans);
   }
