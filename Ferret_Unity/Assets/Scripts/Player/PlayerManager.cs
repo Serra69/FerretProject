@@ -541,18 +541,18 @@ public class PlayerManager : ClimbTypesArea {
 
 		if(isCrawling){
 			// m_colliders.m_base.m_headColl.enabled = false;
-			// m_colliders.m_base.m_bodyColl.enabled = false;
+			m_colliders.m_base.m_bodyColl.enabled = false;
 
 			// m_colliders.m_crawl.m_headColl.enabled = true;
-			// m_colliders.m_crawl.m_bodyColl.enabled = true;
+			m_colliders.m_crawl.m_bodyColl.enabled = true;
 
 			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y / 2, m_mesh.transform.localScale.z);
 		}else{
 			// m_colliders.m_base.m_headColl.enabled = true;
-			// m_colliders.m_base.m_bodyColl.enabled = true;
+			m_colliders.m_base.m_bodyColl.enabled = true;
 
 			// m_colliders.m_crawl.m_headColl.enabled = false;
-			// m_colliders.m_crawl.m_bodyColl.enabled = false;
+			m_colliders.m_crawl.m_bodyColl.enabled = false;
 
 			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y * 2, m_mesh.transform.localScale.z);
 		}
