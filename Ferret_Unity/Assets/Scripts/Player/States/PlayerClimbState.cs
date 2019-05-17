@@ -44,11 +44,10 @@ public class PlayerClimbState : IState
         m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, 270, 0));
 			break;
 		}
-
     
     // Rotation du mesh pour qu'il soit bien droit
     // m_playerManager.StartRotateInterpolation(m_playerManager.m_ferretMesh.transform, m_playerManager.m_ferretMesh.transform.localRotation, Quaternion.identity);
-    m_playerManager.m_ferretMesh.transform.localRotation = Quaternion.identity;
+    m_playerManager.m_meshes.m_rotateFerret.transform.localRotation = Quaternion.identity;
 
     m_playerManager.IsInLerpRotation = false;
   }
@@ -56,8 +55,7 @@ public class PlayerClimbState : IState
   public void FixedUpdate()
   {
     if(m_playerManager.CanMoveOnClimb && !m_playerManager.IsInLerpRotation){
-      if( (m_playerManager.RayCastDownToStopClimbing() == false) && (!m_endOfClimbState) && !m_playerManager.IsInLerpRotation){
-        // Debug.Log("j'arrive au bout");
+      if( (m_playerManager.RayCastDownToStopClimbing() == false) && (!m_endOfClimbState) && !m_playerManager.IsInLerpRotation && m_playerManager.ClimbArea.m_areaCanBeFinishedClimbable){
         Debug.Log("Je part en montant comme un connard");
         m_endOfClimbState = true;
         m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + Vector3.down * 2 + Vector3.up * 3, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(0, m_playerManager.transform.rotation.eulerAngles.y, m_playerManager.transform.rotation.eulerAngles.z), false);
@@ -93,7 +91,7 @@ public class PlayerClimbState : IState
 
     if(m_playerManager.CanMoveOnClimb && m_playerManager.m_jumpButton && !m_playerManager.IsInLerpRotation){
       m_playerManager.StartOrientationAfterClimb(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + m_playerManager.transform.up * m_playerManager.m_states.m_climb.m_interpolation.m_fallingDistance, m_playerManager.transform, m_playerManager.transform.localRotation, Quaternion.Euler(0, m_playerManager.transform.localRotation.y, m_playerManager.transform.localRotation.z));
-      m_playerManager.StartLocalRotateInterpolation(m_playerManager.m_ferretMesh.transform, m_playerManager.m_ferretMesh.transform.localRotation, Quaternion.identity);
+      m_playerManager.StartLocalRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.localRotation, Quaternion.identity);
     }
     if(m_playerManager.EndOfOrientationAfterClimb){
       Debug.Log("FINI LA STATE EN TOMBANT");
@@ -104,7 +102,6 @@ public class PlayerClimbState : IState
   public void Exit()
   {
     m_playerManager.Rigidbody.useGravity = true;
-    // m_playerManager.StartClimbCooldown();
   }
 
 }
