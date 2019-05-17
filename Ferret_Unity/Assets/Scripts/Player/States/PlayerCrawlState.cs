@@ -41,6 +41,12 @@ public class PlayerCrawlState : IState {
           m_playerManager.ChangeState(3);
         }
       }
+
+      if(m_playerManager.m_pushButton){
+        if(m_playerManager.RayCastToCanPush()){
+          m_playerManager.ChangeState(7);
+        }
+      }
     }
 
     void Move(){

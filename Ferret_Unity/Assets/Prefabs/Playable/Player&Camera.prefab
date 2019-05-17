@@ -2171,7 +2171,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: 0.01125767, y: -0.000000017251393, z: -0.0000000016777586,
+  m_LocalRotation: {x: 0.011257674, y: 0.000000017192832, z: -0.0000000020655448,
     w: 0.9999367}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -2269,8 +2269,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: 0.064592496, y: 0.0000000044532937, z: -0.0000000027602771,
-    w: 0.99791175}
+  m_LocalRotation: {x: 0.0645925, y: -0.00000000413193, z: -0.0000000022046007, w: 0.99791175}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2373,7 +2372,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701019898918854}
-  m_LocalRotation: {x: 0.038623, y: 0.0000000037997814, z: -0.0000000021430162, w: 0.99925387}
+  m_LocalRotation: {x: 0.038623005, y: 7.727018e-11, z: -0.0000000019991342, w: 0.99925387}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2578,7 +2577,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1681364742312364}
-  m_LocalRotation: {x: 0.038623013, y: 0.0000000037225112, z: -1.4388195e-10, w: 0.99925387}
+  m_LocalRotation: {x: 0.038623024, y: -0.0000000037225112, z: 1.4388199e-10, w: 0.99925387}
   m_LocalPosition: {x: 0, y: 2.918, z: -3.2499914}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3725,8 +3724,12 @@ MonoBehaviour:
   m_rotations:
     cameraSettings: {fileID: 114987661033805794}
     m_pivot: {fileID: 4143300893170828}
-    minTurnSpeed: 400
-    maxTurnSpeed: 1200
+    m_turnSpeedGrounded: 1
+    m_minTurnSpeedGrounded: 800
+    m_maxTurnSpeedGrounded: 2400
+    m_turnSpeedWithoutGrounded: 0.25
+    m_minTurnSpeedWithoutGronuded: 200
+    m_maxTurnSpeedWithoutGronuded: 600
   m_raycasts:
     m_forwardTopRightLeg: {fileID: 4006623129306454}
     m_forwardTopLeftLeg: {fileID: 4959419175486532}

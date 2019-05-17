@@ -22,6 +22,7 @@ public class PushableObject : MonoBehaviour {
 	float actualClosedDistance;
 	Transform m_closedTransform = null;
 	bool m_objectIsPushByTheFerret = false;
+	Rigidbody m_rigidbody;
 
     bool m_canMove = true;
     public bool CanMove
@@ -45,6 +46,7 @@ public class PushableObject : MonoBehaviour {
 
     void Start(){
 		m_raycastReturn = new bool[m_raycastPositions.Length];
+		m_rigidbody = GetComponent<Rigidbody>();
 		m_playerManager = PlayerManager.Instance;
 	}
 
@@ -100,6 +102,12 @@ public class PushableObject : MonoBehaviour {
 
 	public void On_ObjectIsPushing(bool b){
 		m_objectIsPushByTheFerret = b;
+
+		if(b){
+			m_rigidbody.isKinematic = false;
+		}else{
+			m_rigidbody.isKinematic = true;
+		}
 	}
 	
 }

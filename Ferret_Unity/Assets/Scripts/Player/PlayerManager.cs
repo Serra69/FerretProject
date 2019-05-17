@@ -174,8 +174,16 @@ public class PlayerManager : ClimbTypesArea {
 	[System.Serializable] public class Rotations {
 		public CameraSettings cameraSettings;
 		public Transform m_pivot;
-		public float minTurnSpeed = 400;
-		public float maxTurnSpeed = 1200;
+
+		[Header("Turn speed when grounded")]
+		[Range(0, 1)] public float m_turnSpeedGrounded = 0.5f;
+		public float m_minTurnSpeedGrounded = 800;
+		public float m_maxTurnSpeedGrounded = 2400;
+
+		[Header("Turn speed when is not grounded")]
+		[Range(0, 1)] public float m_turnSpeedWithoutGrounded = 0.5f;
+		public float m_minTurnSpeedWithoutGronuded = 400;
+		public float m_maxTurnSpeedWithoutGronuded = 1200;
 	}
 	
 	[Header("Raycasts")]
@@ -532,19 +540,19 @@ public class PlayerManager : ClimbTypesArea {
 			m_states.m_crawl.m_isCrawling = isCrawling;
 
 		if(isCrawling){
-			m_colliders.m_base.m_headColl.enabled = false;
-			m_colliders.m_base.m_bodyColl.enabled = false;
+			// m_colliders.m_base.m_headColl.enabled = false;
+			// m_colliders.m_base.m_bodyColl.enabled = false;
 
-			m_colliders.m_crawl.m_headColl.enabled = true;
-			m_colliders.m_crawl.m_bodyColl.enabled = true;
+			// m_colliders.m_crawl.m_headColl.enabled = true;
+			// m_colliders.m_crawl.m_bodyColl.enabled = true;
 
 			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y / 2, m_mesh.transform.localScale.z);
 		}else{
-			m_colliders.m_base.m_headColl.enabled = true;
-			m_colliders.m_base.m_bodyColl.enabled = true;
+			// m_colliders.m_base.m_headColl.enabled = true;
+			// m_colliders.m_base.m_bodyColl.enabled = true;
 
-			m_colliders.m_crawl.m_headColl.enabled = false;
-			m_colliders.m_crawl.m_bodyColl.enabled = false;
+			// m_colliders.m_crawl.m_headColl.enabled = false;
+			// m_colliders.m_crawl.m_bodyColl.enabled = false;
 
 			m_mesh.transform.localScale = new Vector3(m_mesh.transform.localScale.x, m_mesh.transform.localScale.y * 2, m_mesh.transform.localScale.z);
 		}
@@ -770,9 +778,7 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public void RotatePlayer(){
-		// -------------------------------
-		// ----- SET TARGET ROTATION -----
-		// -------------------------------
+		// SET TARGET ROTATION
 		// Create three variables, move input local to the player, flattened forward direction of the camera and a local target rotation.
 		Vector2 moveInput = new Vector2(m_hAxis_Button, m_vAxis_Button);
 		Vector3 localMovementDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
@@ -795,25 +801,22 @@ public class PlayerManager : ClimbTypesArea {
 			targetRotation = Quaternion.LookRotation(cameraToInputOffset * forward);
 		}
 
-		// The desired forward direction of Ellen.
-		/*Vector3 resultingForward = targetRotation * Vector3.forward;
-
-		// Find the difference between the current rotation of the player and the desired rotation of the player in radians.
-		float angleCurrent = Mathf.Atan2(m_ferretMesh.transform.forward.x, m_ferretMesh.transform.forward.z) * Mathf.Rad2Deg;
-		float targetAngle = Mathf.Atan2(resultingForward.x, resultingForward.z) * Mathf.Rad2Deg;
-
-		m_AngleDiff = Mathf.DeltaAngle(angleCurrent, targetAngle);*/
 		m_TargetRotation = targetRotation;
 
-		// -------------------------------
-		// ----- UPDATE ORIENTATION -----
-		// -------------------------------
+		// UPDATE ORIENTATION
 		Vector3 localInput = new Vector3(m_hAxis_Button, 0f, m_vAxis_Button);
-		float groundedTurnSpeed = Mathf.Lerp(m_rotations.maxTurnSpeed, m_rotations.minTurnSpeed, m_states.m_walk.m_speed/* / m_DesiredForwardSpeed*/);
+
+		float groundedTurnSpeed;
+		if(CheckCollider(false)){
+			groundedTurnSpeed = Mathf.Lerp(m_rotations.m_maxTurnSpeedGrounded, m_rotations.m_minTurnSpeedGrounded, m_rotations.m_turnSpeedGrounded);
+		}else{
+			groundedTurnSpeed = Mathf.Lerp(m_rotations.m_maxTurnSpeedWithoutGronuded, m_rotations.m_minTurnSpeedWithoutGronuded, m_rotations.m_turnSpeedWithoutGrounded);
+		}
+
 		float actualTurnSpeed = CheckCollider(false) ? groundedTurnSpeed : Vector3.Angle(m_ferretMesh.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
 		m_TargetRotation = Quaternion.RotateTowards(m_ferretMesh.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
 
-		transform.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
+		m_rigidbody.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
 		m_ferretMesh.transform.rotation = m_TargetRotation;
 	}
 

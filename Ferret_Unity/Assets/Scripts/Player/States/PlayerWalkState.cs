@@ -53,6 +53,12 @@ public class PlayerWalkState : IState
         m_playerManager.ChangeState(4);
       }
 
+      if(m_playerManager.m_pushButton){
+        if(m_playerManager.RayCastToCanPush()){
+          m_playerManager.ChangeState(7);
+        }
+      }
+
     }
 
     void Move(){
