@@ -152,6 +152,7 @@ public class PlayerManager : ClimbTypesArea {
 	[Header("Cameras")]
 	public EditCamera m_cameras = new EditCamera();
 	[System.Serializable] public class EditCamera {
+		public Transform m_pivotCamera;
 		public Camera m_firstPerson;
 		public Camera m_thirdPerson;
 
@@ -761,7 +762,8 @@ public class PlayerManager : ClimbTypesArea {
 		Vector2 moveInput = new Vector2(m_hAxis_Button, m_vAxis_Button);
 		Vector3 localMovementDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
 		
-		Vector3 forward = Quaternion.Euler(0f, m_rotations.cameraSettings.Current.m_XAxis.Value, 0f) * Vector3.forward;
+		// Vector3 forward = Quaternion.Euler(0f, m_rotations.cameraSettings.Current.m_XAxis.Value, 0f) * Vector3.forward;
+		Vector3 forward = Quaternion.Euler(0f, m_cameras.m_pivotCamera.transform.rotation.eulerAngles.y, 0f) * Vector3.forward;
 		forward.y = 0f;
 		forward.Normalize();
 
@@ -1076,8 +1078,6 @@ public class PlayerManager : ClimbTypesArea {
 		ChangeState(8);
 	}
 
-#endregion Public functions
-
 	public int CheckClimbAreaType(){
 		int i = new int();
 		switch(ClimbArea.m_climbType){ 
@@ -1096,6 +1096,18 @@ public class PlayerManager : ClimbTypesArea {
 		}
 		return i;
 	}
+
+	public Transform m_startPlayerParent;
+	public void SetPlayerParent(Transform newParent, bool resetParent = false){
+		if(!resetParent){
+			transform.SetParent(newParent);
+		}else{
+			transform.SetParent(m_startPlayerParent);
+		}
+	}
+
+#endregion Public functions
+
 
 }
 
