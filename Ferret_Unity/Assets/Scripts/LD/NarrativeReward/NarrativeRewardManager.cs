@@ -39,7 +39,7 @@ public class NarrativeRewardManager : MonoBehaviour {
 		[System.Serializable] public class Reward {
 			// private bool m_isFound;
 			public string m_name = "Title";
-			public Image m_image;
+			public Sprite m_sprite;
 			[TextArea(2,6)] public string m_descriptionText = "Description text of the narrative reward!";
 		}
 	}
@@ -58,13 +58,13 @@ public class NarrativeRewardManager : MonoBehaviour {
 	}
 
 	public void On_NarrativeRewardIsDiscovered(int rewardNumber){
-		ChangeNarrativeRewardImages(m_narrativeRewards.m_rewards[rewardNumber].m_name, m_narrativeRewards.m_rewards[rewardNumber].m_image, m_narrativeRewards.m_rewards[rewardNumber].m_descriptionText);
+		ChangeNarrativeRewardImages(m_narrativeRewards.m_rewards[rewardNumber].m_name, m_narrativeRewards.m_rewards[rewardNumber].m_sprite, m_narrativeRewards.m_rewards[rewardNumber].m_descriptionText);
 		StartCoroutine(ShowReward());
 	}
 
-	void ChangeNarrativeRewardImages(string title, Image image, string text){
+	void ChangeNarrativeRewardImages(string title, Sprite sprite, string text){
 		m_narrativeUI.m_titleTextReward.text = title;
-		m_narrativeUI.m_imageReward = image;
+		m_narrativeUI.m_imageReward.sprite = sprite;
 		m_narrativeUI.m_descriptionTextReward.text = text;
 	}
 

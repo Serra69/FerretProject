@@ -7,7 +7,9 @@ public class PistonController : TrainPathsTypes {
 	[Header("Type of piston")]
 	public PistonTypes m_pistonType = PistonTypes.MoveAndRotate;
 	public bool m_rotateBeforeMove = true;
+	[Space]
 	public bool m_resetTransformAfterMoving = false;
+	[SerializeField] float m_timeToWaitBeforeReset = 2;
 
 	[Header("Rotate")]
 	public Rotate m_rotate = new Rotate();
@@ -87,6 +89,10 @@ public class PistonController : TrainPathsTypes {
 			case PistonTypes.Rotate:
 				m_trainController.ChoseNextTarget();
 				m_trainController.ResetTrainParent();
+
+				if(m_resetTransformAfterMoving){
+					StartCoroutine(ResetTransform());
+				}
 			break;
 			case PistonTypes.MoveAndRotate:
 				if(m_rotateBeforeMove){
@@ -105,6 +111,20 @@ public class PistonController : TrainPathsTypes {
 			yield return null;
 		}
 		m_trainController.ChoseNextTarget();
+		m_trainController.ResetTrainParent();
+
+		switch(m_pistonType){ 
+			case PistonTypes.Move:
+				if(m_resetTransformAfterMoving){
+					StartCoroutine(ResetTransform());
+				}
+			break;
+			case PistonTypes.MoveAndRotate:
+				if(m_resetTransformAfterMoving){
+					StartCoroutine(ResetTransform());
+				}
+			break;
+		}
 	}
 	IEnumerator MoveAndRotateCorout(){
 		float moveJourneyLength;
@@ -128,13 +148,11 @@ public class PistonController : TrainPathsTypes {
 		m_trainController.ResetTrainParent();
 
 		if(m_resetTransformAfterMoving){
-			Invoke("titi", 2);
+			StartCoroutine(ResetTransform());
 		}
 	}
-	void titi(){
-		StartCoroutine(ResetTransform());
-	}
 	IEnumerator ResetTransform(){
+		yield return new WaitForSeconds(m_timeToWaitBeforeReset);
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 		float rotateFracJourney = new float();
