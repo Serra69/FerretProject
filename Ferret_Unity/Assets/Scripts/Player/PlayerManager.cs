@@ -1097,7 +1097,7 @@ public class PlayerManager : ClimbTypesArea {
 		return i;
 	}
 
-	public Transform m_startPlayerParent;
+	[SerializeField] Transform m_startPlayerParent;
 	public void SetPlayerParent(Transform newParent, bool resetParent = false){
 		if(!resetParent){
 			transform.SetParent(newParent);

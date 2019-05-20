@@ -9,5 +9,5 @@ public class CameraPivot : MonoBehaviour {
 	void FixedUpdate(){
 		transform.rotation = m_camera.rotation;
 	}
-	
+
 }
