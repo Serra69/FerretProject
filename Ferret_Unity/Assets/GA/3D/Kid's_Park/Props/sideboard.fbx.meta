@@ -3,12 +3,71 @@ guid: 8dca6c9ee1416ae40abb0e2fd63b5afc
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
+    100000: door
+    100002: door1
+    100004: handle
+    100006: handle1
+    100008: hinge
+    100010: hinge1
+    100012: hinge3
+    100014: hinge4
+    100016: polySurface11
+    100018: polySurface12
+    100020: polySurface13
+    100022: polySurface14
+    100024: //RootNode
+    100026: sideboard
+    400000: door
+    400002: door1
+    400004: handle
+    400006: handle1
+    400008: hinge
+    400010: hinge1
+    400012: hinge3
+    400014: hinge4
+    400016: polySurface11
+    400018: polySurface12
+    400020: polySurface13
+    400022: polySurface14
+    400024: sideboard
+    400026: //RootNode
     2100000: lambert1
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: pCube89
+    2300000: door
+    2300002: door1
+    2300004: handle
+    2300006: handle1
+    2300008: hinge
+    2300010: hinge1
+    2300012: hinge3
+    2300014: hinge4
+    2300016: polySurface11
+    2300018: polySurface12
+    2300020: polySurface13
+    2300022: polySurface14
+    3300000: door
+    3300002: door1
+    3300004: handle
+    3300006: handle1
+    3300008: hinge
+    3300010: hinge1
+    3300012: hinge3
+    3300014: hinge4
+    3300016: polySurface11
+    3300018: polySurface12
+    3300020: polySurface13
+    3300022: polySurface14
+    4300000: door
+    4300002: door1
+    4300004: handle
+    4300006: handle1
+    4300008: polySurface11
+    4300010: polySurface12
+    4300012: polySurface13
+    4300014: polySurface14
+    4300016: hinge
+    4300018: hinge1
+    4300020: hinge3
+    4300022: hinge4
   externalObjects: {}
   materials:
     importMaterials: 1
