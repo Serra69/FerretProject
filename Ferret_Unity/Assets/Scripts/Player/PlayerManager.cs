@@ -383,6 +383,7 @@ public class PlayerManager : ClimbTypesArea {
 			new PlayerClimbState(this), 	// 6 = Climb
 			new PlayerPushState(this),		// 7 = Push
 			new PlayerDeathState(this),		// 8 = Death
+			new PlayerCinematicState(this),	// 9 = Cinematic
 		});
 
 		m_rigidbody = GetComponent<Rigidbody>();
@@ -1104,6 +1105,23 @@ public class PlayerManager : ClimbTypesArea {
 		}else{
 			transform.SetParent(m_startPlayerParent);
 		}
+	}
+
+	public void On_CinematicIsLaunch(bool b){
+		if(b){
+			ChangeState(9);
+		}else{
+			ChangeState(ReturnLastState());
+		}
+	}
+
+	public int ReturnLastState(){
+		for (int i = 0, l = m_sM.States.Count; i < l; ++i){
+            if(m_sM.IsLastStateIndex(i)){
+                return i;
+            }
+        }
+		return 0;
 	}
 
 #endregion Public functions

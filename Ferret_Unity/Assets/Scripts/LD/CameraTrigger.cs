@@ -1,9 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 [RequireComponent(typeof(BoxCollider))]
 public class CameraTrigger : MonoBehaviour {
+
+	[Header("Parameters")]
+	[SerializeField] bool m_playerCanMoveWhenCameraMove = true;
+	[SerializeField] bool m_allowStopShowTarget = true;
 
 	[Header("Target")]
 	[SerializeField] float m_timeToShowTarget = 2;
@@ -18,7 +23,7 @@ public class CameraTrigger : MonoBehaviour {
 
 	[Header("Gizmos")]
 	[SerializeField] bool m_showGizmos = true;
-	[SerializeField] Color m_colorGizmos = Color.magenta;
+	[SerializeField] Color m_colorGizmos = Color.yellow;
 
 	BoxCollider m_boxColl;
 	public BoxCollider BoxColl{
@@ -27,13 +32,16 @@ public class CameraTrigger : MonoBehaviour {
         }
     }
 
-	Cinemachine.CinemachineBrain m_cameraBrain;
+	PlayerManager m_playerManager;
+	CinemachineBrain m_cameraBrain;
 	CameraLookAtPosition m_cameraLookAt;
-	bool m_isActivated = false;
+	bool m_isFirstActivated = false;
+	bool m_isSecondActivated = false;
 	Vector3 m_realLookAtPosition;
 
     void Start(){
-		m_cameraBrain = Camera.main.GetComponent<Cinemachine.CinemachineBrain>();
+		m_playerManager = PlayerManager.Instance;
+		m_cameraBrain = Camera.main.GetComponent<CinemachineBrain>();
 		BoxColl.isTrigger = true;
 		m_cameraLookAt = CameraLookAtPosition.Instance;
 
@@ -41,14 +49,30 @@ public class CameraTrigger : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider col){
-		if(col.CompareTag("Player") && !m_isActivated){
-			m_isActivated = true;
+		if(col.CompareTag("Player") && !m_isFirstActivated){
+			m_isFirstActivated = true;
+
+			if(!m_playerCanMoveWhenCameraMove){
+				m_playerManager.On_CinematicIsLaunch(true);
+			}
+
 			StartCoroutine(MoveCoroutToTarget());
+		}
+	}
+	void OnTriggerExit(Collider col){
+		if(col.CompareTag("Player") && !m_isSecondActivated && m_allowStopShowTarget){
+			m_isSecondActivated = true;
+
+			if(!m_playerCanMoveWhenCameraMove){
+				m_playerManager.On_CinematicIsLaunch(true);
+			}
+
+			StartCoroutine(MoveCoroutToPlayer());
 		}
 	}
 
 	IEnumerator MoveCoroutToTarget(){
-		EnableCameraBrain(true);
+		EnableCameraBrain(false);
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 		while(m_cameraLookAt.transform.position != m_realLookAtPosition){
@@ -66,17 +90,24 @@ public class CameraTrigger : MonoBehaviour {
 	IEnumerator MoveCoroutToPlayer(){
 		float moveJourneyLength;
 		float moveFracJourney = new float();
-		while(m_cameraLookAt.transform.position != m_cameraLookAt.StartPosition){
-			moveJourneyLength = Vector3.Distance(m_cameraLookAt.transform.position, m_cameraLookAt.StartPosition);
+		while(m_cameraLookAt.transform.localPosition != m_cameraLookAt.StartPosition){
+			moveJourneyLength = Vector3.Distance(m_cameraLookAt.transform.localPosition, m_cameraLookAt.StartPosition);
 			moveFracJourney += (Time.deltaTime) * m_speedToPlayer / moveJourneyLength;
-			m_cameraLookAt.transform.position = Vector3.Lerp(m_cameraLookAt.transform.position, m_cameraLookAt.StartPosition, m_curveToPlayer.Evaluate(moveFracJourney));
+			m_cameraLookAt.transform.localPosition = Vector3.Lerp(m_cameraLookAt.transform.localPosition, m_cameraLookAt.StartPosition, m_curveToPlayer.Evaluate(moveFracJourney));
 			yield return null;
 		}
-		EnableCameraBrain(false);
+		EnableCameraBrain(true);
+		On_ShowPointIsFinished();
+	}
+
+	void On_ShowPointIsFinished(){
+		if(!m_playerCanMoveWhenCameraMove){
+			m_playerManager.On_CinematicIsLaunch(false);
+		}
 	}
 
 	void EnableCameraBrain(bool b){
-		m_cameraBrain.enabled = b;
+		// m_cameraBrain.enabled = b;
 	}
 
 	void OnDrawGizmos(){
@@ -87,10 +118,23 @@ public class CameraTrigger : MonoBehaviour {
 		if(BoxColl != null){
 			Gizmos.DrawWireCube(transform.position + BoxColl.center, BoxColl.size);
 			if(m_targetPos != null){
-				m_realLookAtPosition = Vector3.Lerp(transform.position, m_targetPos.position, m_distanceRange);
+				Gizmos.DrawWireSphere(m_targetPos.position, 0.2f);
+				m_realLookAtPosition = Vector3.Lerp(transform.position + BoxColl.center, m_targetPos.position, m_distanceRange);
 				Gizmos.DrawLine(transform.position + BoxColl.center, m_realLookAtPosition);
+
+				Gizmos.DrawSphere(m_realLookAtPosition, 0.2f);
+
+				Gizmos.DrawLine(ReturnDot(0.05f), ReturnDot(0.15f));
+				Gizmos.DrawLine(ReturnDot(0.25f), ReturnDot(0.35f));
+				Gizmos.DrawLine(ReturnDot(0.45f), ReturnDot(0.55f));
+				Gizmos.DrawLine(ReturnDot(0.65f), ReturnDot(0.75f));
+				Gizmos.DrawLine(ReturnDot(0.85f), ReturnDot(0.95f));
 			}
 		}
+	}
+
+	Vector3 ReturnDot(float f){
+		return Vector3.Lerp(m_realLookAtPosition, m_targetPos.position, f);
 	}
 
 }

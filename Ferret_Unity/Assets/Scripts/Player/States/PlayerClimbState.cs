@@ -56,7 +56,7 @@ public class PlayerClimbState : IState
   {
     if(m_playerManager.CanMoveOnClimb && !m_playerManager.IsInLerpRotation){
       if( (m_playerManager.RayCastDownToStopClimbing() == false) && (!m_endOfClimbState) && !m_playerManager.IsInLerpRotation && m_playerManager.ClimbArea.m_areaCanBeFinishedClimbable){
-        Debug.Log("Je part en montant comme un connard");
+        // Debug.Log("Je part en montant comme un connard");
         m_endOfClimbState = true;
         m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + Vector3.down * 2 + Vector3.up * 3, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(0, m_playerManager.transform.rotation.eulerAngles.y, m_playerManager.transform.rotation.eulerAngles.z), false);
       }
@@ -94,7 +94,7 @@ public class PlayerClimbState : IState
       m_playerManager.StartLocalRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.localRotation, Quaternion.identity);
     }
     if(m_playerManager.EndOfOrientationAfterClimb){
-      Debug.Log("FINI LA STATE EN TOMBANT");
+      // Debug.Log("FINI LA STATE EN TOMBANT");
       m_playerManager.ChangeState(4);
     }
   }
