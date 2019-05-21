@@ -6,6 +6,12 @@ using Cinemachine;
 [RequireComponent(typeof(BoxCollider))]
 public class CameraTrigger : MonoBehaviour {
 
+	[Header("Debugs")]
+	public Debugs m_debugs = new Debugs();
+	[System.Serializable] public class Debugs {
+		public bool m_cuteButCanModify = true;
+	}
+
 	[Header("Parameters")]
 	[SerializeField] bool m_playerCanMoveWhenCameraMove = true;
 	[SerializeField] bool m_allowStopShowTarget = true;
@@ -38,6 +44,10 @@ public class CameraTrigger : MonoBehaviour {
 	bool m_isFirstActivated = false;
 	bool m_isSecondActivated = false;
 	Vector3 m_realLookAtPosition;
+	ShowCamera m_showCam;
+	Camera m_showCamera;
+
+	bool m_coroutineIsRunning = false;
 
     void Start(){
 		m_playerManager = PlayerManager.Instance;
@@ -46,6 +56,9 @@ public class CameraTrigger : MonoBehaviour {
 		m_cameraLookAt = CameraLookAtPosition.Instance;
 
 		m_realLookAtPosition = Vector3.Lerp(transform.position, m_targetPos.position, m_distanceRange);
+
+		m_showCam = ShowCamera.Instance;
+		m_showCamera = m_showCam.GetComponent<Camera>();
 	}
 
 	void OnTriggerEnter(Collider col){
@@ -72,7 +85,14 @@ public class CameraTrigger : MonoBehaviour {
 	}
 
 	IEnumerator MoveCoroutToTarget(){
-		EnableCameraBrain(false);
+		m_coroutineIsRunning = true;
+		if(!m_debugs.m_cuteButCanModify){
+			m_showCam.SetCameraPos();
+			EnableCamera(true);
+			yield return new WaitForSeconds(0.05f);
+			EnableCameraBrain(false);
+		}
+
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 		while(m_cameraLookAt.transform.position != m_realLookAtPosition){
@@ -81,6 +101,7 @@ public class CameraTrigger : MonoBehaviour {
 			m_cameraLookAt.transform.position = Vector3.Lerp(m_cameraLookAt.transform.position, m_realLookAtPosition, m_curveToTarget.Evaluate(moveFracJourney));
 			yield return null;
 		}
+		m_coroutineIsRunning = false;
 		StartCoroutine(ShowTarget());
 	}
 	IEnumerator ShowTarget(){
@@ -88,6 +109,7 @@ public class CameraTrigger : MonoBehaviour {
 		StartCoroutine(MoveCoroutToPlayer());
 	}
 	IEnumerator MoveCoroutToPlayer(){
+		m_coroutineIsRunning = true;
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 		while(m_cameraLookAt.transform.localPosition != m_cameraLookAt.StartPosition){
@@ -96,8 +118,14 @@ public class CameraTrigger : MonoBehaviour {
 			m_cameraLookAt.transform.localPosition = Vector3.Lerp(m_cameraLookAt.transform.localPosition, m_cameraLookAt.StartPosition, m_curveToPlayer.Evaluate(moveFracJourney));
 			yield return null;
 		}
-		EnableCameraBrain(true);
-		On_ShowPointIsFinished();
+
+		if(!m_debugs.m_cuteButCanModify){
+			EnableCameraBrain(true);
+			yield return new WaitForSeconds(0.05f);
+			EnableCamera(false);
+			On_ShowPointIsFinished();
+		}
+		m_coroutineIsRunning = false;
 	}
 
 	void On_ShowPointIsFinished(){
@@ -107,7 +135,11 @@ public class CameraTrigger : MonoBehaviour {
 	}
 
 	void EnableCameraBrain(bool b){
-		// m_cameraBrain.enabled = b;
+		m_cameraBrain.enabled = b;
+	}
+
+	void EnableCamera(bool b){
+		m_showCamera.enabled = b;
 	}
 
 	void OnDrawGizmos(){

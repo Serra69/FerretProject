@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CameraLookAtPosition : MonoBehaviour {
 
-	
 #region Singleton
 	public static CameraLookAtPosition Instance;
 	void Awake(){
