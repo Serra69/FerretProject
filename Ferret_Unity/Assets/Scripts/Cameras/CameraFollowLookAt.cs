@@ -8,7 +8,7 @@ public class CameraFollowLookAt : MonoBehaviour {
 	
 	Vector3 m_offset;
 
-	void Start(){
+    void Start(){
 		m_offset = transform.localPosition;
 	}
 

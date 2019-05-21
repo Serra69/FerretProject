@@ -49,7 +49,40 @@ public class CameraTrigger : MonoBehaviour {
 
 	bool m_coroutineIsRunning = false;
 
+	public CinemachineFreeLook m_freeLookCam;
+
+	AxisState m_saveXAxis;
+	AxisState m_dontMoveXAxis;
+	AxisState m_saveYAxis;
+	AxisState m_dontMoveYAxis;
+
+	FollowPlayer m_followPlayer;
+
+	void ResetXInput(bool b){
+		if(b){
+			m_saveXAxis = m_freeLookCam.m_XAxis;
+			m_dontMoveXAxis.Value = m_saveXAxis.Value;
+			m_freeLookCam.m_XAxis = m_dontMoveXAxis;
+		}else{
+			m_freeLookCam.m_XAxis = m_saveXAxis;
+		}
+	}
+	void ResetYInput(bool b){
+		if(b){
+			m_saveYAxis = m_freeLookCam.m_YAxis;
+			m_dontMoveYAxis.Value = m_saveYAxis.Value;
+			m_freeLookCam.m_YAxis = m_dontMoveYAxis;
+		}else{
+			m_freeLookCam.m_YAxis = m_saveYAxis;
+		}
+	}
+
     void Start(){
+		m_dontMoveXAxis = m_freeLookCam.m_XAxis;
+		m_dontMoveYAxis = m_freeLookCam.m_YAxis;
+		m_dontMoveXAxis.m_InputAxisName = "";
+		m_dontMoveYAxis.m_InputAxisName = "";
+
 		m_playerManager = PlayerManager.Instance;
 		m_cameraBrain = Camera.main.GetComponent<CinemachineBrain>();
 		BoxColl.isTrigger = true;
@@ -59,6 +92,10 @@ public class CameraTrigger : MonoBehaviour {
 
 		m_showCam = ShowCamera.Instance;
 		m_showCamera = m_showCam.GetComponent<Camera>();
+
+		m_followPlayer = FollowPlayer.Instance;
+
+		m_freeLookCam.m_Orbits[0].m_Height = 15;
 	}
 
 	void OnTriggerEnter(Collider col){
@@ -85,7 +122,11 @@ public class CameraTrigger : MonoBehaviour {
 	}
 
 	IEnumerator MoveCoroutToTarget(){
+		m_freeLookCam.m_Follow = this.transform;
+		ResetXInput(true);
+		ResetYInput(true);
 		m_coroutineIsRunning = true;
+		m_followPlayer.FollowLookAtPoint = false;
 		if(!m_debugs.m_cuteButCanModify){
 			m_showCam.SetCameraPos();
 			EnableCamera(true);
@@ -125,7 +166,13 @@ public class CameraTrigger : MonoBehaviour {
 			EnableCamera(false);
 			On_ShowPointIsFinished();
 		}
+
+		m_followPlayer.ReturnToPlayer();
+
 		m_coroutineIsRunning = false;
+		ResetXInput(false);
+		ResetYInput(false);
+		m_freeLookCam.m_Follow = m_playerManager.transform;
 	}
 
 	void On_ShowPointIsFinished(){
