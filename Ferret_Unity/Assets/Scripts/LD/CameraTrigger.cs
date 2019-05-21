@@ -63,8 +63,6 @@ public class CameraTrigger : MonoBehaviour {
 		m_realLookAtPosition = Vector3.Lerp(transform.position, m_targetPos.position, m_distanceRange);
 
 		m_followPlayer = FollowPlayer.Instance;
-
-		// m_freeLookCam.m_Orbits[0].m_Height = 15;
 	}
 
 	void OnTriggerEnter(Collider col){
