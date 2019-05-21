@@ -6,12 +6,6 @@ using Cinemachine;
 [RequireComponent(typeof(BoxCollider))]
 public class CameraTrigger : MonoBehaviour {
 
-	[Header("Debugs")]
-	public Debugs m_debugs = new Debugs();
-	[System.Serializable] public class Debugs {
-		public bool m_cuteButCanModify = true;
-	}
-
 	[Header("Parameters")]
 	[SerializeField] bool m_playerCanMoveWhenCameraMove = true;
 	[SerializeField] bool m_allowStopShowTarget = true;
@@ -39,26 +33,38 @@ public class CameraTrigger : MonoBehaviour {
     }
 
 	PlayerManager m_playerManager;
-	CinemachineBrain m_cameraBrain;
 	CameraLookAtPosition m_cameraLookAt;
 	bool m_isFirstActivated = false;
 	bool m_isSecondActivated = false;
 	Vector3 m_realLookAtPosition;
-	ShowCamera m_showCam;
-	Camera m_showCamera;
 
 	bool m_coroutineIsRunning = false;
 
+	CinemachineFreeLook m_freeLookCam;
+	AxisState m_saveXAxis;
+	AxisState m_dontMoveXAxis;
+	AxisState m_saveYAxis;
+	AxisState m_dontMoveYAxis;
+
+	FollowPlayer m_followPlayer;
+
     void Start(){
+		m_freeLookCam = FreeLookCam.Instance.GetComponent<CinemachineFreeLook>();
+
+		m_dontMoveXAxis = m_freeLookCam.m_XAxis;
+		m_dontMoveYAxis = m_freeLookCam.m_YAxis;
+		m_dontMoveXAxis.m_InputAxisName = "";
+		m_dontMoveYAxis.m_InputAxisName = "";
+
 		m_playerManager = PlayerManager.Instance;
-		m_cameraBrain = Camera.main.GetComponent<CinemachineBrain>();
 		BoxColl.isTrigger = true;
 		m_cameraLookAt = CameraLookAtPosition.Instance;
 
 		m_realLookAtPosition = Vector3.Lerp(transform.position, m_targetPos.position, m_distanceRange);
 
-		m_showCam = ShowCamera.Instance;
-		m_showCamera = m_showCam.GetComponent<Camera>();
+		m_followPlayer = FollowPlayer.Instance;
+
+		// m_freeLookCam.m_Orbits[0].m_Height = 15;
 	}
 
 	void OnTriggerEnter(Collider col){
@@ -73,7 +79,7 @@ public class CameraTrigger : MonoBehaviour {
 		}
 	}
 	void OnTriggerExit(Collider col){
-		if(col.CompareTag("Player") && !m_isSecondActivated && m_allowStopShowTarget){
+		if(col.CompareTag("Player") && !m_isSecondActivated && !m_coroutineIsRunning && m_allowStopShowTarget){
 			m_isSecondActivated = true;
 
 			if(!m_playerCanMoveWhenCameraMove){
@@ -85,13 +91,10 @@ public class CameraTrigger : MonoBehaviour {
 	}
 
 	IEnumerator MoveCoroutToTarget(){
+		ResetXInput(false);
+		ResetYInput(false);
 		m_coroutineIsRunning = true;
-		if(!m_debugs.m_cuteButCanModify){
-			m_showCam.SetCameraPos();
-			EnableCamera(true);
-			yield return new WaitForSeconds(0.05f);
-			EnableCameraBrain(false);
-		}
+		m_followPlayer.FollowLookAtPoint = false;
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
@@ -119,27 +122,30 @@ public class CameraTrigger : MonoBehaviour {
 			yield return null;
 		}
 
-		if(!m_debugs.m_cuteButCanModify){
-			EnableCameraBrain(true);
-			yield return new WaitForSeconds(0.05f);
-			EnableCamera(false);
-			On_ShowPointIsFinished();
-		}
+		m_followPlayer.ReturnToPlayer();
+
 		m_coroutineIsRunning = false;
+		ResetXInput(true);
+		ResetYInput(true);
 	}
 
-	void On_ShowPointIsFinished(){
-		if(!m_playerCanMoveWhenCameraMove){
-			m_playerManager.On_CinematicIsLaunch(false);
+	void ResetXInput(bool b){
+		if(b){
+			m_freeLookCam.m_XAxis = m_saveXAxis;
+		}else{
+			m_saveXAxis = m_freeLookCam.m_XAxis;
+			m_dontMoveXAxis.Value = m_saveXAxis.Value;
+			m_freeLookCam.m_XAxis = m_dontMoveXAxis;
 		}
 	}
-
-	void EnableCameraBrain(bool b){
-		m_cameraBrain.enabled = b;
-	}
-
-	void EnableCamera(bool b){
-		m_showCamera.enabled = b;
+	void ResetYInput(bool b){
+		if(b){
+			m_freeLookCam.m_YAxis = m_saveYAxis;
+		}else{
+			m_saveYAxis = m_freeLookCam.m_YAxis;
+			m_dontMoveYAxis.Value = m_saveYAxis.Value;
+			m_freeLookCam.m_YAxis = m_dontMoveYAxis;
+		}
 	}
 
 	void OnDrawGizmos(){
@@ -164,7 +170,6 @@ public class CameraTrigger : MonoBehaviour {
 			}
 		}
 	}
-
 	Vector3 ReturnDot(float f){
 		return Vector3.Lerp(m_realLookAtPosition, m_targetPos.position, f);
 	}
