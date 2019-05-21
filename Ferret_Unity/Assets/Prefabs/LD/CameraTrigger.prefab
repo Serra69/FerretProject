@@ -122,60 +122,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ee09cc333bd4c0469a0791d2f874983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerCanMoveWhenCameraMove: 1
-  m_allowStopShowTarget: 1
-  m_timeToShowTarget: 1
-  m_targetPos: {fileID: 4826731207537292}
-  m_distanceRange: 0.75
-  m_speedToTarget: 2
-  m_curveToTarget:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_speedToPlayer: 2
-  m_curveToPlayer:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_showGizmos: 1
-  m_colorGizmos: {r: 1, g: 1, b: 0, a: 1}
+  m_canChangeOrbit: 1
+  m_changeOrbit:
+    m_newLookType: 1
+  m_canLookPosiiton: 1
+  m_lookPosition:
+    m_playerCanMoveWhenCameraMove: 1
+    m_allowStopShowTarget: 1
+    m_timeToShowTarget: 1
+    m_targetPos: {fileID: 4826731207537292}
+    m_distanceRange: 0.75
+    m_speedToTarget: 2
+    m_curveToTarget:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_speedToPlayer: 2
+    m_curveToPlayer:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  m_gizmos:
+    m_showGizmos: 1
+    m_colorGizmos: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}

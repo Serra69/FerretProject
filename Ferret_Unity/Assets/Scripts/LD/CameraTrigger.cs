@@ -4,26 +4,43 @@ using UnityEngine;
 using Cinemachine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class CameraTrigger : MonoBehaviour {
+public class CameraTrigger : FreeLookCameraType {
 
-	[Header("Parameters")]
-	[SerializeField] bool m_playerCanMoveWhenCameraMove = true;
-	[SerializeField] bool m_allowStopShowTarget = true;
+	[Header("Change orbit")]
+	[SerializeField] bool m_canChangeOrbit = true;
+	public ChangeOrbit m_changeOrbit = new ChangeOrbit();
+	[System.Serializable] public class ChangeOrbit {
+		public FreeLookCameraOrbit m_newLookType = FreeLookCameraOrbit.Far;
+	}
 
-	[Header("Target")]
-	[SerializeField] float m_timeToShowTarget = 2;
-	[SerializeField] Transform m_targetPos;
+	[Header("Look position")]
+	[SerializeField] bool m_canLookPosiiton = true;
+	public LookPosition m_lookPosition = new LookPosition();
+	[System.Serializable] public class LookPosition {
+		[Header("Parameters")]
+		public bool m_playerCanMoveWhenCameraMove = true;
+		public bool m_allowStopShowTarget = true;
 
-	[Header("Move")]
-	[SerializeField, Range(0, 1)] float m_distanceRange = 0.5f;
-	[SerializeField] float m_speedToTarget = 5;
-	[SerializeField] AnimationCurve m_curveToTarget;
-	[SerializeField] float m_speedToPlayer = 5;
-	[SerializeField] AnimationCurve m_curveToPlayer;
+		[Header("Target")]
+		public float m_timeToShowTarget = 2;
+		public Transform m_targetPos;
+
+		[Header("Move")]
+		[Range(0, 1)] public float m_distanceRange = 0.5f;
+		public float m_speedToTarget = 5;
+		public AnimationCurve m_curveToTarget;
+		public float m_speedToPlayer = 5;
+		public AnimationCurve m_curveToPlayer;
+
+	}	
 
 	[Header("Gizmos")]
-	[SerializeField] bool m_showGizmos = true;
-	[SerializeField] Color m_colorGizmos = Color.yellow;
+	public Gizmo m_gizmos = new Gizmo();
+	[System.Serializable] public class Gizmo {
+		public bool m_showGizmos = true;
+		public Color m_colorGizmos = Color.yellow;
+	}
+
 
 	BoxCollider m_boxColl;
 	public BoxCollider BoxColl{
@@ -33,34 +50,23 @@ public class CameraTrigger : MonoBehaviour {
     }
 
 	PlayerManager m_playerManager;
+	FreeLookCamManager m_freeLookCamManager;
 	CameraLookAtPosition m_cameraLookAt;
 	bool m_isFirstActivated = false;
 	bool m_isSecondActivated = false;
 	Vector3 m_realLookAtPosition;
-
 	bool m_coroutineIsRunning = false;
-
-	CinemachineFreeLook m_freeLookCam;
-	AxisState m_saveXAxis;
-	AxisState m_dontMoveXAxis;
-	AxisState m_saveYAxis;
-	AxisState m_dontMoveYAxis;
-
 	FollowPlayer m_followPlayer;
 
     void Start(){
-		m_freeLookCam = FreeLookCam.Instance.GetComponent<CinemachineFreeLook>();
-
-		m_dontMoveXAxis = m_freeLookCam.m_XAxis;
-		m_dontMoveYAxis = m_freeLookCam.m_YAxis;
-		m_dontMoveXAxis.m_InputAxisName = "";
-		m_dontMoveYAxis.m_InputAxisName = "";
+		m_freeLookCamManager = FreeLookCamManager.Instance;
 
 		m_playerManager = PlayerManager.Instance;
 		BoxColl.isTrigger = true;
 		m_cameraLookAt = CameraLookAtPosition.Instance;
 
-		m_realLookAtPosition = Vector3.Lerp(transform.position, m_targetPos.position, m_distanceRange);
+		if(m_lookPosition.m_targetPos != null)
+			m_realLookAtPosition = Vector3.Lerp(transform.position, m_lookPosition.m_targetPos.position, m_lookPosition.m_distanceRange);
 
 		m_followPlayer = FollowPlayer.Instance;
 	}
@@ -69,28 +75,32 @@ public class CameraTrigger : MonoBehaviour {
 		if(col.CompareTag("Player") && !m_isFirstActivated){
 			m_isFirstActivated = true;
 
-			if(!m_playerCanMoveWhenCameraMove){
-				m_playerManager.On_CinematicIsLaunch(true);
+			if(m_canLookPosiiton){
+				if(!m_lookPosition.m_playerCanMoveWhenCameraMove){
+					m_playerManager.On_CinematicIsLaunch(true);
+				}
+				StartCoroutine(MoveCoroutToTarget());
 			}
 
-			StartCoroutine(MoveCoroutToTarget());
+			if(m_canChangeOrbit){
+				m_freeLookCamManager.SwitchOrbitCamera(m_changeOrbit.m_newLookType);
+			}
 		}
 	}
 	void OnTriggerExit(Collider col){
-		if(col.CompareTag("Player") && !m_isSecondActivated && !m_coroutineIsRunning && m_allowStopShowTarget){
+		if(col.CompareTag("Player") && !m_isSecondActivated && !m_coroutineIsRunning && m_lookPosition.m_allowStopShowTarget && m_canLookPosiiton){
 			m_isSecondActivated = true;
 
-			if(!m_playerCanMoveWhenCameraMove){
+			if(!m_lookPosition.m_playerCanMoveWhenCameraMove){
 				m_playerManager.On_CinematicIsLaunch(true);
 			}
-
 			StartCoroutine(MoveCoroutToPlayer());
 		}
 	}
 
 	IEnumerator MoveCoroutToTarget(){
-		ResetXInput(false);
-		ResetYInput(false);
+		m_freeLookCamManager.ResetXInput(false);
+		m_freeLookCamManager.ResetYInput(false);
 		m_coroutineIsRunning = true;
 		m_followPlayer.FollowLookAtPoint = false;
 
@@ -98,15 +108,15 @@ public class CameraTrigger : MonoBehaviour {
 		float moveFracJourney = new float();
 		while(m_cameraLookAt.transform.position != m_realLookAtPosition){
 			moveJourneyLength = Vector3.Distance(m_cameraLookAt.transform.position, m_realLookAtPosition);
-			moveFracJourney += (Time.deltaTime) * m_speedToTarget / moveJourneyLength;
-			m_cameraLookAt.transform.position = Vector3.Lerp(m_cameraLookAt.transform.position, m_realLookAtPosition, m_curveToTarget.Evaluate(moveFracJourney));
+			moveFracJourney += (Time.deltaTime) * m_lookPosition.m_speedToTarget / moveJourneyLength;
+			m_cameraLookAt.transform.position = Vector3.Lerp(m_cameraLookAt.transform.position, m_realLookAtPosition, m_lookPosition.m_curveToTarget.Evaluate(moveFracJourney));
 			yield return null;
 		}
 		m_coroutineIsRunning = false;
 		StartCoroutine(ShowTarget());
 	}
 	IEnumerator ShowTarget(){
-		yield return new WaitForSeconds(m_timeToShowTarget);
+		yield return new WaitForSeconds(m_lookPosition.m_timeToShowTarget);
 		StartCoroutine(MoveCoroutToPlayer());
 	}
 	IEnumerator MoveCoroutToPlayer(){
@@ -115,47 +125,28 @@ public class CameraTrigger : MonoBehaviour {
 		float moveFracJourney = new float();
 		while(m_cameraLookAt.transform.localPosition != m_cameraLookAt.StartPosition){
 			moveJourneyLength = Vector3.Distance(m_cameraLookAt.transform.localPosition, m_cameraLookAt.StartPosition);
-			moveFracJourney += (Time.deltaTime) * m_speedToPlayer / moveJourneyLength;
-			m_cameraLookAt.transform.localPosition = Vector3.Lerp(m_cameraLookAt.transform.localPosition, m_cameraLookAt.StartPosition, m_curveToPlayer.Evaluate(moveFracJourney));
+			moveFracJourney += (Time.deltaTime) * m_lookPosition.m_speedToPlayer / moveJourneyLength;
+			m_cameraLookAt.transform.localPosition = Vector3.Lerp(m_cameraLookAt.transform.localPosition, m_cameraLookAt.StartPosition, m_lookPosition.m_curveToPlayer.Evaluate(moveFracJourney));
 			yield return null;
 		}
 
 		m_followPlayer.ReturnToPlayer();
 
 		m_coroutineIsRunning = false;
-		ResetXInput(true);
-		ResetYInput(true);
-	}
-
-	void ResetXInput(bool b){
-		if(b){
-			m_freeLookCam.m_XAxis = m_saveXAxis;
-		}else{
-			m_saveXAxis = m_freeLookCam.m_XAxis;
-			m_dontMoveXAxis.Value = m_saveXAxis.Value;
-			m_freeLookCam.m_XAxis = m_dontMoveXAxis;
-		}
-	}
-	void ResetYInput(bool b){
-		if(b){
-			m_freeLookCam.m_YAxis = m_saveYAxis;
-		}else{
-			m_saveYAxis = m_freeLookCam.m_YAxis;
-			m_dontMoveYAxis.Value = m_saveYAxis.Value;
-			m_freeLookCam.m_YAxis = m_dontMoveYAxis;
-		}
+		m_freeLookCamManager.ResetXInput(true);
+		m_freeLookCamManager.ResetYInput(true);
 	}
 
 	void OnDrawGizmos(){
-		Gizmos.color = m_colorGizmos;
-		if(!m_showGizmos){
+		Gizmos.color = m_gizmos.m_colorGizmos;
+		if(!m_gizmos.m_showGizmos){
 			return;
 		}
 		if(BoxColl != null){
 			Gizmos.DrawWireCube(transform.position + BoxColl.center, BoxColl.size);
-			if(m_targetPos != null){
-				Gizmos.DrawWireSphere(m_targetPos.position, 0.2f);
-				m_realLookAtPosition = Vector3.Lerp(transform.position + BoxColl.center, m_targetPos.position, m_distanceRange);
+			if(m_lookPosition.m_targetPos != null){
+				Gizmos.DrawWireSphere(m_lookPosition.m_targetPos.position, 0.2f);
+				m_realLookAtPosition = Vector3.Lerp(transform.position + BoxColl.center, m_lookPosition.m_targetPos.position, m_lookPosition.m_distanceRange);
 				Gizmos.DrawLine(transform.position + BoxColl.center, m_realLookAtPosition);
 
 				Gizmos.DrawSphere(m_realLookAtPosition, 0.2f);
@@ -169,7 +160,7 @@ public class CameraTrigger : MonoBehaviour {
 		}
 	}
 	Vector3 ReturnDot(float f){
-		return Vector3.Lerp(m_realLookAtPosition, m_targetPos.position, f);
+		return Vector3.Lerp(m_realLookAtPosition, m_lookPosition.m_targetPos.position, f);
 	}
 
 }
