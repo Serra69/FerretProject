@@ -47,7 +47,6 @@ public class FollowPlayer : MonoBehaviour {
 		StartCoroutine(ReturnToPlayerCorout());
 	}
 	IEnumerator ReturnToPlayerCorout(){
-		print("ça démar");
 		float rotateJourneyLength;
 		float rotateFracJourney = new float();
 

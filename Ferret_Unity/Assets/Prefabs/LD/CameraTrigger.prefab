@@ -127,7 +127,7 @@ MonoBehaviour:
   m_timeToShowTarget: 1
   m_targetPos: {fileID: 4826731207537292}
   m_distanceRange: 0.75
-  m_speedToTarget: 1.5
+  m_speedToTarget: 2
   m_curveToTarget:
     serializedVersion: 2
     m_Curve:
@@ -152,7 +152,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_speedToPlayer: 1.5
+  m_speedToPlayer: 2
   m_curveToPlayer:
     serializedVersion: 2
     m_Curve:
