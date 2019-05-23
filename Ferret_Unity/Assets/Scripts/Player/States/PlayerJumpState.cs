@@ -32,7 +32,10 @@ public class PlayerJumpState : IState
     {   
       float proportionCompleted = m_timer / m_playerManager.m_states.m_jump.m_jumpTime;
       float yDirection = m_playerManager.m_states.m_jump.m_jumpHeightCurve.Evaluate(proportionCompleted);
+      // Debug.Log("proportionCompleted=" + proportionCompleted);
 
+      m_playerManager.m_timerOfPressSpace = proportionCompleted;
+      
       if(m_playerManager.SwitchCamera.ThirdPersonMode){
         m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed, yDirection, m_playerManager.m_states.m_jump.m_jumpForce);
       }else{

@@ -15,12 +15,10 @@ public class FixeCamera : MonoBehaviour {
 		public Vector2 m_maxLeft;
 	}	
 
+	[Range(0, 1)] public float m_botAndTop = 0.5f;
 	[Range(0, 1)] public float m_leftAndRight = 0.5f;
 
 	Vector3 m_offset;
-
-	float m_maxRight;
-	float m_maxLeft;
 
 	void Start(){
 		m_offset = transform.position;
@@ -38,8 +36,11 @@ public class FixeCamera : MonoBehaviour {
 				transform.position = desiredPos;
 		}*/
 
-		float desiredPosition = Mathf.Lerp(m_offset.x - m_positions.m_maxLeft.x, m_offset.x - m_positions.m_maxRight.x, m_leftAndRight);
-		transform.position =  new Vector3(desiredPosition, transform.position.y, transform.position.z);
+		float desiredXPosition = Mathf.Lerp(m_offset.x - m_positions.m_maxLeft.x, m_offset.x - m_positions.m_maxRight.x, m_leftAndRight);
+		float desiredYPosition = Mathf.Lerp(m_offset.y - m_positions.m_maxBot.x, m_offset.y + m_positions.m_maxTop.y, m_botAndTop);
+		transform.position =  new Vector3(desiredXPosition, desiredYPosition, transform.position.z);
+
+
 
 	}
 	

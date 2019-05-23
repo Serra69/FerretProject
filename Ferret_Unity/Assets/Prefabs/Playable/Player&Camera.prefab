@@ -1645,7 +1645,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1821579049408734}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.1299045, z: 2.7500086}
+  m_LocalPosition: {x: 0, y: 3.1299038, z: 2.7500086}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4695131428004772}
@@ -1731,7 +1731,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1224760707849188}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.75, y: 0, z: 18.66}
+  m_LocalPosition: {x: 23.838, y: 16.02, z: -146.488}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4812600198483344}
@@ -2191,7 +2191,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: -0.08417237, y: -0.000000018014504, z: -7.5590245e-10, w: -0.99645126}
+  m_LocalRotation: {x: -0.08417228, y: 0.000000020912367, z: -0.0000000040494563,
+    w: -0.99645126}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2287,7 +2288,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: -0.13721737, y: 2.7798971e-10, z: -0.0000000020067443, w: -0.990541}
+  m_LocalRotation: {x: -0.13721731, y: -0.000000024573113, z: 0.0000000013690035,
+    w: -0.990541}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2315,7 +2317,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1764841934354098}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.329904, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4222472016079204}
@@ -2403,7 +2405,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701019898918854}
-  m_LocalRotation: {x: -0.11141498, y: -0.000000017413285, z: 8.3089924e-11, w: -0.993774}
+  m_LocalRotation: {x: -0.11141489, y: 0.0000000178318, z: -0.000000003816134, w: -0.99377406}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2608,8 +2610,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1681364742312364}
-  m_LocalRotation: {x: 0.111415006, y: 0.00000003525102, z: -0.000000003952098, w: 0.993774}
-  m_LocalPosition: {x: 0, y: 3.1299045, z: 2.7500086}
+  m_LocalRotation: {x: 0.11141492, y: -0.00000003525102, z: 0.0000000039520947, w: 0.993774}
+  m_LocalPosition: {x: 0, y: 3.1299038, z: 2.7500086}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4889415137585540}
@@ -3635,6 +3637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df9be732aa469894f8ba5444f3c21853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_timerOfPressSpace: 0
   m_playerDebugs:
     m_playerCanDie: 1
   m_sM:
@@ -3694,47 +3697,29 @@ MonoBehaviour:
       m_isCrawling: 0
       m_speed: 1.5
     m_jump:
-      m_jumpForce: 7
-      m_minJumpTime: 0.35
+      m_jumpForce: 4
+      m_minJumpTime: 0.5
       m_jumpTime: 0.7
       m_jumpHeightCurve:
         serializedVersion: 2
         m_Curve:
         - serializedVersion: 3
-          time: 0
-          value: 0.006248474
-          inSlope: 3.9750085
-          outSlope: 3.9750085
-          tangentMode: 34
+          time: -0.03
+          value: 0.0036047697
+          inSlope: 3.102865
+          outSlope: 3.102865
+          tangentMode: 0
           weightedMode: 0
           inWeight: 0
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 0.25
-          value: 1.0000006
-          inSlope: 0.015230604
-          outSlope: 0.015230604
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.029038012
-        - serializedVersion: 3
-          time: 0.75
-          value: 0.9999984
-          inSlope: 0.000009485866
-          outSlope: 0.000009485866
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.31417608
+          outWeight: 0.03327645
         - serializedVersion: 3
           time: 1
-          value: 0.006248474
-          inSlope: -3.9749997
-          outSlope: -3.9749997
-          tangentMode: 34
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
           weightedMode: 0
-          inWeight: 0.33333334
+          inWeight: 0
           outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
@@ -3744,6 +3729,33 @@ MonoBehaviour:
         m_fromWalk: 3
         m_fromRun: 6
         m_fromCrawl: 2.5
+    m_fall:
+      m_duration: 0.25
+      m_fallMultiplier: 1
+      m_fallCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: -0.000007908291
+          outSlope: -0.000007908291
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.045221888
+        - serializedVersion: 3
+          time: 1
+          value: 0
+          inSlope: -1.8885647
+          outSlope: -1.8885647
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.04307109
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
     m_takeObject:
       m_delayToTakeAnObject: 0.15
       m_canITakeAnObject: 1
@@ -3760,7 +3772,7 @@ MonoBehaviour:
   m_physics:
     castCenter: {fileID: 4345800815733880}
     m_topMaxDistance: 0.35
-    m_botMaxDistance: 0.29
+    m_botMaxDistance: 0.225
     m_maxCenterDistance: 1
     m_groundLayer:
       serializedVersion: 2
@@ -3784,7 +3796,7 @@ MonoBehaviour:
     m_pivot: {fileID: 4143300893170828}
     m_turnSpeedGrounded: 1
     m_minTurnSpeedGrounded: 800
-    m_maxTurnSpeedGrounded: 200
+    m_maxTurnSpeedGrounded: 500
     m_turnSpeedWithoutGrounded: 0.25
     m_minTurnSpeedWithoutGronuded: 200
     m_maxTurnSpeedWithoutGronuded: 0

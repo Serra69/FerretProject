@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerFallState : IState
 {
+  float m_currentime = 0;
+
+  bool m_isFalling = false;
+  float m_currentTimeOfFall = 0;
 
 	PlayerManager m_playerManager;
 
@@ -17,6 +21,9 @@ public class PlayerFallState : IState
   {
     //Debug.LogFormat("{0} : Enter()", GetType().Name);
     m_playerManager.Animator.SetTrigger("Fall");
+    m_currentime = 1 - m_playerManager.m_timerOfPressSpace;
+
+    m_currentTimeOfFall = 0;
   }
 
   public void Exit()
@@ -27,6 +34,14 @@ public class PlayerFallState : IState
   public void FixedUpdate()
   {
     Move();
+    m_currentime += Time.deltaTime;
+    if(m_currentime > m_playerManager.m_states.m_fall.m_duration){
+      m_currentime = m_playerManager.m_states.m_fall.m_duration;
+    }
+
+    if(m_isFalling){
+      m_currentTimeOfFall += Time.deltaTime;
+    }
   }
 
   public void Update()
@@ -42,7 +57,19 @@ public class PlayerFallState : IState
   void Move(){
 
     if(m_playerManager.SwitchCamera.ThirdPersonMode){
-      m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed);
+
+      if(m_playerManager.m_states.m_jump.m_jumpHeightCurve.Evaluate(1 - m_currentime / m_playerManager.m_states.m_fall.m_duration) * Physics.gravity.y > 1){
+        // Debug.Log("je suis au dessus de 1");
+        m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed, m_playerManager.m_states.m_jump.m_jumpHeightCurve.Evaluate(1 - m_currentime / m_playerManager.m_states.m_fall.m_duration) * Physics.gravity.y, 1);
+      }else{
+        // Debug.Log("je suis en dessous de 1");
+        m_isFalling = true;
+        m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed, Physics.gravity.y * m_playerManager.m_states.m_fall.m_fallMultiplier, 1);
+        // m_playerManager.MovePlayer(3, - Mathf.Exp(m_currentTimeOfFall * m_playerManager.m_states.m_fall.m_fallMultiplier * 9.81f), 1);
+
+        // Debug.Log("Mathf.Exp(m_currentTimeOfFall) = " + - Mathf.Exp(m_currentTimeOfFall * m_playerManager.m_states.m_fall.m_fallMultiplier * 9.81f));
+      }
+
       if(m_playerManager.PlayerInputIsMoving()){
         m_playerManager.RotatePlayer();
       }

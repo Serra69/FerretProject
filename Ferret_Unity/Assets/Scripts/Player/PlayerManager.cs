@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : ClimbTypesArea {
 
+	public float m_timerOfPressSpace = 0;
+
 	public static PlayerManager Instance;
 
 	// Utiliser ça pour faire tout les changements de "transform.position"
@@ -89,7 +91,6 @@ public class PlayerManager : ClimbTypesArea {
 
 		public Jump m_jump = new Jump();
 		[System.Serializable] public class Jump {
-
 			public float m_jumpForce = 10f;
 			public float m_minJumpTime = 0.1f;
 			public float m_jumpTime = 0.5f;
@@ -102,6 +103,13 @@ public class PlayerManager : ClimbTypesArea {
 				public float m_fromRun = 6;
 				public float m_fromCrawl = 1.5f;
 			}
+		}
+
+		public Fall m_fall = new Fall();
+		[System.Serializable] public class Fall {
+  			public float m_duration = 3;
+			public float m_fallMultiplier = 1;
+			public AnimationCurve m_fallCurve = null;
 		}
 
 		public TakeObject m_takeObject = new TakeObject();
@@ -596,10 +604,11 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public void DoMove(){
-		if(MoveDirection != Vector3.zero){
+		// if(MoveDirection != Vector3.zero){
 			// m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
-			m_rigidbody.velocity = MoveDirection * Time.fixedDeltaTime;
-		}
+			m_rigidbody.velocity = MoveDirection;
+			// m_rigidbody.AddForce(MoveDirection, ForceMode.Acceleration);
+		// }
 	}
 	
 	private void DoRotate()
