@@ -104,10 +104,12 @@ public class PushableObject : MonoBehaviour {
 		m_objectIsPushByTheFerret = b;
 
 		if(b){
-			m_rigidbody.isKinematic = false;
-		}else{
-			m_rigidbody.isKinematic = true;
-		}
+            m_rigidbody.isKinematic = false;
+        }
+        else
+        {
+            m_rigidbody.isKinematic = true;
+        }
 	}
 	
 }
