@@ -597,8 +597,8 @@ public class PlayerManager : ClimbTypesArea {
 
 	public void DoMove(){
 		if(MoveDirection != Vector3.zero){
-			m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
-			// m_rigidbody.velocity = transform.position + MoveDirection * Time.fixedDeltaTime;
+			// m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
+			m_rigidbody.velocity = MoveDirection * Time.fixedDeltaTime;
 		}
 	}
 	
@@ -794,7 +794,12 @@ public class PlayerManager : ClimbTypesArea {
 			groundedTurnSpeed = Mathf.Lerp(m_rotations.m_maxTurnSpeedWithoutGronuded, m_rotations.m_minTurnSpeedWithoutGronuded, m_rotations.m_turnSpeedWithoutGrounded);
 		}
 
-		float actualTurnSpeed = CheckCollider(false) ? groundedTurnSpeed : Vector3.Angle(m_meshes.m_rotateFerret.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
+		// float actualTurnSpeed = CheckCollider(false) ? 
+		// 	groundedTurnSpeed : 
+		// 	Vector3.Angle(m_meshes.m_rotateFerret.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
+		// m_TargetRotation = Quaternion.RotateTowards(m_meshes.m_rotateFerret.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
+
+		float actualTurnSpeed = CheckCollider(false) == true ? m_rotations.m_maxTurnSpeedGrounded : m_rotations.m_maxTurnSpeedWithoutGronuded;
 		m_TargetRotation = Quaternion.RotateTowards(m_meshes.m_rotateFerret.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
 
 		m_rigidbody.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
