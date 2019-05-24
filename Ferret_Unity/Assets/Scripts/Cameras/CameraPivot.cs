@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class CameraPivot : MonoBehaviour {
 
+#region Singleton
+	public static CameraPivot Instance;
+	void Awake(){
+		if(Instance == null){
+			Instance = this;
+		}else{
+			Debug.LogError("Two instance of CameraPivot");
+		}
+	}
+#endregion //Singleton
+
 	public Transform m_mainCamera;
 
 	Transform m_actualCamera;
@@ -18,6 +29,10 @@ public class CameraPivot : MonoBehaviour {
 
 	public void ChangeCamera(Transform newCameraTrans){
 		m_actualCamera = newCameraTrans;
+	}
+
+	public void ResetWithMainCamera(){
+		m_actualCamera = m_mainCamera;
 	}
 
 }

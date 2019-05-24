@@ -32,13 +32,15 @@ public class FreeLookCamManager : FreeLookCameraType {
 		public CinemachineFreeLook.Orbit m_botOrbit;
 	}
 
+	[Space] public Transform m_cameraBrain;
+
 	CinemachineFreeLook m_freeLookCam;
 	AxisState m_saveXAxis;
 	AxisState m_dontMoveXAxis;
 	AxisState m_saveYAxis;
-	AxisState m_dontMoveYAxis;
+	AxisState m_dontMoveYAxis;    
 
-	void Start(){
+    void Start(){
 		m_freeLookCam = GetComponent<CinemachineFreeLook>();
 
 		m_dontMoveXAxis = m_freeLookCam.m_XAxis;
