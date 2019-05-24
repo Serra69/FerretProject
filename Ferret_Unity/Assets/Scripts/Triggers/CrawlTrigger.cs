@@ -3,36 +3,70 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class CrawlTrigger : MonoBehaviour {
+public class CrawlTrigger : TriggerType {
 
-	SwitchCamera m_switchCamera;
+	public TriggerTypes m_triggerType = TriggerTypes.Enter;
 
 	BoxCollider m_boxCollider;
     BoxCollider BoxCollider{
-        get
-		{
+        get{
             return GetComponent<BoxCollider>();
         }
     }
-	
+    CrawlController m_crawlController;
+    public CrawlController CrawlController{
+        get{
+            return GetComponentInParent<CrawlController>();
+        }
+    }
+
+    bool m_playerInTrigger = false;
+    public bool PlayerInTrigger{
+        get{
+            return m_playerInTrigger;
+        }
+    }
+
 	void Start(){
-		m_switchCamera = SwitchCamera.Instance;
+
+		BoxCollider.isTrigger = true;
+		switch(m_triggerType){ 
+			case TriggerTypes.Enter:
+				CrawlController.EnterTrigger = this;
+			break;
+			case TriggerTypes.Exit:
+				CrawlController.ExitTrigger = this;
+			break;
+		}
 	}
 
 	void OnTriggerEnter(Collider col){
 		if(col.CompareTag("Player")){
-			m_switchCamera.SwitchCameraType();
+			m_playerInTrigger = true;
+			CrawlController.On_PlayerInTrigger();
 		}
 	}
-	/*void OnTriggerExit(Collider col){
+	void OnTriggerExit(Collider col){
 		if(col.CompareTag("Player")){
-			m_switchCamera.SwitchCameraType();
+			m_playerInTrigger = false;
+			CrawlController.On_PlayerInTrigger();
 		}
-	}*/
+	}
 
 	void OnDrawGizmos(){
-		Gizmos.color = Color.magenta;
-		Gizmos.DrawCube(transform.position + BoxCollider.center, BoxCollider.size);
+		if(!CrawlController.m_showGizmos){
+			return;
+		}
+
+		switch(m_triggerType){ 
+			case TriggerTypes.Enter:
+				Gizmos.color = CrawlController.m_enterColorGizmos;
+			break;
+			case TriggerTypes.Exit:
+				Gizmos.color = CrawlController.m_exitColorGizmos;
+			break;
+		}
+		Gizmos.DrawWireCube(transform.position + BoxCollider.center, BoxCollider.size);
 	}
 
 }
