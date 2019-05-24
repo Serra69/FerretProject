@@ -5,8 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : ClimbTypesArea {
 
-	public float m_timerOfPressSpace = 0;
-
 	public static PlayerManager Instance;
 
 	// Utiliser ça pour faire tout les changements de "transform.position"
@@ -108,8 +106,8 @@ public class PlayerManager : ClimbTypesArea {
 		public Fall m_fall = new Fall();
 		[System.Serializable] public class Fall {
   			public float m_duration = 3;
-			public float m_fallMultiplier = 1;
-			public AnimationCurve m_fallCurve = null;
+			// public float m_fallMultiplier = 1;
+			// public AnimationCurve m_fallCurve = null;
 		}
 
 		public TakeObject m_takeObject = new TakeObject();
@@ -358,6 +356,20 @@ public class PlayerManager : ClimbTypesArea {
         get
         {
             return m_climbArea;
+        }
+    }
+
+    float m_timerOfPressSpace = 0;
+    public float TimerOfPressSpace
+    {
+        get
+        {
+            return m_timerOfPressSpace;
+        }
+
+        set
+        {
+            m_timerOfPressSpace = value;
         }
     }
 

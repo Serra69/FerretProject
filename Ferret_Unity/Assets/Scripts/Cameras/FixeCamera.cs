@@ -4,7 +4,20 @@ using UnityEngine;
 
 public class FixeCamera : MonoBehaviour {
 
+	[Header("Object to follow")]
 	public Transform m_objectToFollow;
+
+	[Header("Parameters")]
+	public Parameters m_parameters = new Parameters();
+	[System.Serializable] public class Parameters {
+		[Header("Speeds")]
+		[Range(0, 1)] public float m_xSpeed = 0.5f;
+		[Range(0, 1)] public float m_ySpeed = 0.5f;
+
+		[Header("Z speed")]
+		[Range(0, 5)] public float m_zPos = 3;
+		[Range(0, 1)] public float m_zSpeed = 0.5f;
+	}
 
 	[Header("Positions")]
 	public Positions m_positions = new Positions();
@@ -15,9 +28,6 @@ public class FixeCamera : MonoBehaviour {
 		public Vector2 m_maxLeft;
 	}	
 
-	[Range(0, 1)] public float m_botAndTop = 0.5f;
-	[Range(0, 1)] public float m_leftAndRight = 0.5f;
-
 	Vector3 m_offset;
 
 	void Start(){
@@ -26,22 +36,17 @@ public class FixeCamera : MonoBehaviour {
 	
 	void LateUpdate(){
 
-		/*Vector3 desiredPos = new Vector3();
+		float playerXRange = Mathf.InverseLerp(m_offset.x - m_positions.m_maxLeft.x, m_offset.x - m_positions.m_maxRight.x, m_objectToFollow.transform.position.x);
+		float playerYRange = Mathf.InverseLerp(m_offset.y + m_positions.m_maxBot.y, m_offset.y + m_positions.m_maxTop.y, m_objectToFollow.transform.position.y);
 
-		if(transform.localPosition.x >= m_positions.m_maxRight.x){
-			transform.position = new Vector3(m_offset.x - m_positions.m_maxRight.x, m_objectToFollow.position.y, transform.position.z);
-		}else{
-			desiredPos = new Vector3(m_objectToFollow.position.x, m_objectToFollow.position.y, transform.position.z);
-			
-				transform.position = desiredPos;
-		}*/
+		float desiredXPosition = Mathf.Lerp(m_offset.x - m_positions.m_maxLeft.x, m_offset.x - m_positions.m_maxRight.x, playerXRange);
+		float desiredYPosition = Mathf.Lerp(m_offset.y + m_positions.m_maxBot.y, m_offset.y + m_positions.m_maxTop.y, playerYRange);
 
-		float desiredXPosition = Mathf.Lerp(m_offset.x - m_positions.m_maxLeft.x, m_offset.x - m_positions.m_maxRight.x, m_leftAndRight);
-		float desiredYPosition = Mathf.Lerp(m_offset.y - m_positions.m_maxBot.x, m_offset.y + m_positions.m_maxTop.y, m_botAndTop);
-		transform.position =  new Vector3(desiredXPosition, desiredYPosition, transform.position.z);
+		float xCurve = Mathf.Lerp(transform.position.x, desiredXPosition, m_parameters.m_xSpeed);
+		float yCurve = Mathf.Lerp(transform.position.y, desiredYPosition, m_parameters.m_ySpeed);
+		float zCurve = Mathf.Lerp(transform.position.z, m_offset.z - m_parameters.m_zPos, m_parameters.m_zSpeed);
 
-
-
+		transform.position =  new Vector3(xCurve, yCurve, zCurve);
 	}
 	
 }

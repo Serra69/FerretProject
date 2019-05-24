@@ -2191,7 +2191,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: -0.08417228, y: 0.000000020912367, z: -0.0000000040494563,
+  m_LocalRotation: {x: -0.08417228, y: 0.000000020912442, z: -0.0000000040503467,
     w: -0.99645126}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -2288,8 +2288,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: -0.13721731, y: -0.000000024573113, z: 0.0000000013690035,
-    w: -0.990541}
+  m_LocalRotation: {x: -0.1372173, y: -0.00000001853769, z: 5.329306e-10, w: -0.990541}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3459,7 +3458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a89ecd8a76fe643bb765c1682e8ade, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_camera: {fileID: 4931067033763904}
+  m_mainCamera: {fileID: 4931067033763904}
 --- !u!114 &114394039080810158
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3698,7 +3697,7 @@ MonoBehaviour:
       m_speed: 1.5
     m_jump:
       m_jumpForce: 4
-      m_minJumpTime: 0.5
+      m_minJumpTime: 0.35
       m_jumpTime: 0.7
       m_jumpHeightCurve:
         serializedVersion: 2
@@ -3706,12 +3705,21 @@ MonoBehaviour:
         - serializedVersion: 3
           time: -0.03
           value: 0.0036047697
-          inSlope: 3.102865
-          outSlope: 3.102865
+          inSlope: 8.301838
+          outSlope: 8.301838
           tangentMode: 0
           weightedMode: 0
           inWeight: 0
-          outWeight: 0.03327645
+          outWeight: 0.08526163
+        - serializedVersion: 3
+          time: 0.11975817
+          value: 0.6058744
+          inSlope: 1.6166296
+          outSlope: 1.6166296
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
           value: 1
@@ -3731,31 +3739,6 @@ MonoBehaviour:
         m_fromCrawl: 2.5
     m_fall:
       m_duration: 0.25
-      m_fallMultiplier: 1
-      m_fallCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: -0.000007908291
-          outSlope: -0.000007908291
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0.045221888
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: -1.8885647
-          outSlope: -1.8885647
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.04307109
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
     m_takeObject:
       m_delayToTakeAnObject: 0.15
       m_canITakeAnObject: 1
