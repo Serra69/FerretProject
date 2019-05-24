@@ -12127,6 +12127,91 @@ Prefab:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_walk.m_speed
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_run.m_speed
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpForce
+      value: 140
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_minJumpTime
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpTime
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_movementSpeed.m_fromWalk
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_movementSpeed.m_fromRun
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_movementSpeed.m_fromCrawl
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_movementSpeed.m_fromIdle
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpHeightCurve.m_Curve.Array.data[0].inSlope
+      value: 1.0992697
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpHeightCurve.m_Curve.Array.data[0].outSlope
+      value: 1.0992697
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpHeightCurve.m_Curve.Array.data[1].value
+      value: 0.29480684
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpHeightCurve.m_Curve.Array.data[1].time
+      value: 0.26250005
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpHeightCurve.m_Curve.Array.data[2].time
+      value: 0.76250005
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpHeightCurve.m_Curve.Array.data[2].value
+      value: 0.79480463
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpHeightCurve.m_Curve.Array.data[3].inSlope
+      value: -3.3202372
+      objectReference: {fileID: 0}
+    - target: {fileID: 114521059954941642, guid: 57892e31de75cca43b2aa8320d55fd6e,
+        type: 2}
+      propertyPath: m_states.m_jump.m_jumpHeightCurve.m_Curve.Array.data[3].outSlope
+      value: -3.3202372
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57892e31de75cca43b2aa8320d55fd6e, type: 2}
   m_IsPrefabAsset: 0
