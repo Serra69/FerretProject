@@ -37,6 +37,7 @@ public class PlayerManager : ClimbTypesArea {
 			public float m_speed = 3f;
 		}
 
+		// [Range(0, 1)] public float m_forceInputToStartRunning = 0.2f;
 		public Run m_run = new Run();
 		[System.Serializable] public class Run {
 			public float m_speed = 6f;
@@ -101,6 +102,11 @@ public class PlayerManager : ClimbTypesArea {
 				public float m_fromRun = 6;
 				public float m_fromCrawl = 1.5f;
 			}
+			public AirControl m_airControl = new AirControl();
+			[System.Serializable] public class AirControl {
+				public float m_fullAirControlAngle = 90;
+				public float m_moveCoef = 0.5f;
+			}
 		}
 
 		public Fall m_fall = new Fall();
@@ -127,6 +133,26 @@ public class PlayerManager : ClimbTypesArea {
 			public RaycastHit m_hit;
 			public Transform m_objectTrans;
 		}
+
+		public Death m_death = new Death();
+		[System.Serializable] public class Death {
+			[Header("References")]
+			[Tooltip("Reference a Start transform for death. If empty use start transform of player")]
+			public Transform m_startTransform;
+			public Animator m_eyesAnimator;
+
+			[Header("Speeds")]
+			public float m_changePositionSpeed = 5;
+			public float m_changeRotationSpeed = 5;
+
+			[Header("Timers")]
+			public float m_timeToMoveInFirstPerson = 1;
+			public float m_timeToCloseEyes = 2;
+			public float m_timeToResetPosition = 3;
+			public float m_timeToOpenEyes = 4;
+			public float m_timeToCanMove = 5;
+		}
+
 	}
 
 	[Header("Physics")]
@@ -143,8 +169,21 @@ public class PlayerManager : ClimbTypesArea {
 	[Header("Colliders")]
 	public Colliders m_colliders = new Colliders();
 	[System.Serializable] public class Colliders {
-		public CapsuleCollider m_baseColl;
-		public CapsuleCollider m_crawlColl;
+		public CapsuleCollider m_coll;
+
+		public BaseCollider m_baseCollider = new BaseCollider();
+		[System.Serializable] public class BaseCollider {
+			public Vector3 m_center;
+			public float m_radius;
+			public float m_height;
+		}
+
+		public CrawlCollider m_crawlCollider = new CrawlCollider();
+		[System.Serializable] public class CrawlCollider {
+			public Vector3 m_center;
+			public float m_radius;
+			public float m_height;
+		}
 	}
 
 	[Header("Meshes")]
@@ -219,7 +258,7 @@ public class PlayerManager : ClimbTypesArea {
 
 #endregion Input Buttons
 
-#region Private Variables
+#region Encapsulate
 
 	Vector3 m_moveDirection = Vector3.zero;
 	public Vector3 MoveDirection
@@ -233,7 +272,6 @@ public class PlayerManager : ClimbTypesArea {
             m_moveDirection = value;
         }
     }
-	Quaternion m_desiredRotation = Quaternion.identity;
 
 	Rigidbody m_rigidbody;
     public Rigidbody Rigidbody
@@ -383,13 +421,20 @@ public class PlayerManager : ClimbTypesArea {
         }
     }
 
-    // ----------------------------
+#endregion Encapsulate
+
+#region Private Variables
+
+	// ----------------------------
     // ----- FOR THE ROTATION -----
     const float k_InverseOneEighty = 1f / 180f;
 	const float k_AirborneTurnSpeedProportion = 5.4f;
 	protected float m_AngleDiff;
 	Quaternion m_TargetRotation;
 	// ----------------------------
+
+	Vector3 m_savePosition;
+	Quaternion m_saveRotation;
 
 
 #endregion Private Variables
@@ -422,6 +467,14 @@ public class PlayerManager : ClimbTypesArea {
 	void Start(){
 		m_switchCamera = SwitchCamera.Instance;
 		m_firstPersonCamera = FirstPersonCamera.Instance;
+
+		if(m_states.m_death.m_startTransform != null){
+			m_savePosition = m_states.m_death.m_startTransform.position;
+			m_saveRotation = m_states.m_death.m_startTransform.rotation;
+		}else{
+			m_savePosition = transform.position;
+			m_saveRotation = transform.rotation;
+		}
 	}
 	void OnEnable(){
 		ChangeState(0);
@@ -442,6 +495,7 @@ public class PlayerManager : ClimbTypesArea {
 	void FixedUpdate(){
 		MoveDirection = Vector3.zero;
 		m_sM.FixedUpdate();
+		CheckAirControl();
 		DoMove();
 		// DoRotate();
 	}
@@ -565,16 +619,18 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public void Crawl(bool isCrawling){
-			m_states.m_crawl.m_isCrawling = isCrawling;
+		m_states.m_crawl.m_isCrawling = isCrawling;
 
 		if(isCrawling){
-			m_colliders.m_baseColl.enabled = false;
-			m_colliders.m_crawlColl.enabled = true;
+			m_colliders.m_coll.center = m_colliders.m_crawlCollider.m_center;
+			m_colliders.m_coll.radius = m_colliders.m_crawlCollider.m_radius;
+			m_colliders.m_coll.height = m_colliders.m_crawlCollider.m_height;
 
 			m_meshes.m_ferretMesh.transform.localScale = new Vector3(m_meshes.m_ferretMesh.transform.localScale.x, m_meshes.m_ferretMesh.transform.localScale.y / 2, m_meshes.m_ferretMesh.transform.localScale.z);
 		}else{
-			m_colliders.m_baseColl.enabled = true;
-			m_colliders.m_crawlColl.enabled = false;
+			m_colliders.m_coll.center = m_colliders.m_baseCollider.m_center;
+			m_colliders.m_coll.radius = m_colliders.m_baseCollider.m_radius;
+			m_colliders.m_coll.height = m_colliders.m_baseCollider.m_height;
 
 			m_meshes.m_ferretMesh.transform.localScale = new Vector3(m_meshes.m_ferretMesh.transform.localScale.x, m_meshes.m_ferretMesh.transform.localScale.y * 2, m_meshes.m_ferretMesh.transform.localScale.z);
 		}
@@ -625,17 +681,21 @@ public class PlayerManager : ClimbTypesArea {
 		}
 	}
 
+	void CheckAirControl(){
+		if(!CheckCollider(false)){
+			float angle = Vector3.Angle(MoveDirection, m_meshes.m_rotateFerret.transform.forward);
+			if(angle > m_states.m_jump.m_airControl.m_fullAirControlAngle){
+				MoveDirection = new Vector3(MoveDirection.x * m_states.m_jump.m_airControl.m_moveCoef, MoveDirection.y, MoveDirection.z * m_states.m_jump.m_airControl.m_moveCoef);
+			}
+		}
+	}
+
 	public void DoMove(){
 		// if(MoveDirection != Vector3.zero){
 			// m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
 			m_rigidbody.velocity = MoveDirection;
 			// m_rigidbody.AddForce(MoveDirection, ForceMode.Acceleration);
 		// }
-	}
-	
-	private void DoRotate()
-	{
-		// m_rigidbody.rotation = m_desiredRotation;
 	}
 
 	public void ClimbMove(float speed){
@@ -1134,7 +1194,7 @@ public class PlayerManager : ClimbTypesArea {
 		return i;
 	}
 
-	[SerializeField] Transform m_startPlayerParent;
+	[Space, SerializeField] Transform m_startPlayerParent;
 	public void SetPlayerParent(Transform newParent, bool resetParent = false){
 		if(!resetParent){
 			transform.SetParent(newParent);
@@ -1149,6 +1209,16 @@ public class PlayerManager : ClimbTypesArea {
 		}else{
 			ChangeState(ReturnLastState());
 		}
+	}
+
+	public void On_CheckPointIsTake(Transform checkPointTrans){
+		transform.position = checkPointTrans.position;
+		transform.rotation = checkPointTrans.rotation;
+	}
+
+	public void ResetCheckPointPosition(){
+		transform.position = m_savePosition;
+		transform.rotation = m_saveRotation;
 	}
 
 	public int ReturnLastState(){

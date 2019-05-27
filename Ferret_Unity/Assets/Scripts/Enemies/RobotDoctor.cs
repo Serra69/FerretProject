@@ -24,9 +24,9 @@ public class RobotDoctor : MonoBehaviour {
     }
 
     void Update(){
-        if(m_fov.m_playerTarget != null){
+        if(m_fov.PlayerTarget != null){
             m_followPlayer = true;
-            m_agent.SetDestination(m_fov.m_playerTarget.transform.position);
+            m_agent.SetDestination(m_fov.PlayerTarget.transform.position);
         }else{
             m_followPlayer = false;
         }

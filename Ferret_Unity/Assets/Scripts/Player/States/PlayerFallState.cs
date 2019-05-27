@@ -63,19 +63,6 @@ public class PlayerFallState : IState
                 Physics.gravity.y,
                 1
             );
-            // Debug.LogFormat("{1} / {0}", m_playerManager.m_states.m_jump.m_jumpHeightCurve.Evaluate(m_currentime / m_playerManager.m_states.m_fall.m_duration), (m_currentime / m_playerManager.m_states.m_fall.m_duration));
-
-            // if(m_playerManager.m_states.m_jump.m_jumpHeightCurve.Evaluate(1 - m_currentime / m_playerManager.m_states.m_fall.m_duration) * Physics.gravity.y > 1){
-            // Debug.Log("fallLent");
-            // m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed, m_playerManager.m_states.m_jump.m_jumpHeightCurve.Evaluate(m_currentime / m_playerManager.m_states.m_fall.m_duration) * Physics.gravity.y, 1);
-            /*}else{
-              m_isFalling = true;
-              m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed, Physics.gravity.y * m_playerManager.m_states.m_fall.m_fallMultiplier, 1);
-              // m_playerManager.MovePlayer(3, - Mathf.Exp(m_currentTimeOfFall * m_playerManager.m_states.m_fall.m_fallMultiplier * 9.81f), 1);
-
-              Debug.Log("fallrapide");
-              // Debug.Log("Mathf.Exp(m_currentTimeOfFall) = " + - Mathf.Exp(m_currentTimeOfFall * m_playerManager.m_states.m_fall.m_fallMultiplier * 9.81f));
-            }*/
 
             if (m_playerManager.PlayerInputIsMoving())
             {
@@ -84,7 +71,13 @@ public class PlayerFallState : IState
         }
         else
         {
-            m_playerManager.MoveFirstPersonPlayer(m_playerManager.LastStateMoveSpeed);
+            // m_playerManager.MoveFirstPersonPlayer(m_playerManager.LastStateMoveSpeed);
+            m_playerManager.MoveFirstPersonPlayer(
+                m_playerManager.LastStateMoveSpeed,
+                m_playerManager.m_states.m_jump.m_jumpHeightCurve.Evaluate(m_currentime / m_playerManager.m_states.m_fall.m_duration) *
+                Physics.gravity.y,
+                1
+            );
             if (!m_playerManager.SwitchCamera.CameraIsSwitching)
             {
                 m_playerManager.FirstPersonCamera.RotateCamera();

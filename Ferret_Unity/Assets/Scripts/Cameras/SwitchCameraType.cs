@@ -23,8 +23,6 @@ public class SwitchCameraType : MonoBehaviour {
 	[SerializeField] AnimationCurve m_positionCurve;
 	[SerializeField] AnimationCurve m_rotationCurve;
 
-	public float m_maxTimeToSwitching = 2;
-
 	FreeLookCamManager m_camManager;
 	Camera m_camera;
 	FixeCamera m_lastFixeCamera;

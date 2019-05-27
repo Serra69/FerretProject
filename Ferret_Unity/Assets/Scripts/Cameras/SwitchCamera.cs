@@ -81,17 +81,17 @@ public class SwitchCamera : MonoBehaviour {
 		}
 	}
 
-	public void SwitchCameraType(){
+	public void SwitchCameraType(bool isInDeath = false){
 		if(m_canChangePosition){
 			if(m_thirdPersonMode){
-				StartCoroutine(MoveCamera(false, m_thirdPersonTrans.position, m_firstPersonTrans, m_thirdPersonTrans.rotation, m_firstPersonTrans));
+				StartCoroutine(MoveCamera(false, m_thirdPersonTrans.position, m_firstPersonTrans, m_thirdPersonTrans.rotation, m_firstPersonTrans, isInDeath));
 			}else{
-				StartCoroutine(MoveCamera(true, m_firstPersonTrans.position, m_thirdPersonTrans, m_firstPersonTrans.rotation, m_thirdPersonTrans));
+				StartCoroutine(MoveCamera(true, m_firstPersonTrans.position, m_thirdPersonTrans, m_firstPersonTrans.rotation, m_thirdPersonTrans, isInDeath));
 			}
 		}
 	}
 
-	IEnumerator MoveCamera(bool toThirdPersonMode, Vector3 fromPosition, Transform toPosition, Quaternion fromRotation, Transform toRotation){
+	IEnumerator MoveCamera(bool toThirdPersonMode, Vector3 fromPosition, Transform toPosition, Quaternion fromRotation, Transform toRotation, bool isInDeath){
 		
 		m_cameraIsSwitching = true;
 
@@ -102,19 +102,30 @@ public class SwitchCamera : MonoBehaviour {
 		m_camera.enabled = true;
 		m_canChangePosition = false;
 
+		float changePositionSpeed = new float();
+		float changeRotationSpeed = new float();
+
+		if(isInDeath){
+			changePositionSpeed = m_playerManager.m_states.m_death.m_changePositionSpeed;
+			changeRotationSpeed = m_playerManager.m_states.m_death.m_changeRotationSpeed;
+		}else{
+			changePositionSpeed = m_changePositionSpeed;
+			changeRotationSpeed = m_changeRotationSpeed;
+		}
+
 		while(transform.position != toPosition.position){
 
 			// MovePosition
 			m_moveJourneyLength = Vector3.Distance(fromPosition, toPosition.position);
-			m_moveFracJourney += (Time.deltaTime) * m_changePositionSpeed / m_moveJourneyLength;
+			m_moveFracJourney += (Time.deltaTime) * changePositionSpeed / m_moveJourneyLength;
 			transform.position = Vector3.Lerp(fromPosition, toPosition.position, m_positionCurve.Evaluate(m_moveFracJourney));
 
 			// MoveRotation
 			if(toThirdPersonMode){
-				m_rotateFracJourney += (Time.deltaTime) * m_changeRotationSpeed / m_moveJourneyLength;
+				m_rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / m_moveJourneyLength;
 				transform.rotation = Quaternion.Lerp(toRotation.rotation, fromRotation, m_rotationCurve.Evaluate(1 - m_rotateFracJourney));
 			}else{
-				m_rotateFracJourney += (Time.deltaTime) * m_changeRotationSpeed / m_moveJourneyLength;
+				m_rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / m_moveJourneyLength;
 				transform.rotation = Quaternion.Lerp(fromRotation, toRotation.rotation, m_rotationCurve.Evaluate(m_rotateFracJourney));
 			}
 

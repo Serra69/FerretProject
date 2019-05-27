@@ -6,6 +6,7 @@ public class Shoot : MonoBehaviour {
 
 	[SerializeField] GameObject m_projectile;
 	[SerializeField] float m_fireCooldown = 2f;
+	[SerializeField] float m_timeToFire = 0.25f;
 	[SerializeField] Transform m_projectileSpawnPoint;
 
 	FieldOfView m_fov;
@@ -18,23 +19,31 @@ public class Shoot : MonoBehaviour {
 	}
 
 	void Update(){
-		if(m_fov.m_playerTarget != null){
+		if(m_fov.PlayerTarget != null){
 			if(m_canShoot && !m_playerManager.PlayerIsDead){
-				Fire();
+				m_canShoot = false;
+				StartCoroutine(TimeToFire());
 			}
 		}
 	}
 
 	void Fire(){
-		m_canShoot = false;
-		StartCoroutine(FireCooldown());
-
-		Instantiate(m_projectile, m_projectileSpawnPoint.position, m_projectileSpawnPoint.rotation);
+		if(m_fov.PlayerTarget != null){
+			StartCoroutine(FireCooldown());
+			Instantiate(m_projectile, m_projectileSpawnPoint.position, m_projectileSpawnPoint.rotation);
+		}else{
+			m_canShoot = true;
+		}
 	}
 
 	IEnumerator FireCooldown(){
 		yield return new WaitForSeconds(m_fireCooldown);
 		m_canShoot = true;
+	}
+
+	IEnumerator TimeToFire(){
+		yield return new WaitForSeconds(m_timeToFire);
+		Fire();
 	}
 
 }

@@ -15,7 +15,9 @@ public class FreeLookCamManager : FreeLookCameraType {
 		}
 	}
 #endregion //Singleton
-
+	
+	public Transform m_cameraBrain;
+	[Space]
 	[SerializeField] FreeLookCameraOrbit m_startLookType = FreeLookCameraOrbit.Close;
 
 	public SwitchPreferences m_switchPreferences = new SwitchPreferences();
@@ -32,13 +34,18 @@ public class FreeLookCamManager : FreeLookCameraType {
 		public CinemachineFreeLook.Orbit m_botOrbit;
 	}
 
-	[Space] public Transform m_cameraBrain;
+	[Header("Recentering")]
+	public AxisState.Recentering m_XAxisRecentering = new AxisState.Recentering(true, 0, 2);
+	public AxisState.Recentering m_YAxisRecentering = new AxisState.Recentering(true, 0, 2);
+	AxisState.Recentering m_saveXAxisRecentering;
+	AxisState.Recentering m_saveYAxisRecentering;
 
 	CinemachineFreeLook m_freeLookCam;
 	AxisState m_saveXAxis;
 	AxisState m_dontMoveXAxis;
 	AxisState m_saveYAxis;
 	AxisState m_dontMoveYAxis;    
+	bool m_canIResetCamPos = true;
 
     void Start(){
 		m_freeLookCam = GetComponent<CinemachineFreeLook>();
@@ -49,6 +56,25 @@ public class FreeLookCamManager : FreeLookCameraType {
 		m_dontMoveYAxis.m_InputAxisName = "";
 
 		SetOrbitCamera(m_startLookType);
+
+		m_saveXAxisRecentering = m_freeLookCam.m_RecenterToTargetHeading;
+		m_saveYAxisRecentering = m_freeLookCam.m_YAxisRecentering;
+	}
+
+	void Update(){
+		if(Input.GetKeyDown(KeyCode.R) && m_canIResetCamPos){
+			StartCoroutine(ResetCameraPosition());
+			m_freeLookCam.m_RecenterToTargetHeading = m_XAxisRecentering;
+			m_freeLookCam.m_YAxisRecentering = m_YAxisRecentering;
+		}
+	}
+
+	IEnumerator ResetCameraPosition(){
+		m_canIResetCamPos = false;
+		yield return new WaitForSeconds(2);
+		m_canIResetCamPos = true;
+		m_freeLookCam.m_RecenterToTargetHeading = m_saveXAxisRecentering;
+		m_freeLookCam.m_YAxisRecentering = m_saveYAxisRecentering;
 	}
 
 	void SetOrbitCamera(FreeLookCameraOrbit freeLookCameraOrbit){

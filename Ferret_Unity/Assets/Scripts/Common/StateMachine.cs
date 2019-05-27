@@ -102,38 +102,6 @@ public class StateMachine
         return m_lastState == m_states[index];
     }
 
-    /*public int ReturnLastState(){
-        /*if(IsLastStateIndex(0)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromIdle;
-        }else if(IsLastStateIndex(1)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromWalk;
-        }else if(IsLastStateIndex(2)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromRun;
-        }else if(IsLastStateIndex(3)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromWalk;
-        }else if(IsLastStateIndex(4)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromRun;
-        }else if(IsLastStateIndex(5)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromIdle;
-        }else if(IsLastStateIndex(6)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromWalk;
-        }else if(IsLastStateIndex(7)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromRun;
-        }else if(IsLastStateIndex(8)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromWalk;
-        }else if(IsLastStateIndex(9)){
-            m_lastStateMoveSpeed = m_states.m_jump.m_movementSpeed.m_fromRun;
-        }*
-
-        for (int i = 0, l = m_states.Count; i < l; ++i){
-            if(IsLastStateIndex(i)){
-                return i;
-            }else{
-                return 0;
-            }
-        }
-    }*/
-
     #endregion // Methods
 
 }

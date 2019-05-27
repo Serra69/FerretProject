@@ -13,9 +13,14 @@ public class FieldOfView : MonoBehaviour {
 
 	public Transform m_eyesPosition;
 
-	[HideInInspector] public GameObject m_playerTarget;
+	GameObject m_playerTarget;
+    public GameObject PlayerTarget{
+        get{
+            return m_playerTarget;
+        }
+    }
 
-	void Start() {
+    void Start() {
 		StartCoroutine ("FindTargetsWithDelay", 0.2f);
 	}
 
@@ -57,8 +62,8 @@ public class FieldOfView : MonoBehaviour {
 	}
 
 	void LookAtTarget(){
-		if(m_playerTarget != null){
-			transform.LookAt(new Vector3(m_playerTarget.transform.position.x, transform.position.y, m_playerTarget.transform.position.z));
+		if(PlayerTarget != null){
+			transform.LookAt(new Vector3(PlayerTarget.transform.position.x, transform.position.y, PlayerTarget.transform.position.z));
 		}
 	}
 
