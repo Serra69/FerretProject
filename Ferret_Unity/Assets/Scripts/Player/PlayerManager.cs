@@ -175,14 +175,14 @@ public class PlayerManager : ClimbTypesArea {
 		public Transform m_pivot;
 
 		[Header("Turn speed when grounded")]
-		[Range(0, 1)] public float m_turnSpeedGrounded = 0.5f;
-		public float m_minTurnSpeedGrounded = 800;
-		public float m_maxTurnSpeedGrounded = 2400;
+		// [Range(0, 1)] public float m_turnSpeedGrounded = 0.5f;
+		// public float m_minTurnSpeedGrounded = 800;
+		public float m_turnSpeedGrounded = 500;
 
 		[Header("Turn speed when is not grounded")]
-		[Range(0, 1)] public float m_turnSpeedWithoutGrounded = 0.5f;
-		public float m_minTurnSpeedWithoutGronuded = 400;
-		public float m_maxTurnSpeedWithoutGronuded = 1200;
+		// [Range(0, 1)] public float m_turnSpeedWithoutGrounded = 0.5f;
+		// public float m_minTurnSpeedWithoutGronuded = 400;
+		public float m_turnSpeedWithoutGrounded = 100;
 	}
 	
 	[Header("Raycasts")]
@@ -370,6 +370,16 @@ public class PlayerManager : ClimbTypesArea {
         set
         {
             m_timerOfPressSpace = value;
+        }
+    }
+
+    bool m_canHideFerret = true;
+    public bool CanHideFerret{
+        get{
+            return m_canHideFerret;
+        }
+        set{
+            m_canHideFerret = value;
         }
     }
 
@@ -808,19 +818,19 @@ public class PlayerManager : ClimbTypesArea {
 		// UPDATE ORIENTATION
 		Vector3 localInput = new Vector3(m_hAxis_Button, 0f, m_vAxis_Button);
 
-		float groundedTurnSpeed;
+		/*float groundedTurnSpeed;
 		if(CheckCollider(false)){
 			groundedTurnSpeed = Mathf.Lerp(m_rotations.m_maxTurnSpeedGrounded, m_rotations.m_minTurnSpeedGrounded, m_rotations.m_turnSpeedGrounded);
 		}else{
 			groundedTurnSpeed = Mathf.Lerp(m_rotations.m_maxTurnSpeedWithoutGronuded, m_rotations.m_minTurnSpeedWithoutGronuded, m_rotations.m_turnSpeedWithoutGrounded);
-		}
+		}*/
 
 		// float actualTurnSpeed = CheckCollider(false) ? 
 		// 	groundedTurnSpeed : 
 		// 	Vector3.Angle(m_meshes.m_rotateFerret.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
 		// m_TargetRotation = Quaternion.RotateTowards(m_meshes.m_rotateFerret.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
 
-		float actualTurnSpeed = CheckCollider(false) == true ? m_rotations.m_maxTurnSpeedGrounded : m_rotations.m_maxTurnSpeedWithoutGronuded;
+		float actualTurnSpeed = CheckCollider(false) == true ? m_rotations.m_turnSpeedGrounded : m_rotations.m_turnSpeedWithoutGrounded;
 		m_TargetRotation = Quaternion.RotateTowards(m_meshes.m_rotateFerret.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
 
 		m_rigidbody.rotation = Quaternion.Euler(0f, m_rotations.m_pivot.rotation.eulerAngles.y, 0f);
@@ -993,7 +1003,7 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public void WhenCameraIsCloseToTheFerret(float distance){
-		if(distance < m_cameras.m_miniDistanceToSeeFurret){
+		if(distance < m_cameras.m_miniDistanceToSeeFurret && CanHideFerret){
 			m_meshes.m_meshSkin.SetActive(false);
 		}else{
 			m_meshes.m_meshSkin.SetActive(true);

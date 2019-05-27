@@ -17,7 +17,8 @@ public class FixeCamera : MonoBehaviour {
 		public float m_yUpPosition = 1;
 
 		[Header("Z speed")]
-		[Range(0, 5)] public float m_zPos = 3;
+		[Range(-10, 10)] public float m_minZPos = 0;
+		[Range(-10, 10)] public float m_maxZPos = 5;
 		[Range(0, 1)] public float m_zSpeed = 0.5f;
 	}
 
@@ -33,9 +34,9 @@ public class FixeCamera : MonoBehaviour {
 	[Header("Triggers")]
 	public Triggers m_triggers = new Triggers();
 	[System.Serializable] public class Triggers {
-		public float m_timeToCheckTriggers = 0.25f;
 		public SwitchDimensionCameraTrigger[] m_enterTriggers;
 		public SwitchDimensionCameraTrigger[] m_exitTriggers;
+		public SwitchDimensionCameraTrigger[] m_changeYTriggers;
 	}
 
 	[Header("Gizmos")]
@@ -44,9 +45,9 @@ public class FixeCamera : MonoBehaviour {
 		public bool m_show = true;
 		public Color m_enterColor = Color.yellow;
 		public Color m_exitColor = Color.magenta;
+		public Color m_changeYColor = Color.grey;
 	}
 
-	bool m_cameraCanMove = true;
 	Vector3 m_offset;
 	bool m_playerIsInTriggers = false;
 	FreeLookCamManager m_cameraManager;
@@ -54,6 +55,9 @@ public class FixeCamera : MonoBehaviour {
 	SwitchCameraType m_switchCamera;
 	PlayerManager m_playerManager;
 	Camera m_camera;
+
+	float m_actualZPos = 5;
+	bool m_isMaxZoomed = false;
 
     void Start(){
 		m_offset = transform.position;
@@ -64,12 +68,17 @@ public class FixeCamera : MonoBehaviour {
 		for (int i = 0, l = m_triggers.m_exitTriggers.Length; i < l; ++i){
 			m_triggers.m_exitTriggers[i].FixeCamera = this;
 		}
+		for (int i = 0, l = m_triggers.m_changeYTriggers.Length; i < l; ++i){
+			m_triggers.m_changeYTriggers[i].FixeCamera = this;
+		}
 
 		m_cameraManager = FreeLookCamManager.Instance;
 		m_pivotManager = CameraPivot.Instance;
 		m_switchCamera = SwitchCameraType.Instance;
 		m_playerManager = PlayerManager.Instance;
 		m_camera = GetComponent<Camera>();
+
+		m_actualZPos = m_parameters.m_maxZPos;
 	}
 	
 	void LateUpdate(){
@@ -82,7 +91,7 @@ public class FixeCamera : MonoBehaviour {
 
 			float xCurve = Mathf.Lerp(transform.position.x, desiredXPosition, m_parameters.m_xSpeed);
 			float yCurve = Mathf.Lerp(transform.position.y, desiredYPosition, m_parameters.m_ySpeed);
-			float zCurve = Mathf.Lerp(transform.position.z, m_offset.z - m_parameters.m_zPos, m_parameters.m_zSpeed);
+			float zCurve = Mathf.Lerp(transform.position.z, m_offset.z - m_actualZPos, m_parameters.m_zSpeed);
 
 			transform.position =  new Vector3(xCurve, yCurve, zCurve);
 		// }
@@ -91,7 +100,7 @@ public class FixeCamera : MonoBehaviour {
 	public void OnPlayerEnterInEnterTrigger(){
 		if(!m_playerIsInTriggers){
 			m_playerIsInTriggers = true;
-			Debug.Log("Player enter in triggers");
+			// Debug.Log("Player enter in triggers");
 			On_PlayerEnterInTriggers(true);
 		}
 	}
@@ -106,7 +115,7 @@ public class FixeCamera : MonoBehaviour {
 		}
 		if(trueTriggersNb == 0){
 			if(m_playerIsInTriggers){
-				Debug.Log("Player exit from triggers");
+				// Debug.Log("Player exit from triggers");
 				m_playerIsInTriggers = false;
 				On_PlayerEnterInTriggers(false);
 			}
@@ -114,15 +123,14 @@ public class FixeCamera : MonoBehaviour {
 	}
 
 	void On_PlayerEnterInTriggers(bool playerEnter){
-		m_cameraCanMove = false;
 		if(playerEnter){
-			// m_playerManager.On_CinematicIsLaunch(true);
-
-			m_switchCamera.SetLastFixeCamera(this);
-			m_switchCamera.SwitchCamera(transform, false);
+			m_playerManager.CanHideFerret = false;
 
 			m_cameraManager.ResetXInput(false);
 			m_cameraManager.ResetYInput(false);
+
+			m_switchCamera.SetLastFixeCamera(this);
+			m_switchCamera.SwitchCamera(transform, false);
 		}else{
 			m_camera.enabled = false;
 			m_switchCamera.SetLastFixeCamera(this);
@@ -138,8 +146,17 @@ public class FixeCamera : MonoBehaviour {
 			m_cameraManager.ResetXInput(true);
 			m_cameraManager.ResetYInput(true);
 			m_pivotManager.ResetWithMainCamera();
+			m_playerManager.CanHideFerret = true;
 		}
-		m_cameraCanMove = true;
+	}
+
+	public void On_ChangeZPosition(){
+		m_isMaxZoomed =! m_isMaxZoomed;
+		if(m_isMaxZoomed){
+			m_actualZPos = m_parameters.m_maxZPos;
+		}else{
+			m_actualZPos = m_parameters.m_minZPos;
+		}
 	}
 
 	void OnDrawGizmos(){
@@ -157,6 +174,13 @@ public class FixeCamera : MonoBehaviour {
 		for (int i = 0, l = m_triggers.m_exitTriggers.Length; i < l; ++i){
 			BoxCollider col;
 			col = m_triggers.m_exitTriggers[i].GetComponent<BoxCollider>();
+			Gizmos.DrawWireCube(col.transform.position + col.center, col.size);
+		}
+
+		Gizmos.color = m_gizmos.m_changeYColor;
+		for (int i = 0, l = m_triggers.m_changeYTriggers.Length; i < l; ++i){
+			BoxCollider col;
+			col = m_triggers.m_changeYTriggers[i].GetComponent<BoxCollider>();
 			Gizmos.DrawWireCube(col.transform.position + col.center, col.size);
 		}
 	}

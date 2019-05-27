@@ -35,6 +35,9 @@ public class SwitchDimensionCameraTrigger : TriggerType {
                 case TriggerTypes.Exit:
                     m_playerIsInTrigger = true;
                 break;
+                case TriggerTypes.ChangeZ:
+                    m_fixeCamera.On_ChangeZPosition();
+                break;
             }
         }
     }
@@ -50,6 +53,9 @@ public class SwitchDimensionCameraTrigger : TriggerType {
                 case TriggerTypes.Exit:
                     m_playerIsInTrigger = false;
                     m_fixeCamera.CheckIfPlayerIsInTriggers();
+                break;
+                case TriggerTypes.ChangeZ:
+                    m_fixeCamera.On_ChangeZPosition();
                 break;
             }
         }   
