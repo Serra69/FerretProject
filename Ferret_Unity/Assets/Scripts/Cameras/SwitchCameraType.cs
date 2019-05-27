@@ -25,7 +25,6 @@ public class SwitchCameraType : MonoBehaviour {
 
 	public float m_maxTimeToSwitching = 2;
 
-	bool m_breackTheSwitchingCamera = false;
 	FreeLookCamManager m_camManager;
 	Camera m_camera;
 	FixeCamera m_lastFixeCamera;
@@ -47,13 +46,12 @@ public class SwitchCameraType : MonoBehaviour {
 			transform.position = m_camManager.m_cameraBrain.position;
 			transform.rotation = m_camManager.m_cameraBrain.rotation;
 		}
+		m_camera.enabled = true;
 		StopAllCoroutines();
 		StartCoroutine(SwitchingCamera(transform.position, newTrans, transform.rotation, newTrans));
 	}
 
 	IEnumerator SwitchingCamera(Vector3 fromPosition, Transform toPosition, Quaternion fromRotation, Transform toRotation){
-
-		Debug.Log("Début de coroutine");
 
 		m_pivotManager.ChangeCamera(transform);
 
@@ -61,22 +59,17 @@ public class SwitchCameraType : MonoBehaviour {
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
-		// float rotateJourneyLength;
+		float rotateJourneyLength;
 		float rotateFracJourney = new float();
 
-		m_breackTheSwitchingCamera = false;
-		StartCoroutine(StopSwitchingCameraWithTimer());
-
-		while(transform.position != toPosition.position/* || !m_breackTheSwitchingCamera*/){
-			Debug.Log("ça travail");
-
+		while(transform.position != toPosition.position){
 			// MovePosition
 			moveJourneyLength = Vector3.Distance(fromPosition, toPosition.position);
 			moveFracJourney += (Time.deltaTime) * m_changePositionSpeed / moveJourneyLength;
 			transform.position = Vector3.Lerp(fromPosition, toPosition.position, m_positionCurve.Evaluate(moveFracJourney));
 
 			// MoveRotation
-			// rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation.rotation);
+			rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation.rotation);
 			rotateFracJourney += (Time.deltaTime) * m_changeRotationSpeed / moveJourneyLength;
 			transform.rotation = Quaternion.Lerp(fromRotation, toRotation.rotation, m_rotationCurve.Evaluate(rotateFracJourney));
 
@@ -85,11 +78,6 @@ public class SwitchCameraType : MonoBehaviour {
 
 		m_camera.enabled = false;
 		m_lastFixeCamera.On_SwitchCameraIsFinished();
-	}
-
-	IEnumerator StopSwitchingCameraWithTimer(){
-		yield return new WaitForSeconds(m_maxTimeToSwitching);
-		m_breackTheSwitchingCamera = true;
 	}
 
 }

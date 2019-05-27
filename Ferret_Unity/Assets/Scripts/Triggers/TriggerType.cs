@@ -6,7 +6,8 @@ public class TriggerType : MonoBehaviour {
 
 	[System.Serializable] public enum TriggerTypes {
 		Enter,
-		Exit
+		Exit,
+		ChangeZ
 	}
 	
 }

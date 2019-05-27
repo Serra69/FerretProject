@@ -800,6 +800,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1612911063196440
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4367965824508010}
+  - component: {fileID: 20730911089221012}
+  - component: {fileID: 114263034431162074}
+  m_Layer: 0
+  m_Name: SwitchCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1618967133087554
 GameObject:
   m_ObjectHideFlags: 1
@@ -1635,6 +1652,7 @@ Transform:
   m_Children:
   - {fileID: 4889415137585540}
   - {fileID: 4163007226362864}
+  - {fileID: 4367965824508010}
   m_Father: {fileID: 4228686498102366}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1928,6 +1946,19 @@ Transform:
   m_Father: {fileID: 4222472016079204}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4367965824508010
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1612911063196440}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4167524301695216}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4369127659471914
 Transform:
   m_ObjectHideFlags: 1
@@ -2191,8 +2222,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: -0.08417228, y: 0.000000020912442, z: -0.0000000040503467,
-    w: -0.99645126}
+  m_LocalRotation: {x: -0.08417228, y: 0.000000020912541, z: -0.000000004051549, w: -0.99645126}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2288,7 +2318,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: -0.1372173, y: -0.00000001853769, z: 5.329306e-10, w: -0.990541}
+  m_LocalRotation: {x: -0.13721731, y: -0.000000024573113, z: 0.0000000013690035,
+    w: -0.990541}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2316,7 +2347,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1764841934354098}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -7.1450005, z: -20.386993}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4222472016079204}
@@ -2751,6 +2782,46 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!20 &20730911089221012
+Camera:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1612911063196440}
+  m_Enabled: 0
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 55
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 20
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!20 &20810940764255938
 Camera:
   m_ObjectHideFlags: 1
@@ -2759,7 +2830,7 @@ Camera:
   m_GameObject: {fileID: 1681364742312364}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
@@ -3326,6 +3397,68 @@ MonoBehaviour:
   m_SoftZoneHeight: 0.8
   m_BiasX: 0
   m_BiasY: 0
+--- !u!114 &114263034431162074
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1612911063196440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b52a5d9bc28ae694fb8c41900e963315, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_changePositionSpeed: 5
+  m_changeRotationSpeed: 5
+  m_positionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_rotationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_maxTimeToSwitching: 100000000
 --- !u!114 &114307988843428784
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3636,7 +3769,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df9be732aa469894f8ba5444f3c21853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_timerOfPressSpace: 0
   m_playerDebugs:
     m_playerCanDie: 1
   m_sM:
@@ -3696,8 +3828,8 @@ MonoBehaviour:
       m_isCrawling: 0
       m_speed: 1.5
     m_jump:
-      m_jumpForce: 4
-      m_minJumpTime: 0.35
+      m_jumpForce: 4.1
+      m_minJumpTime: 0.52
       m_jumpTime: 0.7
       m_jumpHeightCurve:
         serializedVersion: 2
@@ -3777,12 +3909,8 @@ MonoBehaviour:
   m_rotations:
     cameraSettings: {fileID: 114987661033805794}
     m_pivot: {fileID: 4143300893170828}
-    m_turnSpeedGrounded: 1
-    m_minTurnSpeedGrounded: 800
-    m_maxTurnSpeedGrounded: 500
-    m_turnSpeedWithoutGrounded: 0.25
-    m_minTurnSpeedWithoutGronuded: 200
-    m_maxTurnSpeedWithoutGronuded: 0
+    m_turnSpeedGrounded: 500
+    m_turnSpeedWithoutGrounded: 100
   m_raycasts:
     m_forwardTopRightLeg: {fileID: 4006623129306454}
     m_forwardTopLeftLeg: {fileID: 4959419175486532}
@@ -4024,6 +4152,7 @@ MonoBehaviour:
     m_botOrbit:
       m_Height: 0.25
       m_Radius: 2
+  m_cameraBrain: {fileID: 4931067033763904}
 --- !u!114 &114828143842425832
 MonoBehaviour:
   m_ObjectHideFlags: 1
