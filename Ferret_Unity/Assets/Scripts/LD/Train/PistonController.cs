@@ -50,8 +50,8 @@ public class PistonController : TrainPathsTypes {
 	Vector3 m_startRotation;
 
 	void Start(){
-		m_startPosition = transform.localPosition;
-		m_startRotation = transform.rotation.eulerAngles;
+		m_startPosition = m_move.m_transform.localPosition;
+		m_startRotation = m_rotate.m_transform.rotation.eulerAngles;
 	}
 
     public void DoYourJob(){
@@ -156,6 +156,8 @@ public class PistonController : TrainPathsTypes {
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 		float rotateFracJourney = new float();
+
+		Debug.Log("m_transform.localPosition = " + m_move.m_transform.localPosition + " | m_startPosition = " + m_startPosition);
 
 		while(m_move.m_transform.localPosition != m_startPosition){
 			// Move

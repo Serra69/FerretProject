@@ -10,6 +10,9 @@ public class ObjectToBeGrapped : MonoBehaviour {
 	[Header("Range")]
 	[SerializeField] float m_takingRange = 1;
 
+	[Header("Grabbable point")]
+	public Transform m_objectPoint;
+
 	[Header("Gizmos")]
 	[SerializeField] bool m_showGizmos = true;
 	[SerializeField] Color m_color = Color.white;
@@ -40,7 +43,11 @@ public class ObjectToBeGrapped : MonoBehaviour {
 		m_posToFollow = m_playerManager.m_states.m_takeObject.m_objectPosition;
 
 		m_collider = GetComponent<Collider>();
-		m_rbody = GetComponent<Rigidbody>();
+
+		if(m_rbody == null){
+			m_rbody = GetComponent<Rigidbody>();	
+			m_rbody = GetComponentInParent<Rigidbody>();
+		}
 
 		m_rbody.isKinematic = m_objectIsUsable ? false : true;
 	}
@@ -61,7 +68,16 @@ public class ObjectToBeGrapped : MonoBehaviour {
 	}
 
 	void CheckPlayerPosition(){
-		if(Vector3.Distance(transform.position, m_playerManager.transform.position) <= m_takingRange){
+
+		Vector3 fromDistance;
+
+		if(m_objectPoint == null){
+			fromDistance = transform.position;
+		}else{
+			fromDistance = m_objectPoint.position;
+		}
+
+		if(Vector3.Distance(fromDistance, m_playerManager.transform.position) <= m_takingRange){
 			m_playerManager.SetClosedObjectToBeGrapped(true, this);
 		}else{
 			m_playerManager.SetClosedObjectToBeGrapped(false, this);
@@ -88,15 +104,24 @@ public class ObjectToBeGrapped : MonoBehaviour {
 
 	void LateUpdate(){
 		if(m_followPlayer){
-			transform.position = m_posToFollow.transform.position;
-			transform.rotation = m_posToFollow.transform.rotation;
+			if(m_objectPoint == null){
+				transform.position = m_posToFollow.transform.position;
+				transform.rotation = m_posToFollow.transform.rotation;
+			}else{
+				m_objectPoint.position = m_posToFollow.transform.position;
+				m_objectPoint.rotation = m_posToFollow.transform.rotation;
+			}
 		}
 	}
 
 	void OnDrawGizmosSelected(){
 		if(m_showGizmos){
 			Gizmos.color = m_color;
-			Gizmos.DrawWireSphere(transform.position, m_takingRange);
+			if(m_objectPoint == null){
+				Gizmos.DrawWireSphere(transform.position, m_takingRange);
+			}else{
+				Gizmos.DrawWireSphere(m_objectPoint.position, m_takingRange);
+			}
 		}
 	}
 

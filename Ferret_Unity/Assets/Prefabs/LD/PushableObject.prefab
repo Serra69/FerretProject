@@ -67,7 +67,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4830839517390028}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: BotLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4340415028640502}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: TopLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4881153541832886}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: TopRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4960454468165274}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: BotRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4971830895899422}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: RaycastPositions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ Transform:
   m_GameObject: {fileID: 1092241545253224}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 78.28, y: 12.23, z: -146.32}
-  m_LocalScale: {x: 3.3000004, y: 6, z: 3.3000004}
+  m_LocalScale: {x: 3.3000004, y: 6, z: 3.9260106}
   m_Children:
   - {fileID: 4434946572911956}
   - {fileID: 4729138715695676}
