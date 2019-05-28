@@ -62,7 +62,7 @@ public class FreeLookCamManager : FreeLookCameraType {
 	}
 
 	void Update(){
-		if(Input.GetKeyDown(KeyCode.R) && m_canIResetCamPos){
+		if(Input.GetButtonDown("ResnapCamera") && m_canIResetCamPos){
 			StartCoroutine(ResetCameraPosition());
 			m_freeLookCam.m_RecenterToTargetHeading = m_XAxisRecentering;
 			m_freeLookCam.m_YAxisRecentering = m_YAxisRecentering;

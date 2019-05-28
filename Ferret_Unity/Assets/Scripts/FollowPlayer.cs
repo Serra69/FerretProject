@@ -16,6 +16,7 @@ public class FollowPlayer : MonoBehaviour {
 #endregion //Singleton
 
 	[SerializeField] Transform m_objectToFollow;
+	[SerializeField] Transform m_objectToRotate;
 	[SerializeField] float m_speed = 0.5f;
 	[SerializeField] AnimationCurve m_curve;
 	
@@ -31,15 +32,21 @@ public class FollowPlayer : MonoBehaviour {
 
 	Vector3 m_offset;
 	Vector3 m_desiredPosition;
+	Quaternion m_desiredRotation;
 
 	void Start(){
 		m_offset = transform.localPosition;
 	}
 
 	void Update(){
-		m_desiredPosition = m_objectToFollow.transform.position + m_offset;
+		m_desiredPosition = m_objectToFollow.position + m_offset;
 		if(m_followLookAtPoint){
 			transform.position = m_desiredPosition;
+		}
+
+		m_desiredRotation = m_objectToRotate.rotation;
+		if(m_followLookAtPoint){
+			transform.rotation = m_desiredRotation;
 		}
 	}
 
