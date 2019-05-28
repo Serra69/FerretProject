@@ -18,7 +18,6 @@ public class CameraTrigger : FreeLookCameraType {
 	public LookPosition m_lookPosition = new LookPosition();
 	[System.Serializable] public class LookPosition {
 		[Header("Parameters")]
-		public bool m_playerCanMoveWhenCameraMove = true;
 		public bool m_allowStopShowTarget = true;
 
 		[Header("Target")]
@@ -41,7 +40,6 @@ public class CameraTrigger : FreeLookCameraType {
 		public Color m_colorGizmos = Color.yellow;
 	}
 
-
 	BoxCollider m_boxColl;
 	public BoxCollider BoxColl{
         get{
@@ -52,8 +50,7 @@ public class CameraTrigger : FreeLookCameraType {
 	PlayerManager m_playerManager;
 	FreeLookCamManager m_freeLookCamManager;
 	CameraLookAtPosition m_cameraLookAt;
-	bool m_isFirstActivated = false;
-	bool m_isSecondActivated = false;
+	bool m_isActivated = false;
 	Vector3 m_realLookAtPosition;
 	bool m_coroutineIsRunning = false;
 	FollowPlayer m_followPlayer;
@@ -72,29 +69,16 @@ public class CameraTrigger : FreeLookCameraType {
 	}
 
 	void OnTriggerEnter(Collider col){
-		if(col.CompareTag("Player") && !m_isFirstActivated){
-			m_isFirstActivated = true;
+		if(col.CompareTag("Player") && !m_isActivated){
+			m_isActivated = true;
 
 			if(m_canLookPosiiton){
-				if(!m_lookPosition.m_playerCanMoveWhenCameraMove){
-					m_playerManager.On_CinematicIsLaunch(true);
-				}
 				StartCoroutine(MoveCoroutToTarget());
 			}
 
 			if(m_canChangeOrbit){
 				m_freeLookCamManager.SwitchOrbitCamera(m_changeOrbit.m_newLookType);
 			}
-		}
-	}
-	void OnTriggerExit(Collider col){
-		if(col.CompareTag("Player") && !m_isSecondActivated && !m_coroutineIsRunning && m_lookPosition.m_allowStopShowTarget && m_canLookPosiiton){
-			m_isSecondActivated = true;
-
-			if(!m_lookPosition.m_playerCanMoveWhenCameraMove){
-				m_playerManager.On_CinematicIsLaunch(true);
-			}
-			StartCoroutine(MoveCoroutToPlayer());
 		}
 	}
 
