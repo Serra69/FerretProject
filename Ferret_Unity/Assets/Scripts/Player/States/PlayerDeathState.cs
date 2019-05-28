@@ -18,6 +18,11 @@ public class PlayerDeathState : IState
   public void Enter()
   {
     m_timer = 0;
+
+    for (int i = 0, l = m_timerIsPassed.Length; i < l; ++i){
+        m_timerIsPassed[i] = false;
+    }
+    
     m_playerManager.PlayerIsDead = true;
     // m_playerManager.Animator.SetTrigger("Idle");
     m_playerManager.Rigidbody.Sleep();
