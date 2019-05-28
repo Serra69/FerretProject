@@ -157,8 +157,6 @@ public class PistonController : TrainPathsTypes {
 		float moveFracJourney = new float();
 		float rotateFracJourney = new float();
 
-		Debug.Log("m_transform.localPosition = " + m_move.m_transform.localPosition + " | m_startPosition = " + m_startPosition);
-
 		while(m_move.m_transform.localPosition != m_startPosition){
 			// Move
 			moveJourneyLength = Vector3.Distance(m_move.m_transform.localPosition, m_startPosition);
