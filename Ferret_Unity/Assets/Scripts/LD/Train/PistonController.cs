@@ -50,8 +50,12 @@ public class PistonController : TrainPathsTypes {
 	Vector3 m_startRotation;
 
 	void Start(){
-		m_startPosition = m_move.m_transform.localPosition;
-		m_startRotation = m_rotate.m_transform.rotation.eulerAngles;
+		if(m_move.m_transform != null){
+			m_startPosition = m_move.m_transform.localPosition;
+		}
+		if(m_rotate.m_transform != null){
+			m_startRotation = m_rotate.m_transform.rotation.eulerAngles;
+		}
 	}
 
     public void DoYourJob(){
