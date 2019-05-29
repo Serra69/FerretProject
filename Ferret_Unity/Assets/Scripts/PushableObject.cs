@@ -44,6 +44,19 @@ public class PushableObject : MonoBehaviour {
 
     }
 
+	bool m_boxCollForward = false;
+	public bool BoxCollForward{
+        get{
+            return m_boxCollForward;
+        }
+    }
+	bool m_boxCollBackward = false;
+	public bool BoxCollBackward{
+        get{
+            return m_boxCollBackward;
+        }
+    }
+
     int m_closedPosition;
     public int ClosedPosition
     {
@@ -63,8 +76,6 @@ public class PushableObject : MonoBehaviour {
         }
     }
 
-
-
     void Start(){
 		m_raycastReturn = new bool[m_raycastPositions.Length];
 		m_rigidbody = GetComponent<Rigidbody>();
@@ -74,8 +85,14 @@ public class PushableObject : MonoBehaviour {
 	void Update(){
 		if(!m_objectAllowToFall && m_objectIsPushByTheFerret){
 			CheckGround();
+
+			if(m_closedTransform == m_snapPositions[0] || m_closedTransform == m_snapPositions[2]){
+				BoxCastForward(true);
+			}else if(m_closedTransform == m_snapPositions[1] || m_closedTransform == m_snapPositions[3]){
+				BoxCastForward(false);
+			}
+
 		}
-			BoxCast();
 	}
 
 	void CheckGround(){
@@ -102,11 +119,11 @@ public class PushableObject : MonoBehaviour {
 		}
 
 		Gizmos.color = m_boxColor;
-		Vector3 boxSizeForward = new Vector3(m_boxSizeForward.x * transform.localScale.x, m_boxSizeForward.y * transform.localScale.y, m_boxSizeForward.z * transform.localScale.z);
-		Vector3 boxSize = new Vector3(m_boxSizeRight.x * transform.localScale.x, m_boxSizeRight.y * transform.localScale.y, m_boxSizeRight.z * transform.localScale.z);
+		Vector3 boxSizeForward = new Vector3(m_boxSizeForward.x * transform.lossyScale.x, m_boxSizeForward.y * transform.lossyScale.y, m_boxSizeForward.z * transform.lossyScale.z);
+		Vector3 boxSizeRight = new Vector3(m_boxSizeRight.x * transform.localScale.x, m_boxSizeRight.y * transform.localScale.y, m_boxSizeRight.z * transform.localScale.z);
 
 		// Gizmos.DrawCube(transform.position + On_PlayerSnapToObject().forward * m_boxCastDistance, boxSize);
-		if(m_playerManager != null){
+		/*if(m_playerManager != null){
 			/*if(On_PlayerSnapToObject() == m_snapPositions[0]){
 				Gizmos.DrawCube(transform.position + Vector3.back * m_castDistanceForward, boxSizeForward);
 			}else if(On_PlayerSnapToObject() == m_snapPositions[1]){
@@ -115,26 +132,65 @@ public class PushableObject : MonoBehaviour {
 				Gizmos.DrawCube(transform.position + Vector3.forward * m_castDistanceForward, boxSizeForward);
 			}else if(On_PlayerSnapToObject() == m_snapPositions[3]){
 				Gizmos.DrawCube(transform.position + Vector3.right * m_castDistanceRight, boxSize);
-			}*/
+			}*
 
 			Gizmos.DrawCube(transform.position + Vector3.forward * m_castDistanceForward, boxSizeForward);
 
 		}
 
+		Gizmos.DrawCube(transform.position + Vector3.forward * m_castDistanceForward, boxSizeForward);*/
+
 	}
 
-	void BoxCast(){
-		Vector3 boxSizeForward = new Vector3(m_boxSizeForward.x * transform.localScale.x, m_boxSizeForward.y * transform.localScale.y, m_boxSizeForward.z * transform.localScale.z);
-		Vector3 boxSize = new Vector3(m_boxSizeRight.x * transform.localScale.x, m_boxSizeRight.y * transform.localScale.y, m_boxSizeRight.z * transform.localScale.z);
-		
-		Collider[] hitColliders = Physics.OverlapBox(transform.position + Vector3.forward * m_castDistanceForward, boxSizeForward, transform.rotation, m_objectColliders);
+	void BoxCastForward(bool isForward){
 
-		int colliders = 0;
-		for (int i = 0, l = hitColliders.Length; i < l; ++i){
-			if(hitColliders[i] != BoxColl){
-				Debug.Log("hitColliders = " + hitColliders[i].gameObject.name);
-				colliders ++;
+		if(isForward){
+
+			Vector3 boxSizeForward = new Vector3(m_boxSizeForward.x * transform.lossyScale.x, m_boxSizeForward.y * transform.lossyScale.y, m_boxSizeForward.z * transform.lossyScale.z);
+			
+			Collider[] forwardHitColliders = Physics.OverlapBox(transform.position + m_playerManager.transform.forward * m_castDistanceForward, boxSizeForward / 2, transform.rotation, m_objectColliders);
+			int forwardColliders = 0;
+			for (int i = 0, l = forwardHitColliders.Length; i < l; ++i){
+				if(forwardHitColliders[i] != BoxColl){
+					// Debug.Log("forwardColliders = " + forwardHitColliders[i].gameObject.name);
+					forwardColliders ++;
+				}
 			}
+			m_boxCollForward = forwardColliders > 0 ? true : false;
+
+			Collider[] backwardHitColliders = Physics.OverlapBox(transform.position - m_playerManager.transform.forward * m_castDistanceForward, boxSizeForward / 2, transform.rotation, m_objectColliders);
+			int backwardColliders = 0;
+			for (int i = 0, l = backwardHitColliders.Length; i < l; ++i){
+				if(backwardHitColliders[i] != BoxColl){
+					// Debug.Log("backwardColliders = " + backwardHitColliders[i].gameObject.name);
+					backwardColliders ++;
+				}
+			}
+			m_boxCollBackward = backwardColliders > 0 ? true : false;
+
+		}else{
+			Vector3 boxSizeRight = new Vector3(m_boxSizeRight.x * transform.localScale.x, m_boxSizeRight.y * transform.localScale.y, m_boxSizeRight.z * transform.localScale.z);
+			
+			Collider[] rightHitColliders = Physics.OverlapBox(transform.position + m_playerManager.transform.forward * m_castDistanceForward, boxSizeRight / 2, transform.rotation, m_objectColliders);
+			int rightColliders = 0;
+			for (int i = 0, l = rightHitColliders.Length; i < l; ++i){
+				if(rightHitColliders[i] != BoxColl){
+					// Debug.Log("rightColliders = " + rightHitColliders[i].gameObject.name);
+					rightColliders ++;
+				}
+			}
+			m_boxCollForward = rightColliders > 0 ? true : false;
+
+			Collider[] leftHitColliders = Physics.OverlapBox(transform.position - m_playerManager.transform.forward * m_castDistanceForward, boxSizeRight / 2, transform.rotation, m_objectColliders);
+			int leftColliders = 0;
+			for (int i = 0, l = leftHitColliders.Length; i < l; ++i){
+				if(leftHitColliders[i] != BoxColl){
+					// Debug.Log("leftColliders = " + leftHitColliders[i].gameObject.name);
+					leftColliders ++;
+				}
+			}
+			m_boxCollBackward = leftColliders > 0 ? true : false;
+			
 		}
 
 	}

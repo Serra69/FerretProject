@@ -13,7 +13,6 @@ public class CheckPoint : MonoBehaviour {
 	[SerializeField] bool m_showGizmos = true;
 	[SerializeField] Color m_gizmosColor = Color.blue;
 
-	BoxCollider m_boxCol;
     public BoxCollider BoxCol{
         get{
             return GetComponent<BoxCollider>();

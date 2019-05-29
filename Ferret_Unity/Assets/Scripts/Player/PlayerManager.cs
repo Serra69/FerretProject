@@ -789,7 +789,7 @@ public class PlayerManager : ClimbTypesArea {
 
 		// Debug.Log("m_moveDirection = " + m_moveDirection);
 
-		if(RaycastFromFerretAss()){
+		if(RaycastFromFerretAss() && !PushableObject.BoxCollBackward){
 			m_moveDirection.x *= speed;
 			m_moveDirection.z *= speed;
 		}else{
@@ -819,7 +819,7 @@ public class PlayerManager : ClimbTypesArea {
 			}
 		}
 
-		if(!PushableObject.CanMove){
+		if(!PushableObject.CanMove || PushableObject.BoxCollForward){
 
 			if(m_pushableObject.ClosedPosition == 2 || m_pushableObject.ClosedPosition == 3){
 				if(m_moveDirection.z > 0){
