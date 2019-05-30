@@ -82,6 +82,10 @@ public class CameraTrigger : FreeLookCameraType {
 		}
 	}
 
+	public void On_SkeletonMoved(){
+		StartCoroutine(MoveCoroutToTarget());
+	}
+
 	IEnumerator MoveCoroutToTarget(){
 		m_freeLookCamManager.ResetXInput(false);
 		m_freeLookCamManager.ResetYInput(false);

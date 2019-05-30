@@ -485,6 +485,9 @@ public class PlayerManager : ClimbTypesArea {
 		UpdateInputButtons();
 		if(m_takeButton){
 			GrappedObject();
+			if(m_closedInteractiveObject != null){
+				m_closedInteractiveObject.On_ObjectIsTake();
+			}
 		}
 
 		if(Input.GetKeyDown(KeyCode.A)){
@@ -1228,6 +1231,16 @@ public class PlayerManager : ClimbTypesArea {
             }
         }
 		return 0;
+	}
+
+	InteractiveObject m_closedInteractiveObject;
+	public void SetClosedInteractiveObject(InteractiveObject closedInteractiveObject, bool isEnter){
+		if(isEnter){
+			m_closedInteractiveObject = closedInteractiveObject;
+
+		}else{
+			m_closedInteractiveObject = null;
+		}
 	}
 
 #endregion Public functions
