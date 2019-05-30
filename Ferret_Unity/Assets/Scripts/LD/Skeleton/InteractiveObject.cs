@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class InteractiveObject : MonoBehaviour {
 
+	[Header("Handles to disable")]
+	[SerializeField] GameObject[] m_handles = new GameObject[1];
+
 	[Header("Gizmos")]
 	[SerializeField] bool m_showGizmos = true;
 	[SerializeField] Color m_color = Color.white;
@@ -31,6 +34,11 @@ public class InteractiveObject : MonoBehaviour {
 	public void On_ObjectIsTake(){
 		m_isUsed = true;
 		m_skeletonController.On_PikeIsDisable();
+
+		for (int i = 0, l = m_handles.Length; i < l; ++i){
+			Destroy(m_handles[i]);
+		}
+
 		m_playerManager.SetClosedInteractiveObject(null, false);
 	}
 

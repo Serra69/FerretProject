@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Path : MonoBehaviour {
+public class Paths : MonoBehaviour {
 
 	public PathType m_pathType = PathType.Simple;
 	public enum PathType {
