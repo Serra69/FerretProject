@@ -36,15 +36,18 @@ public class PathMove : MonoBehaviour {
 	void Start(){
 		m_agent = GetComponent<NavMeshAgent>();
 		ChoseNextTarget();
+
+		if(GetComponent<RobotPusher>()){
+			if(m_pathTarget != null){
+				StartCoroutine(MoveWithRigidbody(transform, transform.position, m_pathTarget.position, transform, transform.rotation, m_pathTarget.rotation));
+			}
+		}
+
+		// Debug.Log("Dot 0,90,0 && 0,-90,0" + Quaternion.Dot(fromRotation, toRotation))
+
 	}
 
 	void Update(){
-		
-		if(GetComponent<RobotPusher>()){
-			if(m_pathTarget != null){
-				MoveWithRigidbody();
-			}
-		}
 
 		if(GetComponent<RobotDoctor>()){
 			if(!m_robotDoctor.FollowPlayer){
@@ -53,21 +56,78 @@ public class PathMove : MonoBehaviour {
 		}
 	}
 
-	void MoveWithRigidbody(){
-		Vector3 step;
-
-		Vector3 targetPos = m_pathTarget.position;
-		targetPos.y = transform.position.y;
+	IEnumerator MoveWithRigidbody(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
 		
-		transform.LookAt(targetPos);
+		float moveJourneyLength;
+		float moveFracJourney = new float();
 
-		step = transform.forward * (m_robotPusher.m_moveSpeed * Time.deltaTime);
+		// print("Start move");
 
-		if(!m_waitingOnAPath){
-			m_robotPusher.Rigidbody.velocity = step;
-		}else{
-			m_robotPusher.Rigidbody.velocity = new Vector3(0, 0, 0);
+		while(transformPosition.position != toPosition){
+			// MovePosition
+			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
+			moveFracJourney += (Time.deltaTime) * m_robotPusher.m_moveSpeed / moveJourneyLength;
+			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, m_robotPusher.m_moveCurve.Evaluate(moveFracJourney));
+
+			yield return null;
 		}
+		// print("End move");
+
+		if(m_currenttarget == m_pathList.Length -1){
+				// print("m_pathList[0] = " + m_pathList[0]);
+			StartCoroutine(RotateWithRigidbody(transform.rotation, m_pathList[0].rotation));
+		}else{
+			if(m_pathList[m_currenttarget + 1] != null){
+				// print("m_pathList[m_currenttarget + 1] = " + m_pathList[m_currenttarget + 1]);
+				StartCoroutine(RotateWithRigidbody(transform.rotation, m_pathList[m_currenttarget + 1].rotation));
+			}
+		}
+
+	}
+
+	IEnumerator RotateWithRigidbody(Quaternion fromRotation, Quaternion toRotation){
+
+		float rotateJourneyLength = new float();
+		float rotateFracJourney = new float();
+
+		// print("Start rotate");
+		// Debug.Log("transformRotation.rotation = " + transform.rotation.eulerAngles);
+		// Debug.Log("toRotation = " + toRotation.eulerAngles);
+
+		while(transform.rotation.eulerAngles != toRotation.eulerAngles){
+
+			// MoveRotation
+
+			if(!m_robotPusher.m_isMovingInLine){
+				rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation);
+			}else{
+				rotateJourneyLength = Vector3.Distance(fromRotation.eulerAngles, toRotation.eulerAngles);
+			}
+
+			Debug.Log("rotateJourneyLength = " + rotateJourneyLength);
+			if(rotateJourneyLength < 0){
+				rotateJourneyLength = - rotateJourneyLength;
+				// Debug.Log("after calcul : rotateJourneyLength = " + rotateJourneyLength);
+			}
+
+			rotateFracJourney += (Time.deltaTime) * m_robotPusher.m_rotateSpeed / rotateJourneyLength;
+
+			if(!m_robotPusher.m_isMovingInLine){
+				transform.rotation = Quaternion.Slerp(fromRotation, toRotation, m_robotPusher.m_rotateCurve.Evaluate(rotateFracJourney));
+			}else{
+				transform.rotation = Quaternion.Lerp(fromRotation, toRotation, m_robotPusher.m_rotateCurve.Evaluate(rotateFracJourney));
+			}
+
+			// Debug.Log("transformRotation.rotation = " + transform.rotation.eulerAngles);
+			// Debug.Log("toRotation.eulerAngles = " + toRotation.eulerAngles);
+			// Debug.Log("rotateFracJourney = " + rotateFracJourney);
+			// Debug.Log("Quaternion.Slerp = " + Quaternion.Slerp(fromRotation, toRotation, m_robotPusher.m_rotateCurve.Evaluate(rotateFracJourney)).eulerAngles);
+
+			yield return null;
+		}
+		// print("End rotate");
+		ChoseNextTarget();
+		StartCoroutine(MoveWithRigidbody(transform, transform.position, m_pathList[m_currenttarget].position, transform, transform.rotation, m_pathList[m_currenttarget].rotation));
 	}
 
 	void MoveWithNavMesh(){
@@ -90,7 +150,7 @@ public class PathMove : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider col){
+	/*void OnTriggerEnter(Collider col){
 		if(col.tag == "Path"){
 			if(col.gameObject == m_pathTarget.gameObject){
 
@@ -103,7 +163,7 @@ public class PathMove : MonoBehaviour {
 				}
 			}
 		}
-	}
+	}*/
 
 	void GetPathType(int i){
 		m_pathType = i;

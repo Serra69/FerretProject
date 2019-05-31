@@ -6,7 +6,16 @@ using UnityEngine.AI;
 [RequireComponent(typeof(PathMove), typeof(Rigidbody))]
 public class RobotPusher : MonoBehaviour {
 
+    [Header("Robot type")]
+    public bool m_isMovingInLine = false;
+
+    [Header("Move")]
 	public float m_moveSpeed = 10;
+    public AnimationCurve m_moveCurve;
+
+    [Header("Rotate")]
+	public float m_rotateSpeed = 10;
+    public AnimationCurve m_rotateCurve;
 
     Rigidbody m_rigidbody;
     public Rigidbody Rigidbody
