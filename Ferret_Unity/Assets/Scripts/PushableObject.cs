@@ -266,7 +266,7 @@ public class PushableObject : MonoBehaviour {
 		int colliders = 0;
 		for (int i = 0, l = hitColliders.Length; i < l; ++i){
 			if(hitColliders[i] != BoxColl){
-				Debug.Log("Colliders = " + hitColliders[i].gameObject.name);
+				// Debug.Log("Colliders = " + hitColliders[i].gameObject.name);
 				colliders ++;
 			}
 		}

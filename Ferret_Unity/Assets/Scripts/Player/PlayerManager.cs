@@ -129,10 +129,15 @@ public class PlayerManager : ClimbTypesArea {
 
 		public Push m_push = new Push();
 		[System.Serializable] public class Push {
+			[Header("Push")]
 			public float m_speed = 1.5f;
 			public LayerMask m_pushLayer;
 			public RaycastHit m_hit;
 			public Transform m_objectTrans;
+
+			[Header("Snap interpolation")]
+			public float m_snapSpeed = 3;
+			public AnimationCurve m_snapCurve;
 		}
 
 		public Death m_death = new Death();
@@ -419,6 +424,15 @@ public class PlayerManager : ClimbTypesArea {
         }
         set{
             m_canHideFerret = value;
+        }
+    }
+
+	bool m_canMoveOnPush = false;
+    public bool CanMoveOnPush
+    {
+        get
+        {
+            return m_canMoveOnPush;
         }
     }
 
@@ -1143,9 +1157,6 @@ public class PlayerManager : ClimbTypesArea {
 		float rotateJourneyLength;
 		float rotateFracJourney = new float();
 
-		float t = Vector3.Distance(fromPosition, toPosition) / changePositionSpeed;
-		StartCoroutine(OrientationAfterClimb(t));
-
 		Vector3 newToPosTarget = new Vector3(toPosition.x, transform.position.y - m_states.m_climb.m_interpolation.m_fallingInY, toPosition.z);
 		Vector3 newPos = new Vector3(transform.position.x, 0, transform.position.z);
 		Vector3 newToPos = new Vector3(toPosition.x, 0, toPosition.z);
@@ -1170,14 +1181,6 @@ public class PlayerManager : ClimbTypesArea {
 
 		m_isInLerpRotation = false;
 
-		m_endOfOrientationAfterClimb = true;
-		yield return new WaitForSeconds(0.5f);
-		m_endOfOrientationAfterClimb = false;
-	}
-
-	IEnumerator OrientationAfterClimb(float timeToWait){
-		yield return new WaitForSeconds(timeToWait);
-		m_isInLerpRotation = false;
 		m_endOfOrientationAfterClimb = true;
 		yield return new WaitForSeconds(0.5f);
 		m_endOfOrientationAfterClimb = false;
@@ -1255,8 +1258,35 @@ public class PlayerManager : ClimbTypesArea {
 		}
 	}
 
-#endregion Public functions
+	public void StartRotateToPushableObjectInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+		StartCoroutine(RotateToPushableObjectInterpolation(transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation));
+	}
+	IEnumerator RotateToPushableObjectInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+		
+		m_canMoveOnPush = false;
 
+		float moveJourneyLength;
+		float moveFracJourney = new float();
+		float rotateJourneyLength;
+		float rotateFracJourney = new float();
+
+		while(transform.position != toPosition){
+			// MovePosition
+			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
+			moveFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed / moveJourneyLength;
+			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, m_states.m_push.m_snapCurve.Evaluate(moveFracJourney));
+
+			// MoveRotation
+			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
+			rotateFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed / rotateJourneyLength;
+			transformRotation.rotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_push.m_snapCurve.Evaluate(rotateFracJourney));
+
+			yield return null;
+		}
+		m_canMoveOnPush = true;
+	}
+
+#endregion Public functions
 
 }
 
