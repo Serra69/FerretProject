@@ -69,6 +69,7 @@ public class PlayerManager : ClimbTypesArea {
 				public float m_fallRotationSpeed = 5;
 				[Space]
 				public float m_fallingDistance = 1.5f;
+				public float m_fallingInY = 1f;
 			}
 
 			public CheckCollision m_checkCollision = new CheckCollision();
@@ -960,12 +961,17 @@ public class PlayerManager : ClimbTypesArea {
 		float rotateJourneyLength;
 		float rotateFracJourney = new float();
 
-		while(trans.localRotation != toRotation){
+		while(trans.rotation != toRotation){
 			// MoveRotation
 			rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation);
-			rotateFracJourney += (Time.deltaTime) * m_states.m_climb.m_interpolation.m_fallRotationSpeed / rotateJourneyLength;
-			trans.localRotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_climb.m_interpolation.m_snapCurve.Evaluate(rotateFracJourney));
 
+			if(rotateJourneyLength < 0){
+				rotateJourneyLength = - rotateJourneyLength;
+				// Debug.Log("new rotateJourneyLength = " + rotateJourneyLength);
+			}
+
+			rotateFracJourney += (Time.deltaTime) * m_states.m_climb.m_interpolation.m_enterChangeRotationSpeed / rotateJourneyLength;
+			trans.rotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_climb.m_interpolation.m_snapCurve.Evaluate(rotateFracJourney));
 			yield return null;
 		}
 	}
@@ -1121,7 +1127,8 @@ public class PlayerManager : ClimbTypesArea {
 
 		m_canMoveOnClimb = false;
 
-		// m_rigidbody.isKinematic = true;
+		// m_rigidbody.isKinematic = false;
+		// m_rigidbody.useGravity = true;
 
 		AnimationCurve animationCurve = m_states.m_climb.m_interpolation.m_snapCurve;
 
@@ -1139,14 +1146,19 @@ public class PlayerManager : ClimbTypesArea {
 		float t = Vector3.Distance(fromPosition, toPosition) / changePositionSpeed;
 		StartCoroutine(OrientationAfterClimb(t));
 
-		while(transform.position != toPosition){
+		Vector3 newToPosTarget = new Vector3(toPosition.x, transform.position.y - m_states.m_climb.m_interpolation.m_fallingInY, toPosition.z);
+		Vector3 newPos = new Vector3(transform.position.x, 0, transform.position.z);
+		Vector3 newToPos = new Vector3(toPosition.x, 0, toPosition.z);
+
+		while(newPos != newToPos){
+			newPos = new Vector3(transform.position.x, 0, transform.position.z);
 			// MovePosition
-			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
+			moveJourneyLength = Vector3.Distance(fromPosition, newToPosTarget);
 			moveFracJourney += (Time.deltaTime) * changePositionSpeed / moveJourneyLength;
-			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, animationCurve.Evaluate(moveFracJourney));
+			transformPosition.position = Vector3.Lerp(fromPosition, newToPosTarget, animationCurve.Evaluate(moveFracJourney));
 
 			// MoveRotation
-			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
+			rotateJourneyLength = Vector3.Distance(fromPosition, newToPosTarget);
 			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / rotateJourneyLength;
 			transformRotation.rotation = Quaternion.Lerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
 
@@ -1215,8 +1227,8 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public void On_CheckPointIsTake(Transform checkPointTrans){
-		transform.position = checkPointTrans.position;
-		transform.rotation = checkPointTrans.rotation;
+		m_savePosition = checkPointTrans.position;
+		m_saveRotation = checkPointTrans.rotation;
 	}
 
 	public void ResetCheckPointPosition(){
