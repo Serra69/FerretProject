@@ -89,4 +89,8 @@ public class PlayerJumpState : IState
 
     }
 
+    public void LateUpdate(){
+      
+    }
+
 }

@@ -66,6 +66,10 @@ public class PlayerDeathState : IState
     
   }
 
+  public void LateUpdate(){
+      
+  }
+
   public void Exit()
   {
     m_playerManager.PlayerIsDead = false;

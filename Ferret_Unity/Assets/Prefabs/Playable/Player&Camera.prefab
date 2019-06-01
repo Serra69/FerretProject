@@ -6071,7 +6071,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701019898918854}
-  m_LocalRotation: {x: 0.111414954, y: 0.00002464675, z: -0.00021968326, w: 0.993774}
+  m_LocalRotation: {x: 0.111414954, y: 0.000024646752, z: -0.00021968326, w: 0.993774}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6371,7 +6371,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1681364742312364}
-  m_LocalRotation: {x: 0.11141499, y: 0.000000035250622, z: -0.000000003952053, w: 0.993774}
+  m_LocalRotation: {x: 0.11141499, y: 0.000000035252434, z: -0.0000000039522563, w: 0.993774}
   m_LocalPosition: {x: 0, y: 3.0728085, z: 2.7500086}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -8394,6 +8394,16 @@ MonoBehaviour:
     m_botOrbit:
       m_Height: 0.25
       m_Radius: 2
+  - m_title: Very close orbit
+    m_topOrbit:
+      m_Height: 2.5
+      m_Radius: 1.75
+    m_middleOrbit:
+      m_Height: 1.5
+      m_Radius: 2.5
+    m_botOrbit:
+      m_Height: 0.25
+      m_Radius: 1.75
   m_XAxisRecentering:
     m_enabled: 1
     m_WaitTime: 0

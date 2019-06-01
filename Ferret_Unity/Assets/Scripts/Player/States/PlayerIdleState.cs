@@ -60,4 +60,8 @@ public class PlayerIdleState : IState
 
     }
 
+    public void LateUpdate(){
+      
+    }
+
 }

@@ -36,6 +36,9 @@ public class PlayerPushState : IState
     m_playerManager.PushMove(m_playerManager.m_states.m_push.m_speed);
   }
 
+  public void LateUpdate(){
+      
+  }
 
   public void Exit()
   {

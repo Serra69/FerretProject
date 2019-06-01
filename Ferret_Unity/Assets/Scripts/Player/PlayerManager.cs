@@ -480,6 +480,14 @@ public class PlayerManager : ClimbTypesArea {
 		ChangeState(0);
 	}
 
+	void FixedUpdate(){
+		MoveDirection = Vector3.zero;
+		m_sM.FixedUpdate();
+		CheckAirControl();
+		DoMove();
+		// DoRotate();
+	}
+
 	void Update(){
 		m_sM.Update();
 		UpdateInputButtons();
@@ -495,12 +503,8 @@ public class PlayerManager : ClimbTypesArea {
 		}
 	}
 
-	void FixedUpdate(){
-		MoveDirection = Vector3.zero;
-		m_sM.FixedUpdate();
-		CheckAirControl();
-		DoMove();
-		// DoRotate();
+	void LateUpdate(){
+		m_sM.LateUpdate();
 	}
 
 	void UpdateInputButtons(){
@@ -584,13 +588,6 @@ public class PlayerManager : ClimbTypesArea {
 		}
 	}
 
-	/*public bool m_colliderOnTop = false;
-	public bool m_colliderOnBot = false;
-	void LateUpdate(){
-		m_colliderOnTop = CheckCollider(true);
-		m_colliderOnBot = CheckCollider(false);
-	}*/
-
 	public bool CheckCollider(bool top){
 		// Vector3 center = transform.position + new Vector3(0, top == true ? 0 : 0.1f , 0.075f);
 		Vector3 center = m_physics.castCenter.position;
@@ -656,7 +653,7 @@ public class PlayerManager : ClimbTypesArea {
 		m_moveDirection.y *= jumpSpeed;
 	}
 
-	public void RotatePlayerWithSlope(){
+	/*public void RotatePlayerWithSlope(){
 		Vector3 moveInput = new Vector2(m_hAxis_Button, m_vAxis_Button).normalized;
 		moveInput.z = moveInput.y;
 		moveInput.y =0;
@@ -667,7 +664,7 @@ public class PlayerManager : ClimbTypesArea {
 
 		RaycastHit hit;
 		Vector3 desiredOrigin = transform.position + (transform.up * 3);
-		if(Physics.Raycast(desiredOrigin, - transform.up, out hit, /*m_raycasts.m_maxCastDistance*/ Mathf.Infinity, m_physics.m_groundLayer)){
+		if(Physics.Raycast(desiredOrigin, - transform.up, out hit, /*m_raycasts.m_maxCastDistance* Mathf.Infinity, m_physics.m_groundLayer)){
 			// m_normal = Quaternion.Euler(Quaternion.Euler(hit.normal).x, m_ferretMesh.transform.rotation.y, m_ferretMesh.transform.rotation.z);
 			
 			Debug.Log("Normal map = " + hit.normal);
@@ -682,7 +679,7 @@ public class PlayerManager : ClimbTypesArea {
 		{
 			Debug.LogError("Raycast doesnt work");
 		}
-	}
+	}*/
 
 	void CheckAirControl(){
 		if(!CheckCollider(false)){
@@ -694,11 +691,7 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public void DoMove(){
-		// if(MoveDirection != Vector3.zero){
-			// m_rigidbody.MovePosition(transform.position + MoveDirection * Time.fixedDeltaTime);
-			m_rigidbody.velocity = MoveDirection;
-			// m_rigidbody.AddForce(MoveDirection, ForceMode.Acceleration);
-		// }
+		m_rigidbody.velocity = MoveDirection;
 	}
 
 	public void ClimbMove(float speed){
@@ -881,18 +874,6 @@ public class PlayerManager : ClimbTypesArea {
 		// UPDATE ORIENTATION
 		Vector3 localInput = new Vector3(m_hAxis_Button, 0f, m_vAxis_Button);
 
-		/*float groundedTurnSpeed;
-		if(CheckCollider(false)){
-			groundedTurnSpeed = Mathf.Lerp(m_rotations.m_maxTurnSpeedGrounded, m_rotations.m_minTurnSpeedGrounded, m_rotations.m_turnSpeedGrounded);
-		}else{
-			groundedTurnSpeed = Mathf.Lerp(m_rotations.m_maxTurnSpeedWithoutGronuded, m_rotations.m_minTurnSpeedWithoutGronuded, m_rotations.m_turnSpeedWithoutGrounded);
-		}*/
-
-		// float actualTurnSpeed = CheckCollider(false) ? 
-		// 	groundedTurnSpeed : 
-		// 	Vector3.Angle(m_meshes.m_rotateFerret.transform.forward, localInput) * k_InverseOneEighty * k_AirborneTurnSpeedProportion * groundedTurnSpeed;
-		// m_TargetRotation = Quaternion.RotateTowards(m_meshes.m_rotateFerret.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
-
 		float actualTurnSpeed = CheckCollider(false) == true ? m_rotations.m_turnSpeedGrounded : m_rotations.m_turnSpeedWithoutGrounded;
 		m_TargetRotation = Quaternion.RotateTowards(m_meshes.m_rotateFerret.transform.rotation, m_TargetRotation, actualTurnSpeed * Time.deltaTime);
 
@@ -1062,7 +1043,26 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public bool RayCastToCanPush(){
-		return Physics.Raycast(m_physics.castCenter.position, m_physics.castCenter.forward, out m_states.m_push.m_hit, m_physics.m_maxCenterDistance, m_states.m_push.m_pushLayer);
+
+		RaycastHit objectToPush;
+
+		Physics.Raycast(m_physics.castCenter.position, m_physics.castCenter.forward, out objectToPush, m_physics.m_maxCenterDistance, m_states.m_push.m_pushLayer);
+
+		if(objectToPush.collider == null){
+			return false;
+		}
+
+		PushableObject pushableObject = objectToPush.collider.gameObject.GetComponent<PushableObject>();
+
+		pushableObject.On_PlayerSnapToObject();
+
+		if(pushableObject.CanSnapToThisPoint(pushableObject.ClosedPosition)){
+			m_states.m_push.m_hit = objectToPush;
+			return true;
+		}else{
+			return false;
+		}
+
 	}
 
 	public void WhenCameraIsCloseToTheFerret(float distance){

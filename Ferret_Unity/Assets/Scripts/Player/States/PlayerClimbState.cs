@@ -99,6 +99,10 @@ public class PlayerClimbState : IState
     }
   }
 
+  public void LateUpdate(){
+      
+  }
+
   public void Exit()
   {
     m_playerManager.Rigidbody.useGravity = true;

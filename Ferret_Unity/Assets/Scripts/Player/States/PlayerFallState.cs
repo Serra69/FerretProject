@@ -52,6 +52,10 @@ public class PlayerFallState : IState
         }
     }
 
+    public void LateUpdate(){
+      
+    }
+
     void Move()
     {
 

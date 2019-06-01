@@ -39,6 +39,8 @@ public class FollowPlayer : MonoBehaviour {
 	}
 
 	void Update(){
+	// void LateUpdate(){
+	// void FixedUpdate(){
 		m_desiredPosition = m_objectToFollow.position + m_offset;
 		if(m_followLookAtPoint){
 			transform.position = m_desiredPosition;

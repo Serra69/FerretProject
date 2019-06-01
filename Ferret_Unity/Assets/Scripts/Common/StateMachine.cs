@@ -76,6 +76,13 @@ public class StateMachine
         }
     }
 
+    public void LateUpdate(){
+        if (m_currentState != null)
+        {
+            m_currentState.LateUpdate();
+        }
+    }
+
     public void ChangeState(int index)
     {
         if (index > m_states.Count - 1)

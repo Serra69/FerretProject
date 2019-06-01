@@ -49,6 +49,10 @@ public class PlayerCrawlState : IState {
       }
     }
 
+    public void LateUpdate(){
+      
+    }
+
     void Move(){
 
       if(m_playerManager.SwitchCamera.ThirdPersonMode){

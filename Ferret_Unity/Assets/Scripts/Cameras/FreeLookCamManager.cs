@@ -86,14 +86,17 @@ public class FreeLookCamManager : FreeLookCameraType {
 			case FreeLookCameraOrbit.Far:
 				orbitNb = 1;
 			break;
+			case FreeLookCameraOrbit.VeryClose:
+				orbitNb = 2;
+			break;
 		}
-		m_freeLookCam.m_Orbits[0].m_Radius = m_orbits[orbitNb].m_topOrbit.m_Height;
+		m_freeLookCam.m_Orbits[0].m_Height = m_orbits[orbitNb].m_topOrbit.m_Height;
 		m_freeLookCam.m_Orbits[0].m_Radius = m_orbits[orbitNb].m_topOrbit.m_Radius;
 
-		m_freeLookCam.m_Orbits[1].m_Radius = m_orbits[orbitNb].m_middleOrbit.m_Height;
+		m_freeLookCam.m_Orbits[1].m_Height = m_orbits[orbitNb].m_middleOrbit.m_Height;
 		m_freeLookCam.m_Orbits[1].m_Radius = m_orbits[orbitNb].m_middleOrbit.m_Radius;
 
-		m_freeLookCam.m_Orbits[2].m_Radius = m_orbits[orbitNb].m_botOrbit.m_Height;
+		m_freeLookCam.m_Orbits[2].m_Height = m_orbits[orbitNb].m_botOrbit.m_Height;
 		m_freeLookCam.m_Orbits[2].m_Radius = m_orbits[orbitNb].m_botOrbit.m_Radius;
 	}
 
@@ -108,15 +111,18 @@ public class FreeLookCamManager : FreeLookCameraType {
 			case FreeLookCameraOrbit.Far:
 				orbitNb = 1;
 			break;
+			case FreeLookCameraOrbit.VeryClose:
+				orbitNb = 2;
+			break;
 		}
 
-		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 0, true, m_freeLookCam.m_Orbits[0].m_Radius, m_orbits[orbitNb].m_topOrbit.m_Height));
+		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 0, true, m_freeLookCam.m_Orbits[0].m_Height, m_orbits[orbitNb].m_topOrbit.m_Height));
 		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 0, false, m_freeLookCam.m_Orbits[0].m_Radius, m_orbits[orbitNb].m_topOrbit.m_Radius));
 
-		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 1, true, m_freeLookCam.m_Orbits[1].m_Radius, m_orbits[orbitNb].m_middleOrbit.m_Height));
+		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 1, true, m_freeLookCam.m_Orbits[1].m_Height, m_orbits[orbitNb].m_middleOrbit.m_Height));
 		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 1, false, m_freeLookCam.m_Orbits[1].m_Radius, m_orbits[orbitNb].m_middleOrbit.m_Radius));
 
-		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 2, true, m_freeLookCam.m_Orbits[2].m_Radius, m_orbits[orbitNb].m_botOrbit.m_Height));
+		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 2, true, m_freeLookCam.m_Orbits[2].m_Height, m_orbits[orbitNb].m_botOrbit.m_Height));
 		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 2, false, m_freeLookCam.m_Orbits[2].m_Radius, m_orbits[orbitNb].m_botOrbit.m_Radius));
 	}
 	IEnumerator ChangeOrbitNb(CinemachineFreeLook.Orbit[] orbit, int intOfOrbit, bool isHeight, float from, float to){

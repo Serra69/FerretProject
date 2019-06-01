@@ -104,7 +104,7 @@ public class PathMove : MonoBehaviour {
 				rotateJourneyLength = Vector3.Distance(fromRotation.eulerAngles, toRotation.eulerAngles);
 			}
 
-			Debug.Log("rotateJourneyLength = " + rotateJourneyLength);
+			// Debug.Log("rotateJourneyLength = " + rotateJourneyLength);
 			if(rotateJourneyLength < 0){
 				rotateJourneyLength = - rotateJourneyLength;
 				// Debug.Log("after calcul : rotateJourneyLength = " + rotateJourneyLength);

@@ -61,6 +61,10 @@ public class PlayerWalkState : IState
 
     }
 
+    public void LateUpdate(){
+      
+    }
+
     void Move(){
       if(m_playerManager.SwitchCamera.ThirdPersonMode){
         m_playerManager.MovePlayer(m_playerManager.m_states.m_walk.m_speed);

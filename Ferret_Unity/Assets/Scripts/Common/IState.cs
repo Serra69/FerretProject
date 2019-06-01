@@ -2,10 +2,13 @@
 
 	void Enter();
 
-	void Exit();
+	void FixedUpdate();
 
 	void Update();
 
-	void FixedUpdate();
+	void LateUpdate();
+
+	void Exit();
+
 	
 }

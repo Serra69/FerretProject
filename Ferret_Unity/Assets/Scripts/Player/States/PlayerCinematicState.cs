@@ -32,4 +32,8 @@ public class PlayerCinematicState : IState {
 
     }
 
+    public void LateUpdate(){
+      
+    }
+
 }
