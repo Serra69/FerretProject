@@ -13,6 +13,9 @@ public class SkeletonController : MonoBehaviour {
 	[Header("Show camera")]
 	[SerializeField] CameraTrigger m_camTrigger;
 	[SerializeField] float m_timeToShowLastTarget = 3;
+
+	[Header("Shake camera")]
+	[SerializeField] ShakeCamera m_shakeCamera;
 	
 	[Header("Gizmos")]
 	[SerializeField] bool m_showGizmos = true;
@@ -41,8 +44,16 @@ public class SkeletonController : MonoBehaviour {
 			MovingSkeleton();
 			m_camTrigger.m_lookPosition.m_timeToShowTarget = m_timeToShowLastTarget;
 			m_camTrigger.On_SkeletonMoved();
+
+			if(m_shakeCamera != null){
+				m_shakeCamera.StartShake();
+			}
 		}else{
 			m_camTrigger.On_SkeletonMoved();
+
+			if(m_shakeCamera != null){
+				m_shakeCamera.StartShake();
+			}
 		}
 	}
 	
