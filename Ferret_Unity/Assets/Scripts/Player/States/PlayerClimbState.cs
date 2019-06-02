@@ -32,20 +32,20 @@ public class PlayerClimbState : IState
     // Déplacement et rotation du Furret entier par rapport au type de climbArea
     switch(m_playerManager.CheckClimbAreaType()){ 
 			case 0:
-        m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, 0, 0));
-        m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, 0, 0));
+        m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, 0, 0), m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, 0, 0));
+        // m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, 0, 0));
 			break;
 			case 1:
-        m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, 90, 0));
-        m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, 90, 0));
+        m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, 90, 0), m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, 90, 0));
+        // m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, 90, 0));
 			break;
 			case 2:
-        m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, 180, 0));
-        m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, 180, 0));
+        m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, 180, 0), m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, 180, 0));
+        // m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, 180, 0));
 			break;
 			case 3:
-        m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, -90, 0));
-        m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, -90, 0));
+        m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, lerpPosition, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(-90, -90, 0), m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, -90, 0));
+        // m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, Quaternion.Euler(-90, -90, 0));
 			break;
 		}
     
@@ -63,7 +63,7 @@ public class PlayerClimbState : IState
       if( (m_playerManager.RayCastDownToStopClimbing() == false) && (!m_endOfClimbState) && !m_playerManager.IsInLerpRotation && m_playerManager.ClimbArea.m_areaCanBeFinishedClimbable){
         // Debug.Log("Je part en montant comme un connard");
         m_endOfClimbState = true;
-        m_playerManager.StartClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + Vector3.down * 2 + Vector3.up * 3, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(0, m_playerManager.transform.rotation.eulerAngles.y, m_playerManager.transform.rotation.eulerAngles.z), false);
+        m_playerManager.EndClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + Vector3.down * 2 + Vector3.up * 3, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(0, m_playerManager.transform.rotation.eulerAngles.y, m_playerManager.transform.rotation.eulerAngles.z));
       }
       m_playerManager.RayCastDownToStopSideScrollingMovement();
       m_playerManager.ClimbMove(m_playerManager.m_states.m_climb.m_speed);

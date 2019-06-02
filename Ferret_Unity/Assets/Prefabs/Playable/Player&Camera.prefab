@@ -7725,7 +7725,7 @@ MonoBehaviour:
       m_climbCollision:
         serializedVersion: 2
         m_Bits: 2048
-      m_speed: 1.5
+      m_speed: 1
       m_interpolation:
         m_snapCurve:
           serializedVersion: 2

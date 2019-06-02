@@ -911,10 +911,10 @@ public class PlayerManager : ClimbTypesArea {
 		}
 	}
 
-	public void StartClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation, bool enter = true){
-		StartCoroutine(ClimbInterpolation(enter, transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation));
+	public void StartClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation, Transform secondTransformRotation, Quaternion secondFromRotation, Quaternion secondToRotation){
+		StartCoroutine(ClimbInterpolation(transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation, secondTransformRotation, secondFromRotation, secondToRotation));
 	}
-	IEnumerator ClimbInterpolation(bool enter, Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+	IEnumerator ClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation, Transform secondTransformRotation, Quaternion secondFromRotation, Quaternion secondToRotation){
 		
 		m_canMoveOnClimb = false;
 
@@ -925,28 +925,69 @@ public class PlayerManager : ClimbTypesArea {
 		float changePositionSpeed;
 		float changeRotationSpeed;
 
-		if(enter){
-			changePositionSpeed = m_states.m_climb.m_interpolation.m_enterChangePositionSpeed;
-			changeRotationSpeed = m_states.m_climb.m_interpolation.m_enterChangeRotationSpeed;
-		}else{
-			changePositionSpeed = m_states.m_climb.m_interpolation.m_exitChangePositionSpeed;
-			changeRotationSpeed = m_states.m_climb.m_interpolation.m_exitChangeRotationSpeed;
+		changePositionSpeed = m_states.m_climb.m_interpolation.m_enterChangePositionSpeed;
+		changeRotationSpeed = m_states.m_climb.m_interpolation.m_enterChangeRotationSpeed;
+
+		float journeyLength;
+		float moveFracJourney = new float();
+		float rotateFracJourney = new float();
+		float rotateSecondFracJourney = new float();
+
+		while(transform.position != toPosition){
+			// MovePosition
+			journeyLength = Vector3.Distance(fromPosition, toPosition);
+			moveFracJourney += (Time.deltaTime) * changePositionSpeed / journeyLength;
+			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, animationCurve.Evaluate(moveFracJourney));
+
+			// MoveRotation
+			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / journeyLength;
+			transformRotation.rotation = Quaternion.Slerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
+			
+			// MoveSecondRotation
+			rotateSecondFracJourney += (Time.deltaTime) * changeRotationSpeed  / journeyLength;
+			secondTransformRotation.rotation = Quaternion.Slerp(secondFromRotation, secondToRotation, animationCurve.Evaluate(rotateSecondFracJourney));
+
+			yield return null;
 		}
 
-		float moveJourneyLength;
+		m_rigidbody.isKinematic = false;
+
+		m_canMoveOnClimb = true;
+
+		m_endOfClimbInterpolation = true;
+		yield return new WaitForSeconds(0.5f);
+		m_endOfClimbInterpolation = false;
+	}
+
+	public void EndClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+		StartCoroutine(ClimbInterpolationEnd(transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation));
+	}
+	IEnumerator ClimbInterpolationEnd(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+		
+		m_canMoveOnClimb = false;
+
+		m_rigidbody.isKinematic = true;
+
+		AnimationCurve animationCurve = m_states.m_climb.m_interpolation.m_snapCurve;
+
+		float changePositionSpeed;
+		float changeRotationSpeed;
+
+		changePositionSpeed = m_states.m_climb.m_interpolation.m_exitChangePositionSpeed;
+		changeRotationSpeed = m_states.m_climb.m_interpolation.m_exitChangeRotationSpeed;
+
+		float journeyLength;
 		float moveFracJourney = new float();
-		float rotateJourneyLength;
 		float rotateFracJourney = new float();
 
 		while(transform.position != toPosition){
 			// MovePosition
-			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
-			moveFracJourney += (Time.deltaTime) * changePositionSpeed / moveJourneyLength;
+			journeyLength = Vector3.Distance(fromPosition, toPosition);
+			moveFracJourney += (Time.deltaTime) * changePositionSpeed / journeyLength;
 			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, animationCurve.Evaluate(moveFracJourney));
 
 			// MoveRotation
-			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
-			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / rotateJourneyLength;
+			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / journeyLength;
 			transformRotation.rotation = Quaternion.Slerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
 
 			yield return null;
@@ -970,7 +1011,7 @@ public class PlayerManager : ClimbTypesArea {
 		m_states.m_climb.m_canClimb = true;
 	}*/
 	
-	public void StartRotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
+	/*public void StartRotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
 		StartCoroutine(RotateInterpolation(trans, fromRotation, toRotation));
 	}
 	IEnumerator RotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
@@ -994,7 +1035,7 @@ public class PlayerManager : ClimbTypesArea {
 
 			yield return null;
 		}
-	}
+	}*/
 
 	bool m_exitAction = false;
 	public void StartLocalRotateInterpolation(Transform trans, Quaternion fromRotation, Quaternion toRotation){
@@ -1169,7 +1210,7 @@ public class PlayerManager : ClimbTypesArea {
 
 		while(newPos != newToPos){
 			newPos = new Vector3(transform.position.x, 0, transform.position.z);
-			Debug.Log("Nous travaillons activement !");
+			// Debug.Log("Nous travaillons activement !");
 			// MovePosition
 			moveJourneyLength = Vector3.Distance(fromPosition, newToPosTarget);
 			moveFracJourney += (Time.deltaTime) * changePositionSpeed / moveJourneyLength;
