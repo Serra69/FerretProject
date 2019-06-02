@@ -53,7 +53,7 @@ public class PlayerIdleState : IState
       }
 
       if(m_playerManager.m_pushButton){
-        if(m_playerManager.RayCastToCanPush()){
+        if(m_playerManager.RayCastToCanPush() && m_playerManager.m_states.m_takeObject.m_actualGrappedObject == null){
           m_playerManager.ChangeState(7);
         }
       }

@@ -34,7 +34,7 @@ public class PlayerRunState : IState
         m_playerManager.ChangeState(0);
       }
 
-      if(!m_playerManager.m_runButton){
+      if(!m_playerManager.m_runButton || !m_playerManager.PlayerInputIsRuning()){
         m_playerManager.ChangeState(1);
       }
 

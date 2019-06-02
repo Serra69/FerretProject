@@ -30,16 +30,15 @@ public class PlayerManager : ClimbTypesArea {
 	public States m_states = new States();
 	[System.Serializable] public class States {
 
-		[Range(0, 1)] public float m_forceInputToMove = 0.2f;
-
 		public Walk m_walk = new Walk();
 		[System.Serializable] public class Walk {
+			[Range(0, 1)] public float m_forceInputToMove = 0.1f;
 			public float m_speed = 3f;
 		}
 
-		// [Range(0, 1)] public float m_forceInputToStartRunning = 0.2f;
 		public Run m_run = new Run();
 		[System.Serializable] public class Run {
+			[Range(0, 1)] public float m_forceInputToRun = 0.5f;
 			public float m_speed = 6f;
 		}
 
@@ -596,7 +595,14 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public bool PlayerInputIsMoving(){
-		if( (m_hAxis_Button <= - m_states.m_forceInputToMove) || (m_hAxis_Button >= m_states.m_forceInputToMove) || (m_vAxis_Button <= - m_states.m_forceInputToMove) || (m_vAxis_Button >= m_states.m_forceInputToMove) ){
+		if((m_hAxis_Button <= - m_states.m_walk.m_forceInputToMove) || (m_hAxis_Button >= m_states.m_walk.m_forceInputToMove) || (m_vAxis_Button <= - m_states.m_walk.m_forceInputToMove) || (m_vAxis_Button >= m_states.m_walk.m_forceInputToMove)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	public bool PlayerInputIsRuning(){
+		if((m_hAxis_Button <= - m_states.m_run.m_forceInputToRun) || (m_hAxis_Button >= m_states.m_run.m_forceInputToRun) || (m_vAxis_Button <= - m_states.m_run.m_forceInputToRun) || (m_vAxis_Button >= m_states.m_run.m_forceInputToRun)){
 			return true;
 		}else{
 			return false;
@@ -786,7 +792,7 @@ public class PlayerManager : ClimbTypesArea {
 				m_moveDirection.y *= speed;
 			}
 		}
-
+		m_moveDirection *= speed;
 	}
 
 	public void PushMove(float speed){
@@ -797,8 +803,6 @@ public class PlayerManager : ClimbTypesArea {
 		MoveDirection = new Vector3(0, 0, m_vAxis_Button);
 		MoveDirection = transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
-
-		// Debug.Log("m_moveDirection = " + m_moveDirection);
 
 		if(RaycastFromFerretAss() && !PushableObject.BoxCollBackward){
 			m_moveDirection.x *= speed;
@@ -856,7 +860,6 @@ public class PlayerManager : ClimbTypesArea {
 				}
 			}
 		}
-
 	}
 
 	public void RotatePlayer(){
@@ -978,6 +981,8 @@ public class PlayerManager : ClimbTypesArea {
 		while(trans.rotation != toRotation){
 			// MoveRotation
 			rotateJourneyLength = Quaternion.Dot(fromRotation, toRotation);
+				
+			Debug.Log("ça fini quand ?");
 
 			if(rotateJourneyLength < 0){
 				rotateJourneyLength = - rotateJourneyLength;
@@ -986,6 +991,7 @@ public class PlayerManager : ClimbTypesArea {
 
 			rotateFracJourney += (Time.deltaTime) * m_states.m_climb.m_interpolation.m_enterChangeRotationSpeed / rotateJourneyLength;
 			trans.rotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_climb.m_interpolation.m_snapCurve.Evaluate(rotateFracJourney));
+
 			yield return null;
 		}
 	}
@@ -1163,6 +1169,7 @@ public class PlayerManager : ClimbTypesArea {
 
 		while(newPos != newToPos){
 			newPos = new Vector3(transform.position.x, 0, transform.position.z);
+			Debug.Log("Nous travaillons activement !");
 			// MovePosition
 			moveJourneyLength = Vector3.Distance(fromPosition, newToPosTarget);
 			moveFracJourney += (Time.deltaTime) * changePositionSpeed / moveJourneyLength;
@@ -1258,31 +1265,35 @@ public class PlayerManager : ClimbTypesArea {
 		}
 	}
 
-	public void StartRotateToPushableObjectInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
-		StartCoroutine(RotateToPushableObjectInterpolation(transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation));
+	public void StartRotateToPushableObjectInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation, Transform secondTransformRotation, Quaternion secondFromRotation, Quaternion secondToRotation){
+		StartCoroutine(RotateToPushableObjectInterpolation(transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation, secondTransformRotation, secondFromRotation, secondToRotation));
 	}
-	IEnumerator RotateToPushableObjectInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+	IEnumerator RotateToPushableObjectInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation, Transform secondTransformRotation, Quaternion secondFromRotation, Quaternion secondToRotation){
 		
 		m_canMoveOnPush = false;
 
-		float moveJourneyLength;
+		float journeyLength;
 		float moveFracJourney = new float();
-		float rotateJourneyLength;
 		float rotateFracJourney = new float();
+		float rotateSecondFracJourney = new float();
 
 		while(transform.position != toPosition){
 			// MovePosition
-			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
-			moveFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed / moveJourneyLength;
+			journeyLength = Vector3.Distance(fromPosition, toPosition);
+			moveFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed / journeyLength;
 			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, m_states.m_push.m_snapCurve.Evaluate(moveFracJourney));
 
 			// MoveRotation
-			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
-			rotateFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed / rotateJourneyLength;
+			rotateFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed / journeyLength;
 			transformRotation.rotation = Quaternion.Slerp(fromRotation, toRotation, m_states.m_push.m_snapCurve.Evaluate(rotateFracJourney));
+
+			// MoveSecondRotation
+			rotateSecondFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed  / journeyLength;
+			secondTransformRotation.rotation = Quaternion.Slerp(secondFromRotation, secondToRotation, m_states.m_push.m_snapCurve.Evaluate(rotateSecondFracJourney));
 
 			yield return null;
 		}
+
 		m_canMoveOnPush = true;
 	}
 

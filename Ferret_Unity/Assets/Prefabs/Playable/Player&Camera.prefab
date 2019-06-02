@@ -7714,10 +7714,11 @@ MonoBehaviour:
   m_sM:
     m_currentStateString: PlayerIdleState
   m_states:
-    m_forceInputToMove: 0.1
     m_walk:
+      m_forceInputToMove: 0.1
       m_speed: 3
     m_run:
+      m_forceInputToRun: 0.75
       m_speed: 6
     m_climb:
       m_canClimb: 1

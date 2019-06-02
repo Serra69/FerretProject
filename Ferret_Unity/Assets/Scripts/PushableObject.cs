@@ -234,31 +234,20 @@ public class PushableObject : MonoBehaviour {
 	}
 
 	public bool CanSnapToThisPoint(int point){
-
 		InitializeBoxCastToSnap();
-
 		if(point == 0){
-			
 			Collider[] hitColliders = Physics.OverlapBox(centerForward, sizeForAndBack / 2, Quaternion.identity, m_objectColliders);
 			return !CollidersInHitColliders(hitColliders);
-
 		}else if(point == 1){
-
 			Collider[] hitColliders = Physics.OverlapBox(centerRight, sizeRAndL / 2, Quaternion.identity, m_objectColliders);
 			return !CollidersInHitColliders(hitColliders);
-
 		}else if(point == 2){
-			
 			Collider[] hitColliders = Physics.OverlapBox(centerBackward, sizeForAndBack / 2, Quaternion.identity, m_objectColliders);
 			return !CollidersInHitColliders(hitColliders);
-
 		}else if(point == 3){
-			
 			Collider[] hitColliders = Physics.OverlapBox(centerLeft, sizeRAndL / 2, Quaternion.identity, m_objectColliders);
 			return !CollidersInHitColliders(hitColliders);
-
 		}
-
 		return false;
 	} 
 

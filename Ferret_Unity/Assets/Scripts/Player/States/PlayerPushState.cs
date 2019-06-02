@@ -18,8 +18,8 @@ public class PlayerPushState : IState
     m_playerManager.PushableObject = m_playerManager.m_states.m_push.m_hit.collider.GetComponent<PushableObject>();
 
     Transform toPos = m_playerManager.PushableObject.On_PlayerSnapToObject();
-    m_playerManager.StartRotateToPushableObjectInterpolation(m_playerManager.transform, m_playerManager.transform.position, toPos.position, m_playerManager.transform, m_playerManager.transform.rotation, toPos.rotation);
-    m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, toPos.rotation);
+    m_playerManager.StartRotateToPushableObjectInterpolation(m_playerManager.transform, m_playerManager.transform.position, toPos.position, m_playerManager.transform, m_playerManager.transform.rotation, toPos.rotation, m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, toPos.rotation);
+    // m_playerManager.StartRotateInterpolation(m_playerManager.m_meshes.m_rotateFerret.transform, m_playerManager.m_meshes.m_rotateFerret.transform.rotation, toPos.rotation);
   }
 
   public void Update()
