@@ -31,7 +31,6 @@ public class OnTriggerCollider : MonoBehaviour {
     }
 
     bool m_activeOnce = false;
-	float m_timer = 0;
 
     void OnTriggerEnter(Collider col){
 		if(col.tag == m_tagName && !m_activeOnce && m_isActiveAtTheStart)
@@ -65,12 +64,6 @@ public class OnTriggerCollider : MonoBehaviour {
     {
         m_isActiveAtTheStart = b;
     }
-
-	void Update(){
-		if(m_activeOnce){
-			m_timer += Time.deltaTime;
-		}
-	}
 	
 	void OnDrawGizmos(){
 		if(!m_showGizmos){
