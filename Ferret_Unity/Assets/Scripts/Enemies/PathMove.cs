@@ -63,6 +63,8 @@ public class PathMove : MonoBehaviour {
 
 	IEnumerator MoveWithRigidbody(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
 		
+		m_robotPusher.m_wheel.Move = true;
+
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 
@@ -78,6 +80,13 @@ public class PathMove : MonoBehaviour {
 		}
 		// print("End move");
 
+		m_robotPusher.StartAnimationBroomEnter(true);
+
+		m_robotPusher.m_wheel.Move = false;
+
+	}
+
+	public void StartRotateRigidbody(){
 		if(m_currenttarget == m_pathList.Length -1){
 				// print("m_pathList[0] = " + m_pathList[0]);
 			StartCoroutine(RotateWithRigidbody(transform.rotation, m_pathList[0].rotation));
@@ -87,7 +96,6 @@ public class PathMove : MonoBehaviour {
 				StartCoroutine(RotateWithRigidbody(transform.rotation, m_pathList[m_currenttarget + 1].rotation));
 			}
 		}
-
 	}
 
 	IEnumerator RotateWithRigidbody(Quaternion fromRotation, Quaternion toRotation){
