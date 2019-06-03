@@ -6,6 +6,7 @@ public class SkeletonController : MonoBehaviour {
 
 	[Header("Skeleton")]
 	[SerializeField] GameObject m_skeleton;
+	[SerializeField] Transform m_pointToLookAt;
 
 	[Header("Rope")]
 	[SerializeField] InteractiveObject[] m_ropeToCut = new InteractiveObject[3];	
@@ -66,10 +67,10 @@ public class SkeletonController : MonoBehaviour {
 	void OnDrawGizmos(){
 		if(m_showGizmos){
 			Gizmos.color = m_color;
-			if(m_ropeToCut != null && m_skeleton != null){
+			if(m_ropeToCut != null && m_pointToLookAt != null){
 				for (int i = 0, l = m_ropeToCut.Length; i < l; ++i){
 					if(m_ropeToCut[i] != null){
-						Gizmos.DrawLine(m_ropeToCut[i].transform.position, m_skeleton.transform.position);
+						Gizmos.DrawLine(m_ropeToCut[i].transform.position, m_pointToLookAt.transform.position);
 					}
 				}
 			}
