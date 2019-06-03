@@ -19,6 +19,10 @@ public class TrainController : TrainPathsTypes {
 	[SerializeField] float[] m_moveSpeeds;
 	[SerializeField] AnimationCurve m_moveCurve;
 
+	[Header("FX")]
+	[SerializeField] GameObject m_startMoveFX;
+	[SerializeField] GameObject m_moveFX;
+
 	[Header("Gizmos")]
 	[SerializeField] Color m_gizmosColor = Color.magenta;
 
@@ -26,6 +30,7 @@ public class TrainController : TrainPathsTypes {
 	int m_nextPoint = 0;
 
 	Rigidbody m_rbody;
+	FX m_saveMoveFX;
 
 	void Start(){
 
@@ -48,9 +53,9 @@ public class TrainController : TrainPathsTypes {
 	}
 
 	void Update(){
-		if(Input.GetKeyDown(KeyCode.P)){
+		/*if(Input.GetKeyDown(KeyCode.P)){
 			ChoseNextTarget();
-		}
+		}*/
 	}
 
 	float GetTrainSpeed(){
@@ -62,6 +67,10 @@ public class TrainController : TrainPathsTypes {
 	}
 
 	IEnumerator Move(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition){
+
+		if(m_moveFX != null){
+			m_saveMoveFX = Level.AddFX(m_moveFX, transform.position, transform.rotation);
+		}
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
@@ -88,7 +97,12 @@ public class TrainController : TrainPathsTypes {
 				
 			break;
 		}
-		// print("J'ai fini");
+		if(m_moveFX != null){
+			if(m_saveMoveFX != null){
+		print("J'ai fini");
+				Destroy(m_saveMoveFX.gameObject);
+			}
+		}
 	}
 
 	public void ChoseNextTarget(){
@@ -101,6 +115,12 @@ public class TrainController : TrainPathsTypes {
 
 	public void ResetTrainParent(){
 		transform.SetParent(m_myParent.transform);
+	}
+
+	public void EnVoiture(){
+		if(m_startMoveFX != null){
+			Level.AddFX(m_startMoveFX, transform.position, transform.rotation);
+		}
 	}
 	
 	void OnDrawGizmosSelected(){
