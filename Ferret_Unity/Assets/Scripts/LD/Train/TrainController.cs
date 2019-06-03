@@ -71,19 +71,12 @@ public class TrainController : TrainPathsTypes {
 	}
 
 	void Update(){
-		/*if(Input.GetKeyDown(KeyCode.P)){
+		if(Input.GetKeyDown(KeyCode.P)){
 			ChoseNextTarget();
-		}*/
-	}
-
-	float GetTrainSpeed(){
-		if(m_nextPoint - 1 >= 0){
-			return m_moveSpeeds[m_nextPoint - 1];
-		}else{
-			return m_moveSpeeds[m_nextPoint];
 		}
 	}
-	float GetNextPathNumber(){
+
+	int GetNextPathNumber(){
 		if(m_nextPoint - 1 >= 0){
 			return m_nextPoint - 1;
 		}else{
@@ -102,7 +95,7 @@ public class TrainController : TrainPathsTypes {
 		while(transformPosition.position != toPosition){
 			// MovePosition
 			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
-			moveFracJourney += (Time.deltaTime) * GetTrainSpeed() / moveJourneyLength;
+			moveFracJourney += (Time.deltaTime) * m_moveSpeeds[GetNextPathNumber()] / moveJourneyLength;
 			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, m_moveCurve.Evaluate(moveFracJourney));
 
 			if(m_moveFxAudioSource != null){
