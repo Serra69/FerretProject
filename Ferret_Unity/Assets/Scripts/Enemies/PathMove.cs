@@ -4,6 +4,8 @@ using UnityEngine.AI;
 
 public class PathMove : MonoBehaviour {
 
+	[SerializeField] float m_timeToStartMoving = 0;
+	[Space]
 	[SerializeField] Color m_pathColor = Color.yellow;
 	[SerializeField] float m_timeToWaitOnAWaitPath = 2;
 	[SerializeField] Transform[] m_pathList;
@@ -35,6 +37,12 @@ public class PathMove : MonoBehaviour {
 
 	void Start(){
 		m_agent = GetComponent<NavMeshAgent>();
+
+		StartCoroutine(InitializePath());
+	}
+
+	IEnumerator InitializePath(){
+		yield return new WaitForSeconds(m_timeToStartMoving);
 		ChoseNextTarget();
 
 		if(GetComponent<RobotPusher>()){
@@ -42,9 +50,6 @@ public class PathMove : MonoBehaviour {
 				StartCoroutine(MoveWithRigidbody(transform, transform.position, m_pathTarget.position, transform, transform.rotation, m_pathTarget.rotation));
 			}
 		}
-
-		// Debug.Log("Dot 0,90,0 && 0,-90,0" + Quaternion.Dot(fromRotation, toRotation))
-
 	}
 
 	void Update(){
