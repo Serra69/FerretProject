@@ -21,7 +21,21 @@ public class TrainController : TrainPathsTypes {
 
 	[Header("FX")]
 	[SerializeField] GameObject m_startMoveFX;
-	[SerializeField] GameObject m_moveFX;
+
+	public MofeFX m_moveFX = new MofeFX();
+	[System.Serializable] public class MofeFX {
+
+		[Header("Fade in/out")]
+		[Range(0, 1)] public float m_startFadeIn = 0.01f;
+		[Range(0, 1)] public float m_startFadeOut = 0.75f;
+		public float m_fadeInTime = 0.5f;
+		public float m_fadeOutTime = 0.5f;
+
+		[Header("Pitch")]
+		public float m_minPitch = 0.99f;
+		public float m_maxPitch = 1.01f;
+		public AnimationCurve m_pitchCurve;
+	}
 
 	[Header("Gizmos")]
 	[SerializeField] Color m_gizmosColor = Color.magenta;
@@ -30,7 +44,9 @@ public class TrainController : TrainPathsTypes {
 	int m_nextPoint = 0;
 
 	Rigidbody m_rbody;
-	FX m_saveMoveFX;
+
+	AudioSource m_moveFxAudioSource;
+	bool m_moveFxCanFadeIn = true;
 
 	void Start(){
 
@@ -49,6 +65,8 @@ public class TrainController : TrainPathsTypes {
 		targetPos.y = m_train.position.y;
 		m_train.LookAt(targetPos);
 
+		m_moveFxAudioSource = GetComponent<AudioSource>();
+
 		// StartCoroutine(Move(m_train, m_train.position, m_points[m_nextPoint].transform.position));
 	}
 
@@ -65,12 +83,18 @@ public class TrainController : TrainPathsTypes {
 			return m_moveSpeeds[m_nextPoint];
 		}
 	}
+	float GetNextPathNumber(){
+		if(m_nextPoint - 1 >= 0){
+			return m_nextPoint - 1;
+		}else{
+			return m_nextPoint;
+		}
+	}
 
 	IEnumerator Move(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition){
 
-		if(m_moveFX != null){
-			m_saveMoveFX = Level.AddFX(m_moveFX, transform.position, transform.rotation);
-		}
+		bool startFadeIn = false;
+		bool startFadeOut = false;
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
@@ -80,6 +104,20 @@ public class TrainController : TrainPathsTypes {
 			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
 			moveFracJourney += (Time.deltaTime) * GetTrainSpeed() / moveJourneyLength;
 			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, m_moveCurve.Evaluate(moveFracJourney));
+
+			if(m_moveFxAudioSource != null){
+				if(moveFracJourney >= m_moveFX.m_startFadeIn && !startFadeIn){
+					startFadeIn = true;
+					StartCoroutine(FadeIn());
+				}
+				if(moveFracJourney >= m_moveFX.m_startFadeOut && !startFadeOut){
+					startFadeOut = true;
+					StartCoroutine(FadeOut());
+				}
+
+				m_moveFxAudioSource.pitch = Mathf.Lerp(m_moveFX.m_minPitch, m_moveFX.m_maxPitch, m_moveFX.m_pitchCurve.Evaluate(moveFracJourney));
+			}
+
 			yield return null;
 		}
 
@@ -96,12 +134,6 @@ public class TrainController : TrainPathsTypes {
 			case PointTypes.Wait:
 				
 			break;
-		}
-		if(m_moveFX != null){
-			if(m_saveMoveFX != null){
-		print("J'ai fini");
-				Destroy(m_saveMoveFX.gameObject);
-			}
 		}
 	}
 
@@ -121,6 +153,38 @@ public class TrainController : TrainPathsTypes {
 		if(m_startMoveFX != null){
 			Level.AddFX(m_startMoveFX, transform.position, transform.rotation);
 		}
+	}
+
+	IEnumerator FadeIn(){
+		if(m_moveFxCanFadeIn){
+			m_moveFxAudioSource.Play();
+			m_moveFxAudioSource.volume = 0;
+			float moveFracJourney = 0;
+			float fadeInTime = m_moveFX.m_fadeInTime - 0.30f;
+			float v = 1 / ((fadeInTime + (fadeInTime/2)) / Time.fixedDeltaTime);
+			while(m_moveFxAudioSource.volume < 1){
+				moveFracJourney += v;
+				m_moveFxAudioSource.volume = Mathf.Lerp(0, 1, moveFracJourney);
+				yield return new WaitForSeconds(0.0008f);
+			}
+			m_moveFxCanFadeIn = false;
+		}
+		yield break;
+	}
+	IEnumerator FadeOut(){
+		if(m_moveFxAudioSource.isPlaying){
+			float moveFracJourney = 0;
+			float fadeOutTime = m_moveFX.m_fadeOutTime - 0.30f;
+			float v = 1 / ((fadeOutTime + (fadeOutTime/2)) / Time.fixedDeltaTime);
+			while(m_moveFxAudioSource.volume > 0){
+				moveFracJourney += v;
+				m_moveFxAudioSource.volume = Mathf.Lerp(1, 0, moveFracJourney);
+				yield return new WaitForSeconds(0.0008f);
+			}
+			m_moveFxAudioSource.Stop();
+			m_moveFxCanFadeIn = true;
+		}
+		yield break;
 	}
 	
 	void OnDrawGizmosSelected(){

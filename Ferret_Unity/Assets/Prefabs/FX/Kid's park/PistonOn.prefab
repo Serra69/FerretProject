@@ -20,9 +20,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4704094608266076}
   - component: {fileID: 82781954578020230}
-  - component: {fileID: 114502194981697944}
+  - component: {fileID: 114750916688800610}
   m_Layer: 0
-  m_Name: MoveTrainFX
+  m_Name: PistonOn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,11 +50,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8a840b19b27da9a41907771e77c5a5c0, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 686beecb3ace43e4dbc41c925f7052e8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -96,7 +96,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -136,7 +136,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &114502194981697944
+--- !u!114 &114750916688800610
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
