@@ -43,10 +43,10 @@ public class SwitchCameraType : MonoBehaviour {
 		if(!toCameraBrain){
 			transform.position = m_camManager.m_cameraBrain.position;
 			transform.rotation = m_camManager.m_cameraBrain.rotation;
-		}else{
+		}/*else{
 			transform.position = fixeCam.transform.position;
 			transform.rotation = fixeCam.transform.rotation;
-		}
+		}*/
 		m_camera.enabled = true;
 		StopAllCoroutines();
 		StartCoroutine(SwitchingCamera(transform.position, newTrans, transform.rotation, newTrans));

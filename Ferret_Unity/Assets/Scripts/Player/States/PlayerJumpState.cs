@@ -7,6 +7,7 @@ public class PlayerJumpState : IState
 
     PlayerManager m_playerManager;
     float m_timer = 0;
+    float m_jumpTimer = 0;
     bool m_isJumpButtonHeld = false;
 
     // Constructor (CTOR)
@@ -19,6 +20,7 @@ public class PlayerJumpState : IState
     {
         m_playerManager.Animator.SetTrigger("Jump");
         m_timer = 0;
+        m_jumpTimer = 0;
     }
 
     public void Exit()
@@ -28,6 +30,18 @@ public class PlayerJumpState : IState
 
     public void FixedUpdate()
     {
+        m_jumpTimer += Time.deltaTime;
+        
+        if(m_jumpTimer < m_playerManager.m_states.m_jump.m_timeToJumpImpulse){
+            m_playerManager.MovePlayer(m_playerManager.LastStateMoveSpeed);
+        }else{
+            Jump();
+        }
+
+        MoveCamera();
+    }
+
+    void Jump(){
         if (isJumpContinue() && m_timer < m_playerManager.m_states.m_jump.m_jumpTime)
         {
             float proportionCompleted = m_timer / m_playerManager.m_states.m_jump.m_jumpTime;
@@ -55,8 +69,6 @@ public class PlayerJumpState : IState
         {
             m_playerManager.ChangeState(4);
         }
-
-        MoveCamera();
     }
 
     bool isJumpContinue()

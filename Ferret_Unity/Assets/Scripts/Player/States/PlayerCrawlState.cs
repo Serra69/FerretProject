@@ -16,17 +16,24 @@ public class PlayerCrawlState : IState {
     {
       //Debug.LogFormat("{0} : Enter()", GetType().Name);
       m_playerManager.Crawl(true);
+      m_playerManager.Animator.SetTrigger("Crawl");
     }
 
     public void Exit()
     {
       m_playerManager.Crawl(false);
       //Debug.LogFormat("{0} : Exit()", GetType().Name);
+      m_playerManager.Animator.SetTrigger("Crawl");
     }
 
     public void FixedUpdate()
     {
         Move();
+        if(m_playerManager.PlayerInputIsMoving()){
+          m_playerManager.Animator.SetFloat("CrawlMove", 1);
+        }else{
+          m_playerManager.Animator.SetFloat("CrawlMove", 0);
+        }
     }
 
     public void Update()

@@ -90,6 +90,7 @@ public class PlayerManager : ClimbTypesArea {
 
 		public Jump m_jump = new Jump();
 		[System.Serializable] public class Jump {
+			public float m_timeToJumpImpulse = 0.2f;
 			public float m_jumpForce = 10f;
 			public float m_minJumpTime = 0.1f;
 			public float m_jumpTime = 0.5f;
@@ -476,7 +477,7 @@ public class PlayerManager : ClimbTypesArea {
 		});
 
 		m_rigidbody = GetComponent<Rigidbody>();
-		m_animator = GetComponentInChildren<Animator>();
+		m_animator = m_meshes.m_ferretMesh.GetComponent<Animator>();
 	}
 	void Start(){
 		m_switchCamera = SwitchCamera.Instance;
@@ -630,9 +631,11 @@ public class PlayerManager : ClimbTypesArea {
 			if(Physics.BoxCast(center, halfExtends, direction, orientation, m_physics.m_botMaxDistance, m_physics.m_groundLayer)){
 				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
 				m_states.m_climb.m_canClimb = true;
+      			Animator.SetBool("isGrounded", true);
 				return true;
 			}else{
 				//Debug.Log("CheckTopCollider = " + (Physics.BoxCast(center, halfExtends, direction, orientation, maxDistance, m_checkLayer)));
+      			Animator.SetBool("isGrounded", false);
 				return false;
 			}
 		}
@@ -647,13 +650,13 @@ public class PlayerManager : ClimbTypesArea {
 			m_colliders.m_coll.radius = m_colliders.m_crawlCollider.m_radius;
 			m_colliders.m_coll.height = m_colliders.m_crawlCollider.m_height;
 
-			m_meshes.m_ferretMesh.transform.localScale = new Vector3(m_meshes.m_ferretMesh.transform.localScale.x, m_meshes.m_ferretMesh.transform.localScale.y / 2, m_meshes.m_ferretMesh.transform.localScale.z);
+			// m_meshes.m_ferretMesh.transform.localScale = new Vector3(m_meshes.m_ferretMesh.transform.localScale.x, m_meshes.m_ferretMesh.transform.localScale.y / 2, m_meshes.m_ferretMesh.transform.localScale.z);
 		}else{
 			m_colliders.m_coll.center = m_colliders.m_baseCollider.m_center;
 			m_colliders.m_coll.radius = m_colliders.m_baseCollider.m_radius;
 			m_colliders.m_coll.height = m_colliders.m_baseCollider.m_height;
 
-			m_meshes.m_ferretMesh.transform.localScale = new Vector3(m_meshes.m_ferretMesh.transform.localScale.x, m_meshes.m_ferretMesh.transform.localScale.y * 2, m_meshes.m_ferretMesh.transform.localScale.z);
+			// m_meshes.m_ferretMesh.transform.localScale = new Vector3(m_meshes.m_ferretMesh.transform.localScale.x, m_meshes.m_ferretMesh.transform.localScale.y * 2, m_meshes.m_ferretMesh.transform.localScale.z);
 		}
 	}
 

@@ -15,7 +15,7 @@ public class PlayerIdleState : IState
     public void Enter()
     {
 		  //Debug.LogFormat("{0} : Enter()", GetType().Name);
-      m_playerManager.Animator.SetTrigger("Idle");
+      m_playerManager.Animator.SetBool("Move", false);
     }
 
     public void Exit()
