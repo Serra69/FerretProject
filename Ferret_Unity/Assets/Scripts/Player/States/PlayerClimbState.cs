@@ -19,7 +19,7 @@ public class PlayerClimbState : IState
   {
     m_playerManager.m_states.m_climb.m_canClimb = false;
 
-    m_playerManager.Animator.SetTrigger("Climb");
+    m_playerManager.Animator.SetBool("Climb", true);
 
     m_endOfClimbState = false;
     m_playerManager.Rigidbody.useGravity = false;
@@ -63,10 +63,12 @@ public class PlayerClimbState : IState
       if( (m_playerManager.RayCastDownToStopClimbing() == false) && (!m_endOfClimbState) && !m_playerManager.IsInLerpRotation && m_playerManager.ClimbArea.m_areaCanBeFinishedClimbable){
         // Debug.Log("Je part en montant comme un connard");
         m_endOfClimbState = true;
-        m_playerManager.EndClimbInterpolation(m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + Vector3.down * 2 + Vector3.up * 3, m_playerManager.transform, m_playerManager.transform.rotation, Quaternion.Euler(0, m_playerManager.transform.rotation.eulerAngles.y, m_playerManager.transform.rotation.eulerAngles.z));
+        m_playerManager.EndClimbAnimation();
+        m_playerManager.Animator.SetTrigger("EndClimb");
       }
       m_playerManager.RayCastDownToStopSideScrollingMovement();
       m_playerManager.ClimbMove(m_playerManager.m_states.m_climb.m_speed);
+      m_playerManager.Animator.SetFloat("MoveInput", m_playerManager.GetPlayerInputValue());
     }
 
     if(!m_playerManager.SwitchCamera.CameraIsSwitching){
@@ -117,6 +119,7 @@ public class PlayerClimbState : IState
   public void Exit()
   {
     m_playerManager.Rigidbody.useGravity = true;
+    m_playerManager.Animator.SetBool("Climb", false);
   }
 
 }

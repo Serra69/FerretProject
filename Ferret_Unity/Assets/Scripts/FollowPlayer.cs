@@ -39,17 +39,24 @@ public class FollowPlayer : MonoBehaviour {
 	}
 
 	void Update(){
-	// void LateUpdate(){
-	// void FixedUpdate(){
 		m_desiredPosition = m_objectToFollow.position + m_offset;
 		if(m_followLookAtPoint){
 			transform.position = m_desiredPosition;
+			UpdateFollowPlayerPosition();
 		}
 
 		m_desiredRotation = m_objectToRotate.rotation;
 		if(m_followLookAtPoint){
 			transform.rotation = m_desiredRotation;
+			UpdateFollowPlayerRotation();
 		}
+	}
+
+	public void UpdateFollowPlayerPosition(){
+		transform.position = m_desiredPosition;
+	}
+	public void UpdateFollowPlayerRotation(){
+		transform.rotation = m_desiredRotation;
 	}
 
 	public void ReturnToPlayer(){
