@@ -39,10 +39,13 @@ public class SwitchCameraType : MonoBehaviour {
 		m_lastFixeCamera = fixeCamera;
 	}
 
-	public void SwitchCamera(Transform newTrans, bool toCameraBrain){
+	public void SwitchCamera(Transform newTrans, bool toCameraBrain, FixeCamera fixeCam){
 		if(!toCameraBrain){
 			transform.position = m_camManager.m_cameraBrain.position;
 			transform.rotation = m_camManager.m_cameraBrain.rotation;
+		}else{
+			transform.position = fixeCam.transform.position;
+			transform.rotation = fixeCam.transform.rotation;
 		}
 		m_camera.enabled = true;
 		StopAllCoroutines();

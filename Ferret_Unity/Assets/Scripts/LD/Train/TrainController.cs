@@ -26,15 +26,19 @@ public class TrainController : TrainPathsTypes {
 	[System.Serializable] public class MofeFX {
 
 		[Header("Fade in/out")]
-		[Range(0, 1)] public float m_startFadeIn = 0.01f;
-		[Range(0, 1)] public float m_startFadeOut = 0.75f;
-		public float m_fadeInTime = 0.5f;
-		public float m_fadeOutTime = 0.5f;
+		public FadeInFadeOut[] m_fadeInFadeOut;
 
 		[Header("Pitch")]
 		public float m_minPitch = 0.99f;
 		public float m_maxPitch = 1.01f;
 		public AnimationCurve m_pitchCurve;
+	}
+
+	[System.Serializable] public class FadeInFadeOut {
+		[Range(0, 1)] public float m_startFadeIn = 0f;
+		[Range(0, 1)] public float m_startFadeOut = 0.75f;
+		public float m_fadeInTime = 0.5f;
+		public float m_fadeOutTime = 0.5f;
 	}
 
 	[Header("Gizmos")]
@@ -99,11 +103,11 @@ public class TrainController : TrainPathsTypes {
 			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, m_moveCurve.Evaluate(moveFracJourney));
 
 			if(m_moveFxAudioSource != null){
-				if(moveFracJourney >= m_moveFX.m_startFadeIn && !startFadeIn){
+				if(moveFracJourney >= m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_startFadeIn && !startFadeIn){
 					startFadeIn = true;
 					StartCoroutine(FadeIn());
 				}
-				if(moveFracJourney >= m_moveFX.m_startFadeOut && !startFadeOut){
+				if(moveFracJourney >= m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_startFadeOut && !startFadeOut){
 					startFadeOut = true;
 					StartCoroutine(FadeOut());
 				}
@@ -153,7 +157,7 @@ public class TrainController : TrainPathsTypes {
 			m_moveFxAudioSource.Play();
 			m_moveFxAudioSource.volume = 0;
 			float moveFracJourney = 0;
-			float fadeInTime = m_moveFX.m_fadeInTime - 0.30f;
+			float fadeInTime = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeInTime - 0.30f;
 			float v = 1 / ((fadeInTime + (fadeInTime/2)) / Time.fixedDeltaTime);
 			while(m_moveFxAudioSource.volume < 1){
 				moveFracJourney += v;
@@ -167,7 +171,7 @@ public class TrainController : TrainPathsTypes {
 	IEnumerator FadeOut(){
 		if(m_moveFxAudioSource.isPlaying){
 			float moveFracJourney = 0;
-			float fadeOutTime = m_moveFX.m_fadeOutTime - 0.30f;
+			float fadeOutTime = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeOutTime - 0.30f;
 			float v = 1 / ((fadeOutTime + (fadeOutTime/2)) / Time.fixedDeltaTime);
 			while(m_moveFxAudioSource.volume > 0){
 				moveFracJourney += v;

@@ -130,11 +130,11 @@ public class FixeCamera : MonoBehaviour {
 			m_cameraManager.ResetYInput(false);
 
 			m_switchCamera.SetLastFixeCamera(this);
-			m_switchCamera.SwitchCamera(transform, false);
+			m_switchCamera.SwitchCamera(transform, false, this);
 		}else{
 			m_camera.enabled = false;
 			m_switchCamera.SetLastFixeCamera(this);
-			m_switchCamera.SwitchCamera(m_cameraManager.m_cameraBrain, true);
+			m_switchCamera.SwitchCamera(m_cameraManager.m_cameraBrain, true, this);
 		}
 	}
 	
