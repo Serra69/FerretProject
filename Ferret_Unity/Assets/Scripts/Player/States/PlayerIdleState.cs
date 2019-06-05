@@ -16,11 +16,15 @@ public class PlayerIdleState : IState
     {
 		  //Debug.LogFormat("{0} : Enter()", GetType().Name);
       m_playerManager.Animator.SetBool("Move", false);
+      
+      m_playerManager.m_isInIddle = true;
+      m_playerManager.StartIddleTimer();
     }
 
     public void Exit()
     {
 		  //Debug.LogFormat("{0} : Exit()", GetType().Name);
+      m_playerManager.m_isInIddle = false;
     }
 
     public void FixedUpdate()
@@ -53,7 +57,7 @@ public class PlayerIdleState : IState
       }
 
       if(m_playerManager.m_pushButton){
-        if(m_playerManager.RayCastToCanPush() && m_playerManager.m_states.m_takeObject.m_actualGrappedObject == null){
+        if(m_playerManager.RayCastToCanPush() && !m_playerManager.m_states.m_takeObject.m_iHaveAnObject){
           m_playerManager.ChangeState(7);
         }
       }

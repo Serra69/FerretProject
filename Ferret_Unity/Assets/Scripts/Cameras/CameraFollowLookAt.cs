@@ -13,7 +13,10 @@ public class CameraFollowLookAt : MonoBehaviour {
 	}
 
 	void LateUpdate(){
-	// void FixedUpdate(){
+		transform.position = m_objectToFollow.transform.position + m_offset;
+	}
+
+	public void UpdateCameraFollowLookAt(){
 		transform.position = m_objectToFollow.transform.position + m_offset;
 	}
 

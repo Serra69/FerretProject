@@ -14,6 +14,8 @@ public class PlayerPushState : IState
 
   public void Enter()
   {
+    m_playerManager.Animator.SetBool("Push", true);
+
     doOnceAfterEnterInterpolation = true;
     m_playerManager.PushableObject = m_playerManager.m_states.m_push.m_hit.collider.GetComponent<PushableObject>();
 
@@ -38,6 +40,7 @@ public class PlayerPushState : IState
   {
     if(m_playerManager.CanMoveOnPush){
       m_playerManager.PushMove(m_playerManager.m_states.m_push.m_speed);
+      m_playerManager.Animator.SetFloat("MoveInput", m_playerManager.GetPlayerInputValue());
     }
   }
 
@@ -47,6 +50,7 @@ public class PlayerPushState : IState
 
   public void Exit()
   {
+    m_playerManager.Animator.SetBool("Push", false);
     m_playerManager.PushableObject.On_ObjectIsPushing(false);
     m_playerManager.SetObjectInChildrenOfFerret(m_playerManager.PushableObject.transform);
   }

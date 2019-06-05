@@ -30,6 +30,12 @@ public class PlayerManager : ClimbTypesArea {
 	public States m_states = new States();
 	[System.Serializable] public class States {
 
+		public Iddle m_iddle = new Iddle();
+		[System.Serializable] public class Iddle {
+			public float m_minTimeToSwitchIddle2 = 5;
+			public float m_maxTimeToSwitchIddle2 = 10;
+		}
+
 		public Walk m_walk = new Walk();
 		[System.Serializable] public class Walk {
 			[Range(0, 1)] public float m_forceInputToMove = 0.1f;
@@ -38,6 +44,7 @@ public class PlayerManager : ClimbTypesArea {
 
 		public Run m_run = new Run();
 		[System.Serializable] public class Run {
+			public float m_changeRunSpeed = 3;
 			[Range(0, 1)] public float m_forceInputToRun = 0.5f;
 			public float m_speed = 6f;
 		}
@@ -49,19 +56,18 @@ public class PlayerManager : ClimbTypesArea {
 			[Space]
 			public LayerMask m_climbCollision;
 			public float m_speed = 2.25f;
+			[Space]
+			public float m_timeToEndClimbAnim = 1;
+			public Transform m_endClimbAnimPos;
 
 			public Interpolation m_interpolation = new Interpolation();
 			[System.Serializable] public class Interpolation {
 				[Header("Curve")]
 				public AnimationCurve m_snapCurve;
 
-				[Header("Enter Speeds")]
+				[Header("Speeds")]
 				public float m_enterChangePositionSpeed = 5;
 				public float m_enterChangeRotationSpeed = 5;
-
-				[Header("Exit Speeds")]
-				public float m_exitChangePositionSpeed = 5;
-				public float m_exitChangeRotationSpeed = 5;
 
 				[Header("Fall Speeds")]
 				public float m_fallPositionSpeed = 5;
@@ -198,6 +204,14 @@ public class PlayerManager : ClimbTypesArea {
 		public GameObject m_rotateFerret;
 		public GameObject m_ferretMesh;
 		public GameObject m_meshSkin;
+	}
+
+	[Header("Updates")]
+	public Updates m_updates = new Updates();
+	[System.Serializable] public class Updates {
+		public CameraPivot m_pivotCamera;
+		public CameraFollowLookAt m_cameraFollowLookAt;
+		public FollowPlayer m_followPlayer;
 	}
 
 	[Header("Cameras")]
@@ -497,16 +511,22 @@ public class PlayerManager : ClimbTypesArea {
 
 	void FixedUpdate(){
 		MoveDirection = Vector3.zero;
+
+		// m_updates.m_pivotCamera.UpdateCameraPivot();
+		// m_updates.m_cameraFollowLookAt.UpdateCameraFollowLookAt();
+		// m_updates.m_followPlayer.UpdateFollowPlayerPosition();
+		// m_updates.m_followPlayer.UpdateFollowPlayerRotation();
+
 		m_sM.FixedUpdate();
 		CheckAirControl();
 		DoMove();
-		// DoRotate();
 	}
 
 	void Update(){
 		m_sM.Update();
 		UpdateInputButtons();
-		if(m_takeButton){
+		if(m_takeButton && !RayCastToCanPush()){
+			Animator.SetTrigger("Take");
 			GrappedObject();
 			if(m_closedInteractiveObject != null){
 				m_closedInteractiveObject.On_ObjectIsTake();
@@ -520,6 +540,11 @@ public class PlayerManager : ClimbTypesArea {
 
 	void LateUpdate(){
 		m_sM.LateUpdate();
+
+		// m_updates.m_pivotCamera.UpdateCameraPivot();
+		// m_updates.m_cameraFollowLookAt.UpdateCameraFollowLookAt();
+		// m_updates.m_followPlayer.UpdateFollowPlayerPosition();
+		// m_updates.m_followPlayer.UpdateFollowPlayerRotation();
 	}
 
 	void UpdateInputButtons(){
@@ -608,6 +633,26 @@ public class PlayerManager : ClimbTypesArea {
 		}else{
 			return false;
 		}
+	}
+
+	public float GetPlayerInputValue(){
+		float h = m_hAxis_Button;
+		float v = m_vAxis_Button;
+
+		if(h < 0){
+			h = -h;
+		}
+		if(v < 0){
+			v = -v;
+		}
+
+		float total;
+		total = h + v;
+
+		float finalyTotal = Mathf.InverseLerp(0, 1, total);
+		// Debug.Log("finalyTotal = " + finalyTotal);
+
+		return finalyTotal;
 	}
 
 	public bool CheckCollider(bool top){
@@ -722,6 +767,9 @@ public class PlayerManager : ClimbTypesArea {
 		MoveDirection = new Vector3(m_hAxis_Button, 0, m_vAxis_Button);		// Monter/descendre + déplacements latéraux
 		MoveDirection = transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
+
+		Animator.SetFloat("XClimb", m_hAxis_Button);
+		Animator.SetFloat("YClimb", m_vAxis_Button);
 
 		if(m_states.m_climb.m_checkCollision.m_outOfClibingAreaInTopRight || m_states.m_climb.m_checkCollision.m_outOfClibingAreaInBotRight){
 			
@@ -962,39 +1010,16 @@ public class PlayerManager : ClimbTypesArea {
 		m_endOfClimbInterpolation = false;
 	}
 
-	public void EndClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
-		StartCoroutine(ClimbInterpolationEnd(transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation));
+	public void EndClimbAnimation(){
+		StartCoroutine(ClimbAnimation());
 	}
-	IEnumerator ClimbInterpolationEnd(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
+	IEnumerator ClimbAnimation(){
 		
 		m_canMoveOnClimb = false;
 
 		m_rigidbody.isKinematic = true;
 
-		AnimationCurve animationCurve = m_states.m_climb.m_interpolation.m_snapCurve;
-
-		float changePositionSpeed;
-		float changeRotationSpeed;
-
-		changePositionSpeed = m_states.m_climb.m_interpolation.m_exitChangePositionSpeed;
-		changeRotationSpeed = m_states.m_climb.m_interpolation.m_exitChangeRotationSpeed;
-
-		float journeyLength;
-		float moveFracJourney = new float();
-		float rotateFracJourney = new float();
-
-		while(transform.position != toPosition){
-			// MovePosition
-			journeyLength = Vector3.Distance(fromPosition, toPosition);
-			moveFracJourney += (Time.deltaTime) * changePositionSpeed / journeyLength;
-			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, animationCurve.Evaluate(moveFracJourney));
-
-			// MoveRotation
-			rotateFracJourney += (Time.deltaTime) * changeRotationSpeed / journeyLength;
-			transformRotation.rotation = Quaternion.Slerp(fromRotation, toRotation, animationCurve.Evaluate(rotateFracJourney));
-
-			yield return null;
-		}
+		yield return new WaitForSeconds(m_states.m_climb.m_timeToEndClimbAnim);
 
 		m_rigidbody.isKinematic = false;
 
@@ -1161,11 +1186,13 @@ public class PlayerManager : ClimbTypesArea {
 		if(m_states.m_takeObject.m_actualGrappedObject != null){
 			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(false);
 			m_states.m_takeObject.m_actualGrappedObject = null;
+			m_states.m_takeObject.m_iHaveAnObject = false;
 		}
 		if(m_states.m_takeObject.m_actualClosedObjectToBeGrapped != null){
 			m_states.m_takeObject.m_actualGrappedObject = m_states.m_takeObject.m_actualClosedObjectToBeGrapped;
 			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(true);
 			m_states.m_takeObject.m_actualClosedObjectToBeGrapped = null;
+			m_states.m_takeObject.m_iHaveAnObject = true;
 		}
 	}
 	IEnumerator DelayToTakeAnObject(){
@@ -1187,6 +1214,8 @@ public class PlayerManager : ClimbTypesArea {
 	}
 	IEnumerator OrientationAfterClimb(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
 		
+   		Animator.SetBool("Climb", false);
+
 		m_isInLerpRotation = true;
 
 		m_canMoveOnClimb = false;
@@ -1339,6 +1368,33 @@ public class PlayerManager : ClimbTypesArea {
 		}
 
 		m_canMoveOnPush = true;
+	}
+
+	public void On_EndClimbAnimIsFinished(){
+		transform.position = m_states.m_climb.m_endClimbAnimPos.position;
+		transform.rotation = m_states.m_climb.m_endClimbAnimPos.rotation;
+	}
+
+	[HideInInspector] public float m_targetRunSpeed;
+	float m_actualSpeed = 0;
+	public void SetRunSpeed(){
+		m_actualSpeed = Mathf.Lerp(m_actualSpeed, m_targetRunSpeed, m_states.m_run.m_changeRunSpeed * Time.deltaTime);
+		Animator.SetFloat("Run", m_actualSpeed);
+	}
+
+	[HideInInspector] public bool m_isInIddle = false;
+	float m_rangeTimer;
+	public void StartIddleTimer(){
+		m_rangeTimer = Random.Range(m_states.m_iddle.m_minTimeToSwitchIddle2, m_states.m_iddle.m_maxTimeToSwitchIddle2);
+		// StopCoroutine(IddleTimer());
+		StopAllCoroutines();
+		StartCoroutine(IddleTimer());
+	}
+	IEnumerator IddleTimer(){
+		yield return new WaitForSeconds(m_rangeTimer);
+		if(m_isInIddle){
+			Animator.SetTrigger("Iddle2");
+		}
 	}
 
 #endregion Public functions
