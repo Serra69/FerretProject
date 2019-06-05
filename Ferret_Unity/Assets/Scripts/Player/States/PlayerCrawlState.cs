@@ -55,7 +55,7 @@ public class PlayerCrawlState : IState {
       }
 
       if(m_playerManager.m_pushButton){
-        if(m_playerManager.RayCastToCanPush()){
+        if(m_playerManager.RayCastToCanPush() && !m_playerManager.m_states.m_takeObject.m_iHaveAnObject){
           m_playerManager.ChangeState(7);
         }
       }

@@ -16,17 +16,19 @@ public class PlayerRunState : IState
     {
 		  // Debug.LogFormat("{0} : Enter()", GetType().Name);
       m_playerManager.Animator.SetBool("Move", true);
-      m_playerManager.Animator.SetFloat("Run", 1);
+      m_playerManager.m_targetRunSpeed = 1;
     }
 
     public void Exit()
     {
 		  //Debug.LogFormat("{0} : Exit()", GetType().Name);
+      m_playerManager.m_targetRunSpeed = 0;
     }
 
     public void FixedUpdate()
     {
-        Move();
+      Move();
+      m_playerManager.SetRunSpeed();
     }
 
     public void Update()
@@ -35,7 +37,7 @@ public class PlayerRunState : IState
         m_playerManager.ChangeState(0);
       }
 
-      if(!m_playerManager.m_runButton || !m_playerManager.PlayerInputIsRuning()){
+      if(!m_playerManager.m_runButton || m_playerManager.GetPlayerInputValue() < m_playerManager.m_states.m_run.m_forceInputToRun){
         m_playerManager.ChangeState(1);
       }
 
@@ -48,7 +50,7 @@ public class PlayerRunState : IState
       }
 
       if(m_playerManager.m_pushButton){
-        if(m_playerManager.RayCastToCanPush()){
+        if(m_playerManager.RayCastToCanPush() && !m_playerManager.m_states.m_takeObject.m_iHaveAnObject){
           m_playerManager.ChangeState(7);
         }
       }

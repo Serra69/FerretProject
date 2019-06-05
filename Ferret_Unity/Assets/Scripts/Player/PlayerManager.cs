@@ -30,6 +30,12 @@ public class PlayerManager : ClimbTypesArea {
 	public States m_states = new States();
 	[System.Serializable] public class States {
 
+		public Iddle m_iddle = new Iddle();
+		[System.Serializable] public class Iddle {
+			public float m_minTimeToSwitchIddle2 = 5;
+			public float m_maxTimeToSwitchIddle2 = 10;
+		}
+
 		public Walk m_walk = new Walk();
 		[System.Serializable] public class Walk {
 			[Range(0, 1)] public float m_forceInputToMove = 0.1f;
@@ -38,6 +44,7 @@ public class PlayerManager : ClimbTypesArea {
 
 		public Run m_run = new Run();
 		[System.Serializable] public class Run {
+			public float m_changeRunSpeed = 3;
 			[Range(0, 1)] public float m_forceInputToRun = 0.5f;
 			public float m_speed = 6f;
 		}
@@ -518,7 +525,8 @@ public class PlayerManager : ClimbTypesArea {
 	void Update(){
 		m_sM.Update();
 		UpdateInputButtons();
-		if(m_takeButton){
+		if(m_takeButton && !RayCastToCanPush()){
+			Animator.SetTrigger("Take");
 			GrappedObject();
 			if(m_closedInteractiveObject != null){
 				m_closedInteractiveObject.On_ObjectIsTake();
@@ -1178,11 +1186,13 @@ public class PlayerManager : ClimbTypesArea {
 		if(m_states.m_takeObject.m_actualGrappedObject != null){
 			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(false);
 			m_states.m_takeObject.m_actualGrappedObject = null;
+			m_states.m_takeObject.m_iHaveAnObject = false;
 		}
 		if(m_states.m_takeObject.m_actualClosedObjectToBeGrapped != null){
 			m_states.m_takeObject.m_actualGrappedObject = m_states.m_takeObject.m_actualClosedObjectToBeGrapped;
 			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(true);
 			m_states.m_takeObject.m_actualClosedObjectToBeGrapped = null;
+			m_states.m_takeObject.m_iHaveAnObject = true;
 		}
 	}
 	IEnumerator DelayToTakeAnObject(){
@@ -1204,6 +1214,8 @@ public class PlayerManager : ClimbTypesArea {
 	}
 	IEnumerator OrientationAfterClimb(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
 		
+   		Animator.SetBool("Climb", false);
+
 		m_isInLerpRotation = true;
 
 		m_canMoveOnClimb = false;
@@ -1361,6 +1373,28 @@ public class PlayerManager : ClimbTypesArea {
 	public void On_EndClimbAnimIsFinished(){
 		transform.position = m_states.m_climb.m_endClimbAnimPos.position;
 		transform.rotation = m_states.m_climb.m_endClimbAnimPos.rotation;
+	}
+
+	[HideInInspector] public float m_targetRunSpeed;
+	float m_actualSpeed = 0;
+	public void SetRunSpeed(){
+		m_actualSpeed = Mathf.Lerp(m_actualSpeed, m_targetRunSpeed, m_states.m_run.m_changeRunSpeed * Time.deltaTime);
+		Animator.SetFloat("Run", m_actualSpeed);
+	}
+
+	[HideInInspector] public bool m_isInIddle = false;
+	float m_rangeTimer;
+	public void StartIddleTimer(){
+		m_rangeTimer = Random.Range(m_states.m_iddle.m_minTimeToSwitchIddle2, m_states.m_iddle.m_maxTimeToSwitchIddle2);
+		// StopCoroutine(IddleTimer());
+		StopAllCoroutines();
+		StartCoroutine(IddleTimer());
+	}
+	IEnumerator IddleTimer(){
+		yield return new WaitForSeconds(m_rangeTimer);
+		if(m_isInIddle){
+			Animator.SetTrigger("Iddle2");
+		}
 	}
 
 #endregion Public functions
