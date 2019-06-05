@@ -86,6 +86,13 @@ public class PlayerManager : ClimbTypesArea {
 				public bool m_outOfClibingAreaInBotRight = false;
 				public bool m_outOfClibingAreaInBot = false;
 			}
+
+			public FX m_fx = new FX();
+			[System.Serializable] public class FX {
+				public GameObject[] m_climbMoveFX;
+				[Range(0, 1)] public float m_inputToAddFx = 0.25f;
+				public float m_climbDelay = 0.75f;
+			}
 		}
 
 		public Crawl m_crawl = new Crawl();
@@ -844,6 +851,18 @@ public class PlayerManager : ClimbTypesArea {
 			}
 		}
 		m_moveDirection *= speed;
+
+		if(GetPlayerInputValue() > m_states.m_climb.m_fx.m_inputToAddFx){
+			ClimbSound();
+		}
+	}
+	float m_nextPlay = 0;
+	void ClimbSound(){
+		if(Time.time > m_nextPlay){
+			m_nextPlay = Time.time + m_states.m_climb.m_fx.m_climbDelay;
+			GameObject step = m_states.m_climb.m_fx.m_climbMoveFX[Random.Range(0, m_states.m_climb.m_fx.m_climbMoveFX.Length)];
+			Level.AddFX(step, transform.position, transform.rotation);
+		}
 	}
 
 	public void PushMove(float speed){

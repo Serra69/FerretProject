@@ -170,5 +170,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_objectIsUsable: 1
   m_takingRange: 1
+  m_objectPoint: {fileID: 0}
+  m_magnitudeToAddFx: 1
+  m_impactFX: {fileID: 1836600615137870, guid: e4740d4e2d828cb46a552c2c24dc3a4c, type: 2}
   m_showGizmos: 1
   m_color: {r: 1, g: 1, b: 1, a: 1}

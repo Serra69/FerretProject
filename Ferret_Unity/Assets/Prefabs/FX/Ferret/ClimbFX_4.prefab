@@ -9,48 +9,48 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1892642037314312}
+  m_RootGameObject: {fileID: 1869979475533822}
   m_IsPrefabAsset: 1
---- !u!1 &1892642037314312
+--- !u!1 &1869979475533822
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4704094608266076}
-  - component: {fileID: 82781954578020230}
-  - component: {fileID: 114750916688800610}
+  - component: {fileID: 4392076765721978}
+  - component: {fileID: 82045040351155804}
+  - component: {fileID: 114433385887050770}
   m_Layer: 0
-  m_Name: StartMoveTrainFX
+  m_Name: ClimbFX_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4704094608266076
+--- !u!4 &4392076765721978
 Transform:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1892642037314312}
+  m_GameObject: {fileID: 1869979475533822}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.020668, y: 11.858696, z: -130.38171}
+  m_LocalPosition: {x: 13.342775, y: 0.2679665, z: 16.390705}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &82781954578020230
+--- !u!82 &82045040351155804
 AudioSource:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1892642037314312}
+  m_GameObject: {fileID: 1869979475533822}
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: fe2f17a09754a064c8c5e953fc8d89ab, type: 3}
+  m_audioClip: {fileID: 8300000, guid: a6f31c645879ac14a8e912d18ba66f7d, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -61,7 +61,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 10
+  MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -96,7 +96,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -136,12 +136,12 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &114750916688800610
+--- !u!114 &114433385887050770
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1892642037314312}
+  m_GameObject: {fileID: 1869979475533822}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1044a6e4ac06b1d40b4ceeaebf36e4ba, type: 3}
