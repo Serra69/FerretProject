@@ -16,24 +16,25 @@ public class PlayerCrawlState : IState {
     {
       //Debug.LogFormat("{0} : Enter()", GetType().Name);
       m_playerManager.Crawl(true);
-      m_playerManager.Animator.SetTrigger("Crawl");
+      m_playerManager.Animator.SetBool("Crawl", true);
     }
 
     public void Exit()
     {
       m_playerManager.Crawl(false);
       //Debug.LogFormat("{0} : Exit()", GetType().Name);
-      m_playerManager.Animator.SetTrigger("Crawl");
+      m_playerManager.Animator.SetBool("Crawl", false);
     }
 
     public void FixedUpdate()
     {
         Move();
-        if(m_playerManager.PlayerInputIsMoving()){
-          m_playerManager.Animator.SetFloat("CrawlMove", 1);
+        /*if(m_playerManager.PlayerInputIsMoving()){
+          m_playerManager.Animator.SetFloat("MoveInput", m_playerManager.GetPlayerInputValue());
         }else{
-          m_playerManager.Animator.SetFloat("CrawlMove", 0);
-        }
+          m_playerManager.Animator.SetFloat("MoveInput", 0);
+        }*/
+        m_playerManager.Animator.SetFloat("MoveInput", m_playerManager.GetPlayerInputValue());
     }
 
     public void Update()
@@ -49,8 +50,12 @@ public class PlayerCrawlState : IState {
         }
       }
 
+      if(!m_playerManager.CheckCollider(false)){
+        m_playerManager.ChangeState(4);
+      }
+
       if(m_playerManager.m_pushButton){
-        if(m_playerManager.RayCastToCanPush()){
+        if(m_playerManager.RayCastToCanPush() && !m_playerManager.m_states.m_takeObject.m_iHaveAnObject){
           m_playerManager.ChangeState(7);
         }
       }

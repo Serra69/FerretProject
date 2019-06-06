@@ -27,6 +27,10 @@ public class CameraPivot : MonoBehaviour {
 		transform.rotation = m_actualCamera.rotation;
 	}
 
+	public void UpdateCameraPivot(){
+		transform.rotation = m_actualCamera.rotation;
+	}
+
 	public void ChangeCamera(Transform newCameraTrans){
 		m_actualCamera = newCameraTrans;
 	}
