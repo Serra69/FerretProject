@@ -76,10 +76,6 @@ public class PlayerManager : ClimbTypesArea {
 				public float m_fallingDistance = 1.5f;
 				public float m_fallingInY = 1f;
 			}
-			public Camera m_camera = new Camera();
-			[System.Serializable] public class Camera {
-				public float m_returnCameraSpeed = 3;
-			}
 
 			public CheckCollision m_checkCollision = new CheckCollision();
 			[System.Serializable] public class CheckCollision {
@@ -1041,8 +1037,6 @@ public class PlayerManager : ClimbTypesArea {
 		
 		// Debug.Log("Start position = " + m_states.m_climb.m_endClimbAnimPos.position);
 
-		// m_updates.m_followPlayer.ReturnToPlayer(m_states.m_climb.m_camera.m_returnCameraSpeed);
-
 		m_canMoveOnClimb = false;
 
 		m_rigidbody.isKinematic = true;
@@ -1401,6 +1395,13 @@ public class PlayerManager : ClimbTypesArea {
 	public void On_EndClimbAnimIsFinished(){
 		transform.position = m_states.m_climb.m_endClimbAnimPos.position;
 		transform.rotation = m_states.m_climb.m_endClimbAnimPos.rotation;
+		StartCoroutine(WaitClimbCameraMove());
+	}
+	public float m_waitClimbCameraMove = 0.25f;
+	IEnumerator WaitClimbCameraMove(){
+		yield return new WaitForSeconds(m_waitClimbCameraMove);
+		m_updates.m_followPlayer.On_PlayerEndClimb(true);
+		// m_updates.m_followPlayer.ReturnToPlayerAfterClimb();
 	}
 
 	[HideInInspector] public float m_targetRunSpeed;
@@ -1415,7 +1416,7 @@ public class PlayerManager : ClimbTypesArea {
 	public void StartIddleTimer(){
 		m_rangeTimer = Random.Range(m_states.m_iddle.m_minTimeToSwitchIddle2, m_states.m_iddle.m_maxTimeToSwitchIddle2);
 		// StopCoroutine(IddleTimer());
-		StopAllCoroutines();
+		// StopAllCoroutines();
 		StartCoroutine(IddleTimer());
 	}
 	IEnumerator IddleTimer(){
