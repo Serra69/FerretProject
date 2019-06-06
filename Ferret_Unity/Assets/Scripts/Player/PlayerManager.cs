@@ -76,6 +76,10 @@ public class PlayerManager : ClimbTypesArea {
 				public float m_fallingDistance = 1.5f;
 				public float m_fallingInY = 1f;
 			}
+			public Camera m_camera = new Camera();
+			[System.Serializable] public class Camera {
+				public float m_returnCameraSpeed = 3;
+			}
 
 			public CheckCollision m_checkCollision = new CheckCollision();
 			[System.Serializable] public class CheckCollision {
@@ -1035,6 +1039,10 @@ public class PlayerManager : ClimbTypesArea {
 	}
 	IEnumerator ClimbAnimation(){
 		
+		// Debug.Log("Start position = " + m_states.m_climb.m_endClimbAnimPos.position);
+
+		// m_updates.m_followPlayer.ReturnToPlayer(m_states.m_climb.m_camera.m_returnCameraSpeed);
+
 		m_canMoveOnClimb = false;
 
 		m_rigidbody.isKinematic = true;
