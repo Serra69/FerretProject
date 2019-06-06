@@ -354,12 +354,13 @@ public class PlayerManager : ClimbTypesArea {
     }
 
 	bool m_endOfOrientationAfterClimb = false;
-	public bool EndOfOrientationAfterClimb
-    {
-        get
-        {
+	public bool EndOfOrientationAfterClimb{
+        get{
             return m_endOfOrientationAfterClimb;
         }
+		set{
+            m_endOfOrientationAfterClimb = value;
+		}
     }
 
 	bool m_endOfClimbInterpolation = false;

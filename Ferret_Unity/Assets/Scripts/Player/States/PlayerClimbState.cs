@@ -17,6 +17,7 @@ public class PlayerClimbState : IState
 
   public void Enter()
   {
+    m_playerManager.EndOfOrientationAfterClimb = false;
     m_playerManager.m_states.m_climb.m_canClimb = false;
 
     m_playerManager.Animator.SetBool("Climb", true);
