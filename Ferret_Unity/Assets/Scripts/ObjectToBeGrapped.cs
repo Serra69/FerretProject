@@ -13,6 +13,10 @@ public class ObjectToBeGrapped : MonoBehaviour {
 	[Header("Grabbable point")]
 	public Transform m_objectPoint;
 
+	[Header("FX")]
+	[SerializeField] float m_magnitudeToAddFx = 1;
+	[SerializeField] GameObject m_impactFX;
+
 	[Header("Gizmos")]
 	[SerializeField] bool m_showGizmos = true;
 	[SerializeField] Color m_color = Color.white;
@@ -135,6 +139,12 @@ public class ObjectToBeGrapped : MonoBehaviour {
 			m_rbody.isKinematic = true;
 		}else{
 			m_rbody.isKinematic = false;
+		}
+	}
+
+	void OnCollisionEnter(Collision col){
+		if(col.relativeVelocity.magnitude > m_magnitudeToAddFx){
+			Level.AddFX(m_impactFX, transform.position, transform.rotation);
 		}
 	}
 

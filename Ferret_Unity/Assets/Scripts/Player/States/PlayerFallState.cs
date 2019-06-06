@@ -19,7 +19,6 @@ public class PlayerFallState : IState
     public void Enter()
     {
         //Debug.LogFormat("{0} : Enter()", GetType().Name);
-        m_playerManager.Animator.SetTrigger("Fall");
         m_currentime = 1 - m_playerManager.TimerOfPressSpace;
         m_currentTimeOfFall = 0;
     }
