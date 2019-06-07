@@ -380,6 +380,8 @@ MonoBehaviour:
     m_titleTextReward: {fileID: 114845731003070142}
     m_imageReward: {fileID: 114364931492060234}
     m_descriptionTextReward: {fileID: 114786316191197402}
+  m_narrativeSoundFx: {fileID: 1048683589964488, guid: c2d7be8153cc50c42a3baafcac9acf9b,
+    type: 2}
 --- !u!114 &114709684153334034
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -799,6 +799,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1245863461601766
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4411437772749542}
+  m_Layer: 9
+  m_Name: LandingPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1248751029636194
 GameObject:
   m_ObjectHideFlags: 1
@@ -2589,6 +2604,21 @@ GameObject:
   - component: {fileID: 4029805715345094}
   m_Layer: 9
   m_Name: transform5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1745714752710550
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4695379484204074}
+  m_Layer: 9
+  m_Name: FX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4401,6 +4431,7 @@ Transform:
   - {fileID: 4844064717216572}
   - {fileID: 4095083053695082}
   - {fileID: 4367787792530852}
+  - {fileID: 4695379484204074}
   m_Father: {fileID: 4726755844706952}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5108,6 +5139,19 @@ Transform:
   m_Father: {fileID: 4293628807680326}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -2.9161885, y: 0, z: 0}
+--- !u!4 &4411437772749542
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1245863461601766}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4695379484204074}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4411716916260748
 Transform:
   m_ObjectHideFlags: 1
@@ -5708,7 +5752,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: -0.052137747, y: -0.000078614765, z: 0.00150545, w: -0.9986388}
+  m_LocalRotation: {x: -0.05213775, y: -0.000078580255, z: 0.0015054483, w: -0.9986388}
   m_LocalPosition: {x: 0, y: -0.00000047683716, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5861,13 +5905,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: -0.10534522, y: 0.000000032332178, z: -0.00000030520872, w: -0.9944357}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.10534519, y: 0.000000061968684, z: -0.00000030834823, w: -0.9944357}
+  m_LocalPosition: {x: 0, y: -0.00000047683716, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4921091801031986}
   m_Father: {fileID: 4185034677311282}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4695379484204074
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1745714752710550}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4411437772749542}
+  m_Father: {fileID: 4222472016079204}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4705363326563538
 Transform:
@@ -7906,13 +7964,19 @@ MonoBehaviour:
         m_moveCoef: 0.5
     m_fall:
       m_duration: 0.25
+      m_landingFx: {fileID: 1837362931028892, guid: 585c1fc0b4d9d16499b2b311955085da,
+        type: 2}
+      m_landingPos: {fileID: 4411437772749542}
     m_takeObject:
+      m_timeToTakeObject: 0.25
       m_delayToTakeAnObject: 0.15
       m_canITakeAnObject: 1
       m_iHaveAnObject: 0
       m_objectPosition: {fileID: 4051387413167234}
       m_actualGrappedObject: {fileID: 0}
       m_actualClosedObjectToBeGrapped: {fileID: 0}
+      m_takeObjectFx: {fileID: 1000531250747398, guid: 51c36b34a302d3448b4a5414f2175592,
+        type: 2}
     m_push:
       m_speed: 1.5
       m_pushLayer:

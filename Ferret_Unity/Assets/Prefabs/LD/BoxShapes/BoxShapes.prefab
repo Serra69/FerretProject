@@ -828,6 +828,7 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   m_puttingPieceFx: {fileID: 1555803772829458, guid: eb29a1b2b62caf8408c70af9fcdae405,
     type: 2}
+  m_timeToStartPieceSound: 0.675
   m_openBoxFx: {fileID: 1889025990584950, guid: 43bfb23e7fc11d5478f81f3da13c0536,
     type: 2}
   m_showGizmos: 1

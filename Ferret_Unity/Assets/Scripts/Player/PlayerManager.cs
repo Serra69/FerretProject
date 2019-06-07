@@ -126,18 +126,26 @@ public class PlayerManager : ClimbTypesArea {
 		public Fall m_fall = new Fall();
 		[System.Serializable] public class Fall {
   			public float m_duration = 3;
+
+			[Header("FX")]
+			public GameObject m_landingFx;
+			public Transform m_landingPos;
 			// public float m_fallMultiplier = 1;
 			// public AnimationCurve m_fallCurve = null;
 		}
 
 		public TakeObject m_takeObject = new TakeObject();
 		[System.Serializable] public class TakeObject {
+			public float m_timeToTakeObject = 0.15f;
 			public float m_delayToTakeAnObject = 0.15f;
 			public bool m_canITakeAnObject = true;
 			public bool m_iHaveAnObject = false;
 			public Transform m_objectPosition;
 			public ObjectToBeGrapped m_actualGrappedObject;
 			public ObjectToBeGrapped m_actualClosedObjectToBeGrapped;
+
+			[Header("FX")]
+			public GameObject m_takeObjectFx;
 		}
 
 		public Push m_push = new Push();
@@ -1203,6 +1211,10 @@ public class PlayerManager : ClimbTypesArea {
 		if(!m_states.m_takeObject.m_canITakeAnObject){
 			return;
 		}
+		StartCoroutine(DelayToTakeObjectInMouse());
+	}
+	IEnumerator DelayToTakeObjectInMouse(){
+		yield return new WaitForSeconds(m_states.m_takeObject.m_timeToTakeObject);
 		StartCoroutine(DelayToTakeAnObject());
 
 		if(m_states.m_takeObject.m_actualGrappedObject != null){
@@ -1215,6 +1227,7 @@ public class PlayerManager : ClimbTypesArea {
 			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(true);
 			m_states.m_takeObject.m_actualClosedObjectToBeGrapped = null;
 			m_states.m_takeObject.m_iHaveAnObject = true;
+			Level.AddFX(m_states.m_takeObject.m_takeObjectFx, m_states.m_takeObject.m_objectPosition.position, Quaternion.identity);
 		}
 	}
 	IEnumerator DelayToTakeAnObject(){

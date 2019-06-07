@@ -19,7 +19,7 @@ public class BoxShapes : ShapeEnum {
 
 	[Header("FX")]
 	[SerializeField] GameObject m_puttingPieceFx;
-	[Range(0, 1), SerializeField] float m_timeToStartSound = 0.75f;
+	[Range(0, 1), SerializeField] float m_timeToStartPieceSound = 0.75f;
 	[Space]
 	[SerializeField] GameObject m_openBoxFx;
 
@@ -73,8 +73,9 @@ public class BoxShapes : ShapeEnum {
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
-		float rotateJourneyLength;
 		float rotateFracJourney = new float();
+
+		bool soundIsPlayed = false;
 
 		while(trans.position != toPosition){
 			// MovePosition
@@ -83,13 +84,16 @@ public class BoxShapes : ShapeEnum {
 			trans.position = Vector3.Lerp(fromPosition, toPosition, m_interpolationCurve.Evaluate(moveFracJourney));
 
 			// MoveRotation
-			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
-			rotateFracJourney += (Time.deltaTime) * m_interpolationSpeed / rotateJourneyLength;
+			rotateFracJourney += (Time.deltaTime) * m_interpolationSpeed / moveJourneyLength;
 			trans.rotation = Quaternion.Slerp(fromRotation, toRotation, m_interpolationCurve.Evaluate(rotateFracJourney));
 
 			yield return null;
 
-			// if()
+			if(moveFracJourney > m_timeToStartPieceSound && !soundIsPlayed){
+				soundIsPlayed = true;
+				Level.AddFX(m_puttingPieceFx, toPosition, toRotation);
+			}
+			
 
 		}
 		// print("End of coroutine");
@@ -116,6 +120,7 @@ public class BoxShapes : ShapeEnum {
 		}*/
 		if(m_rectangleIsInBox && m_circleIsInBox && m_triangleIsInBox){
 			m_animator.SetTrigger("Open");
+			Level.AddFX(m_openBoxFx, transform.position, Quaternion.identity);
 		}
 	}
 
