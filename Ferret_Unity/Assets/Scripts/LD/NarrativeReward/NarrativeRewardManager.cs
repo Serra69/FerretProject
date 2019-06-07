@@ -53,6 +53,9 @@ public class NarrativeRewardManager : MonoBehaviour {
 		public Text m_descriptionTextReward;
 	}
 
+	[Header("FX")]
+	[SerializeField] GameObject m_narrativeSoundFx;
+
 	void Start(){
 		m_narrativeUI.m_narrativeRewardCanvas.SetActive(false);
 	}
@@ -60,6 +63,7 @@ public class NarrativeRewardManager : MonoBehaviour {
 	public void On_NarrativeRewardIsDiscovered(int rewardNumber){
 		ChangeNarrativeRewardImages(m_narrativeRewards.m_rewards[rewardNumber].m_name, m_narrativeRewards.m_rewards[rewardNumber].m_sprite, m_narrativeRewards.m_rewards[rewardNumber].m_descriptionText);
 		StartCoroutine(ShowReward());
+		Level.AddFX(m_narrativeSoundFx, Vector3.zero, Quaternion.identity);
 	}
 
 	void ChangeNarrativeRewardImages(string title, Sprite sprite, string text){

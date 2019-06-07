@@ -49,6 +49,10 @@ public class RobotPusher : MonoBehaviour {
         public AnimationCurve m_exitCurve;
     }
 
+    [Header("FX")]
+    public GameObject m_rotateFx;
+    [SerializeField] GameObject m_sweepFx;
+
     Rigidbody m_rigidbody;
     public Rigidbody Rigidbody
     {
@@ -90,6 +94,8 @@ public class RobotPusher : MonoBehaviour {
 		float journeyLength = new float();
 		float fracJourney = new float();
 
+        Level.AddFX(m_sweepFx, transform.position, Quaternion.identity);
+
 		while(trans.localEulerAngles != toRot){
 			// MoveRotation
 			journeyLength = Vector3.Distance(fromRot, toRot);
@@ -97,6 +103,7 @@ public class RobotPusher : MonoBehaviour {
 			trans.localEulerAngles = Vector3.Lerp(fromRot, toRot, curve.Evaluate(fracJourney));
 			yield return null;
 		}
+
         if(isEnter){
             StartAnimationBroomEnter(false);
             StartCoroutine(WaitToEndRotation());

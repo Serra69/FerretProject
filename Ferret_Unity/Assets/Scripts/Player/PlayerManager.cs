@@ -126,18 +126,27 @@ public class PlayerManager : ClimbTypesArea {
 		public Fall m_fall = new Fall();
 		[System.Serializable] public class Fall {
   			public float m_duration = 3;
+
+			[Header("FX")]
+			public float m_landingFxCooldown = 0.25f;
+			public GameObject m_landingFx;
+			public Transform m_landingPos;
 			// public float m_fallMultiplier = 1;
 			// public AnimationCurve m_fallCurve = null;
 		}
 
 		public TakeObject m_takeObject = new TakeObject();
 		[System.Serializable] public class TakeObject {
+			public float m_timeToTakeObject = 0.15f;
 			public float m_delayToTakeAnObject = 0.15f;
 			public bool m_canITakeAnObject = true;
 			public bool m_iHaveAnObject = false;
 			public Transform m_objectPosition;
 			public ObjectToBeGrapped m_actualGrappedObject;
 			public ObjectToBeGrapped m_actualClosedObjectToBeGrapped;
+
+			[Header("FX")]
+			public GameObject m_takeObjectFx;
 		}
 
 		public Push m_push = new Push();
@@ -473,6 +482,7 @@ public class PlayerManager : ClimbTypesArea {
 	Vector3 m_savePosition;
 	Quaternion m_saveRotation;
 
+	bool m_canHadeLandingFx = true;
 
 #endregion Private Variables
 
@@ -1203,6 +1213,10 @@ public class PlayerManager : ClimbTypesArea {
 		if(!m_states.m_takeObject.m_canITakeAnObject){
 			return;
 		}
+		StartCoroutine(DelayToTakeObjectInMouse());
+	}
+	IEnumerator DelayToTakeObjectInMouse(){
+		yield return new WaitForSeconds(m_states.m_takeObject.m_timeToTakeObject);
 		StartCoroutine(DelayToTakeAnObject());
 
 		if(m_states.m_takeObject.m_actualGrappedObject != null){
@@ -1215,6 +1229,7 @@ public class PlayerManager : ClimbTypesArea {
 			m_states.m_takeObject.m_actualGrappedObject.On_ObjectIsTake(true);
 			m_states.m_takeObject.m_actualClosedObjectToBeGrapped = null;
 			m_states.m_takeObject.m_iHaveAnObject = true;
+			Level.AddFX(m_states.m_takeObject.m_takeObjectFx, m_states.m_takeObject.m_objectPosition.position, Quaternion.identity);
 		}
 	}
 	IEnumerator DelayToTakeAnObject(){
@@ -1373,6 +1388,7 @@ public class PlayerManager : ClimbTypesArea {
 		float rotateSecondFracJourney = new float();
 
 		while(transform.position != toPosition){
+			Debug.Log("je calcul comme un FPD");
 			// MovePosition
 			journeyLength = Vector3.Distance(fromPosition, toPosition);
 			moveFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed / journeyLength;
@@ -1388,8 +1404,10 @@ public class PlayerManager : ClimbTypesArea {
 
 			yield return null;
 		}
+			Debug.Log("J'ai fini");
 
 		m_canMoveOnPush = true;
+		yield break;
 	}
 
 	public void On_EndClimbAnimIsFinished(){
@@ -1424,6 +1442,18 @@ public class PlayerManager : ClimbTypesArea {
 		if(m_isInIddle){
 			Animator.SetTrigger("Iddle2");
 		}
+	}
+
+	public void OnPlayerLanding(){
+		if(m_canHadeLandingFx){
+			Level.AddFX(m_states.m_fall.m_landingFx, m_states.m_fall.m_landingPos.position, m_states.m_fall.m_landingFx.transform.rotation);
+			StartCoroutine(StartLandingCooldown());
+		}
+	}
+	IEnumerator StartLandingCooldown(){
+		m_canHadeLandingFx = false;
+		yield return new WaitForSeconds(m_states.m_fall.m_landingFxCooldown);
+		m_canHadeLandingFx = true;
 	}
 
 #endregion Public functions

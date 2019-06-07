@@ -83,10 +83,12 @@ public class PathMove : MonoBehaviour {
 		m_robotPusher.StartAnimationBroomEnter(true);
 
 		m_robotPusher.m_wheel.Move = false;
-
+		
+		yield break;
 	}
 
 	public void StartRotateRigidbody(){
+        Level.AddFX(m_robotPusher.m_rotateFx, transform.position, Quaternion.identity);
 		if(m_currenttarget == m_pathList.Length -1){
 				// print("m_pathList[0] = " + m_pathList[0]);
 			StartCoroutine(RotateWithRigidbody(transform.rotation, m_pathList[0].rotation));

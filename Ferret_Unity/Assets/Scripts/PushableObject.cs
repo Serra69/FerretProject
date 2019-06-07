@@ -88,7 +88,7 @@ public class PushableObject : MonoBehaviour {
 		m_playerManager = PlayerManager.Instance;
 	}
 
-	void Update(){
+	void FixedUpdate(){
 		if(!m_objectAllowToFall && m_objectIsPushByTheFerret){
 			CheckGround();
 
