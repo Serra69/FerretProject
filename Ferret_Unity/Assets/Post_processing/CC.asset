@@ -13,9 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
   - {fileID: 114683659838029244}
-  - {fileID: 114402159989755724}
   - {fileID: 114173592747485976}
-  - {fileID: 114534591435755426}
   - {fileID: 114272557597083802}
   - {fileID: 114366727966025810}
 --- !u!114 &114173592747485976
@@ -1392,88 +1390,6 @@ MonoBehaviour:
   sampleCount:
     overrideState: 1
     value: 10
---- !u!114 &114402159989755724
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48a79b01ea5641d4aa6daa2e23605641, type: 3}
-  m_Name: Bloom
-  m_EditorClassIdentifier: 
-  active: 1
-  enabled:
-    overrideState: 1
-    value: 1
-  intensity:
-    overrideState: 1
-    value: 0.7
-  threshold:
-    overrideState: 1
-    value: 2
-  softKnee:
-    overrideState: 1
-    value: 0.5
-  clamp:
-    overrideState: 1
-    value: 65472
-  diffusion:
-    overrideState: 1
-    value: 3.5
-  anamorphicRatio:
-    overrideState: 1
-    value: 0
-  color:
-    overrideState: 1
-    value: {r: 1, g: 1, b: 1, a: 1}
-  fastMode:
-    overrideState: 1
-    value: 0
-  dirtTexture:
-    overrideState: 1
-    value: {fileID: 0}
-    defaultState: 1
-  dirtIntensity:
-    overrideState: 1
-    value: 0
---- !u!114 &114534591435755426
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a34fa72bd4185749832024e9c8010bf, type: 3}
-  m_Name: ScreenSpaceReflections
-  m_EditorClassIdentifier: 
-  active: 1
-  enabled:
-    overrideState: 1
-    value: 1
-  preset:
-    overrideState: 1
-    value: 2
-  maximumIterationCount:
-    overrideState: 0
-    value: 16
-  resolution:
-    overrideState: 0
-    value: 0
-  thickness:
-    overrideState: 0
-    value: 8
-  maximumMarchDistance:
-    overrideState: 1
-    value: 100
-  distanceFade:
-    overrideState: 1
-    value: 0.5
-  vignette:
-    overrideState: 1
-    value: 0.5
 --- !u!114 &114683659838029244
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1494,7 +1410,7 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 0.7
+    value: 0.31
   color:
     overrideState: 1
     value: {r: 0, g: 0, b: 0, a: 1}

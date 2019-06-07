@@ -19,6 +19,11 @@ public class PlayerIdleState : IState
       
       m_playerManager.m_isInIddle = true;
       m_playerManager.StartIddleTimer();
+
+      if(m_playerManager.m_sM.IsLastStateIndex(4)){
+        Level.AddFX(m_playerManager.m_states.m_fall.m_landingFx, m_playerManager.m_states.m_fall.m_landingPos.position, m_playerManager.m_states.m_fall.m_landingFx.transform.rotation);
+      }
+
     }
 
     public void Exit()
