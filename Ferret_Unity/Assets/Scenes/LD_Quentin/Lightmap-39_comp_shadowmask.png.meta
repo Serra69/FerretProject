@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 23bc77d6e0aa95149b133ccc08eec539
+guid: 7cc7dc98cb21fa84e88ff46e67677a35
 TextureImporter:
   fileIDToRecycleName: {}
   externalObjects: {}
@@ -62,7 +62,7 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 2
+    textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0

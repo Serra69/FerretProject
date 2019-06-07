@@ -65,7 +65,11 @@ public class PlayerClimbState : IState
         // Debug.Log("Je part en montant comme un connard");
         m_endOfClimbState = true;
         m_playerManager.EndClimbAnimation();
-        m_playerManager.m_updates.m_followPlayer.EndClimbMoveCamera();
+        // m_playerManager.m_updates.m_followPlayer.EndClimbMoveCamera();
+
+        // m_playerManager.m_updates.m_followPlayer.FollowLookAtPoint = false;
+        m_playerManager.m_updates.m_followPlayer.On_PlayerEndClimb(false);
+
         m_playerManager.Animator.SetTrigger("EndClimb");
       }
       m_playerManager.RayCastDownToStopSideScrollingMovement();
