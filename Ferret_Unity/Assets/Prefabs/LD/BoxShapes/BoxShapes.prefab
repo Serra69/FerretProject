@@ -766,6 +766,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_objectIsUsable: 0
   m_takingRange: 1
+  m_objectPoint: {fileID: 0}
+  m_magnitudeToAddFx: 1
+  m_impactFX: {fileID: 0}
   m_showGizmos: 1
   m_color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &114960314915006864
@@ -823,6 +826,10 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  m_puttingPieceFx: {fileID: 1555803772829458, guid: eb29a1b2b62caf8408c70af9fcdae405,
+    type: 2}
+  m_openBoxFx: {fileID: 1889025990584950, guid: 43bfb23e7fc11d5478f81f3da13c0536,
+    type: 2}
   m_showGizmos: 1
   m_colorGizmos: {r: 1, g: 0, b: 1, a: 1}
 --- !u!135 &135982153140697134

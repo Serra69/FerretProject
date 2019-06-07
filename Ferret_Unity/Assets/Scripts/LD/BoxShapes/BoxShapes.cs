@@ -17,6 +17,12 @@ public class BoxShapes : ShapeEnum {
 	[Header("Event")]
 	[SerializeField] UnityEvent m_onBoxIsOpen;
 
+	[Header("FX")]
+	[SerializeField] GameObject m_puttingPieceFx;
+	[Range(0, 1), SerializeField] float m_timeToStartSound = 0.75f;
+	[Space]
+	[SerializeField] GameObject m_openBoxFx;
+
 	[Header("Gizmos")]
 	[SerializeField] bool m_showGizmos = true;
 	[SerializeField] Color m_colorGizmos = Color.magenta;
@@ -51,19 +57,19 @@ public class BoxShapes : ShapeEnum {
 
 			switch(shapes.m_shapesType){
 				case ShapesType.Rectangle:
-					StartCoroutine(ClimbInterpolation(shapeTrans, shapeTrans.position, m_rectangleTrans.position, shapeTrans.rotation, m_rectangleTrans.rotation, ShapesType.Rectangle));
+					StartCoroutine(ShapeInterpolation(shapeTrans, shapeTrans.position, m_rectangleTrans.position, shapeTrans.rotation, m_rectangleTrans.rotation, ShapesType.Rectangle));
 				break;
 				case ShapesType.Circle:
-					StartCoroutine(ClimbInterpolation(shapeTrans, shapeTrans.position, m_circleTrans.position, shapeTrans.rotation, m_circleTrans.rotation, ShapesType.Circle));
+					StartCoroutine(ShapeInterpolation(shapeTrans, shapeTrans.position, m_circleTrans.position, shapeTrans.rotation, m_circleTrans.rotation, ShapesType.Circle));
 				break;
 				case ShapesType.Triangle:
-					StartCoroutine(ClimbInterpolation(shapeTrans, shapeTrans.position, m_triangleTrans.position, shapeTrans.rotation, m_triangleTrans.rotation, ShapesType.Triangle));
+					StartCoroutine(ShapeInterpolation(shapeTrans, shapeTrans.position, m_triangleTrans.position, shapeTrans.rotation, m_triangleTrans.rotation, ShapesType.Triangle));
 				break;
 			}
 		}
 	}
 
-	IEnumerator ClimbInterpolation(Transform trans, Vector3 fromPosition, Vector3 toPosition, Quaternion fromRotation, Quaternion toRotation, ShapesType shap){
+	IEnumerator ShapeInterpolation(Transform trans, Vector3 fromPosition, Vector3 toPosition, Quaternion fromRotation, Quaternion toRotation, ShapesType shap){
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
@@ -82,6 +88,9 @@ public class BoxShapes : ShapeEnum {
 			trans.rotation = Quaternion.Slerp(fromRotation, toRotation, m_interpolationCurve.Evaluate(rotateFracJourney));
 
 			yield return null;
+
+			// if()
+
 		}
 		// print("End of coroutine");
 
