@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4419564545037008}
   - component: {fileID: 198525509864106842}
   - component: {fileID: 199073949202935204}
-  - component: {fileID: 114627182092916460}
   m_Layer: 0
   m_Name: Sprint
   m_TagString: Untagged
@@ -35,25 +34,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1837880462028072}
-  m_LocalRotation: {x: 0.49846128, y: 0.46174452, z: 0.49860734, w: 0.53825563}
-  m_LocalPosition: {x: 69.364, y: 18.175, z: -137.676}
+  m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 9.834583, y: 16.322, z: -143.446}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 4.367, y: 85.591, z: 89.664}
---- !u!114 &114627182092916460
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1837880462028072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fd2e8874f60266498a388d7229a1bac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnlyDeactivate: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
 --- !u!198 &198525509864106842
 ParticleSystem:
   m_ObjectHideFlags: 1

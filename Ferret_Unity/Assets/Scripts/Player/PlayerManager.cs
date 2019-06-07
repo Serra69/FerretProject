@@ -554,6 +554,10 @@ public class PlayerManager : ClimbTypesArea {
 		if(Input.GetKeyDown(KeyCode.A)){
 			m_switchCamera.SwitchCameraType();
 		}
+
+		if(m_sM.CompareState(0)){
+			SetIddleTimer();
+		}
 	}
 
 	void LateUpdate(){
@@ -1429,18 +1433,18 @@ public class PlayerManager : ClimbTypesArea {
 		Animator.SetFloat("Run", m_actualSpeed);
 	}
 
-	[HideInInspector] public bool m_isInIddle = false;
+	float m_actualTimer = 0;
 	float m_rangeTimer;
 	public void StartIddleTimer(){
 		m_rangeTimer = Random.Range(m_states.m_iddle.m_minTimeToSwitchIddle2, m_states.m_iddle.m_maxTimeToSwitchIddle2);
-		// StopCoroutine(IddleTimer());
-		// StopAllCoroutines();
-		StartCoroutine(IddleTimer());
+		m_actualTimer = 0;
 	}
-	IEnumerator IddleTimer(){
-		yield return new WaitForSeconds(m_rangeTimer);
-		if(m_isInIddle){
+	void SetIddleTimer(){
+		m_actualTimer += Time.deltaTime;
+		if(m_actualTimer > m_rangeTimer){
 			Animator.SetTrigger("Iddle2");
+			m_actualTimer = 0;
+			m_rangeTimer = Random.Range(m_states.m_iddle.m_minTimeToSwitchIddle2, m_states.m_iddle.m_maxTimeToSwitchIddle2);
 		}
 	}
 

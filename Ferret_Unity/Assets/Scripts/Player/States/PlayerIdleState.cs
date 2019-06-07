@@ -17,7 +17,6 @@ public class PlayerIdleState : IState
 		  //Debug.LogFormat("{0} : Enter()", GetType().Name);
       m_playerManager.Animator.SetBool("Move", false);
       
-      m_playerManager.m_isInIddle = true;
       m_playerManager.StartIddleTimer();
 
       if(m_playerManager.m_sM.IsLastStateIndex(4)){
@@ -29,7 +28,6 @@ public class PlayerIdleState : IState
     public void Exit()
     {
 		  //Debug.LogFormat("{0} : Exit()", GetType().Name);
-      m_playerManager.m_isInIddle = false;
     }
 
     public void FixedUpdate()

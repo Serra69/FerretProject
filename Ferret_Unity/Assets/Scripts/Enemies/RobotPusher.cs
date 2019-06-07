@@ -8,6 +8,8 @@ public class RobotPusher : MonoBehaviour {
 
     [Header("Robot type")]
     public bool m_isMovingInLine = false;
+    [Space]
+    public RobotPusher m_friendRobot;
 
     [Header("Move")]
 	public float m_moveSpeed = 10;
@@ -66,6 +68,33 @@ public class RobotPusher : MonoBehaviour {
             m_rigidbody = value;
         }
     }
+    bool m_canMove = false;
+    public bool CanMove{
+        get{
+            return m_canMove;
+        }
+        set{
+            m_canMove = value;
+        }
+    }
+    bool m_canRotate = false;
+    public bool CanRotate{
+        get{
+            return m_canRotate;
+        }
+        set{
+            m_canRotate = value;
+        }
+    }
+    bool m_canSweep = false;
+    public bool CanSweep{
+        get{
+            return m_canSweep;
+        }
+        set{
+            m_canSweep = value;
+        }
+    }
 
     PathMove m_pathMove;
 
@@ -91,6 +120,8 @@ public class RobotPusher : MonoBehaviour {
     }
     IEnumerator StartAnimationBroomCorout(bool isEnter, Transform trans, Vector3 fromRot, Vector3 toRot, float speed, AnimationCurve curve){
 
+        m_canMove = true;
+
 		float journeyLength = new float();
 		float fracJourney = new float();
 
@@ -108,6 +139,8 @@ public class RobotPusher : MonoBehaviour {
             StartAnimationBroomEnter(false);
             StartCoroutine(WaitToEndRotation());
         }
+
+        m_canMove = false;
     }
 
     IEnumerator WaitToEndRotation(){
