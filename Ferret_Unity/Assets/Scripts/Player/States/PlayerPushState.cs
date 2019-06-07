@@ -31,7 +31,9 @@ public class PlayerPushState : IState
       m_playerManager.SetObjectInChildrenOfFerret(m_playerManager.PushableObject.transform, m_playerManager.m_states.m_push.m_objectTrans);
       m_playerManager.PushableObject.On_ObjectIsPushing(true);
     }
+    Debug.Log("PlayerPushState update");
     if(!m_playerManager.m_pushButton && m_playerManager.CanMoveOnPush){
+      Debug.Log("!m_playerManager.m_pushButton && m_playerManager.CanMoveOnPush");
       m_playerManager.ChangeState(0);
     }
   }
