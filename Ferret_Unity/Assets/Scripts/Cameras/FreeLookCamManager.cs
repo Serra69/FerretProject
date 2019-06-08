@@ -102,6 +102,12 @@ public class FreeLookCamManager : FreeLookCameraType {
 
 	public void SwitchOrbitCamera(FreeLookCameraOrbit freeLookCameraOrbit){
 
+		if(freeLookCameraOrbit == m_startLookType){
+			return;
+		}else{
+			m_startLookType = freeLookCameraOrbit;
+		}
+
 		int orbitNb = new int();
 
 		switch(freeLookCameraOrbit){
@@ -115,6 +121,8 @@ public class FreeLookCamManager : FreeLookCameraType {
 				orbitNb = 2;
 			break;
 		}
+
+		StopAllCoroutines();
 
 		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 0, true, m_freeLookCam.m_Orbits[0].m_Height, m_orbits[orbitNb].m_topOrbit.m_Height));
 		StartCoroutine(ChangeOrbitNb(m_freeLookCam.m_Orbits, 0, false, m_freeLookCam.m_Orbits[0].m_Radius, m_orbits[orbitNb].m_topOrbit.m_Radius));

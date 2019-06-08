@@ -15,9 +15,9 @@ public class ShakeCamera : MonoBehaviour {
 	}
 
 	void Update(){
-		if(Input.GetKeyDown(m_activateImpulseKey)){
+		/*if(Input.GetKeyDown(m_activateImpulseKey)){
 			StartShake();
-		}
+		}*/
 	}
 
 	public void StartShake(){

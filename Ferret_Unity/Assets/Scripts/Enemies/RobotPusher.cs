@@ -10,6 +10,7 @@ public class RobotPusher : MonoBehaviour {
     public bool m_isMovingInLine = false;
     [Space]
     public RobotPusher m_friendRobot;
+    public float m_maxTimeToWaitFriend = 0;
 
     [Header("Move")]
 	public float m_moveSpeed = 10;
@@ -120,7 +121,13 @@ public class RobotPusher : MonoBehaviour {
     }
     IEnumerator StartAnimationBroomCorout(bool isEnter, Transform trans, Vector3 fromRot, Vector3 toRot, float speed, AnimationCurve curve){
 
-        m_canMove = true;
+        float friendTimer = 0;
+        CanSweep = true;
+        if(m_friendRobot != null && isEnter){
+            while(!m_friendRobot.CanSweep){
+			    yield return null;
+            }
+        }
 
 		float journeyLength = new float();
 		float fracJourney = new float();
@@ -132,7 +139,19 @@ public class RobotPusher : MonoBehaviour {
 			journeyLength = Vector3.Distance(fromRot, toRot);
 			fracJourney += (Time.deltaTime) * speed / journeyLength;
 			trans.localEulerAngles = Vector3.Lerp(fromRot, toRot, curve.Evaluate(fracJourney));
-			yield return null;
+
+            if(m_friendRobot != null){
+				if(!m_friendRobot.CanSweep && m_friendRobot.CanRotate){
+                	friendTimer += Time.deltaTime;
+					if(friendTimer > m_maxTimeToWaitFriend){
+						yield return null;
+					}
+				}else{
+			    	yield return null;
+				}
+            }else{
+			    yield return null;
+            }
 		}
 
         if(isEnter){
@@ -140,7 +159,9 @@ public class RobotPusher : MonoBehaviour {
             StartCoroutine(WaitToEndRotation());
         }
 
-        m_canMove = false;
+        CanSweep = false;
+
+		yield break;
     }
 
     IEnumerator WaitToEndRotation(){

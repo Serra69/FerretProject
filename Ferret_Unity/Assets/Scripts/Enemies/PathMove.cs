@@ -10,6 +10,24 @@ public class PathMove : MonoBehaviour {
 	[SerializeField] float m_timeToWaitOnAWaitPath = 2;
 	[SerializeField] Transform[] m_pathList;
 
+	[Header("FX")]
+	public MovementFX m_movementFX = new MovementFX();
+	[System.Serializable] public class MovementFX {
+
+		public AudioSource m_movementFxAudioSource;
+
+		[Header("Fade in/out")]
+		[Range(0, 1)] public float m_startFadeIn = 0.01f;
+		[Range(0, 1)] public float m_startFadeOut = 0.75f;
+		public float m_fadeInTime = 0.5f;
+		public float m_fadeOutTime = 0.5f;
+
+		[Header("Pitch")]
+		public float m_minPitch = 0.99f;
+		public float m_maxPitch = 1.01f;
+		public AnimationCurve m_pitchCurve;
+	}
+
 	RobotPusher m_robotPusher;
 	RobotDoctor m_robotDoctor;
 
@@ -18,6 +36,7 @@ public class PathMove : MonoBehaviour {
 	int m_currenttarget;
 	int m_pathType;
 	bool m_waitingOnAPath;
+	bool m_movementFxCanFadeIn = true;
 
 	void Awake(){
 		if(m_pathList.Length < 2){
@@ -63,10 +82,21 @@ public class PathMove : MonoBehaviour {
 
 	IEnumerator MoveWithRigidbody(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation){
 		
+		float friendTimer = 0;
+		m_robotPusher.CanMove = true;
+		if(m_robotPusher.m_friendRobot != null){
+            while(!m_robotPusher.m_friendRobot.CanMove){
+			    yield return null;
+            }
+        }
+
 		m_robotPusher.m_wheel.Move = true;
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
+
+		bool startFadeIn = false;
+		bool startFadeOut = false;
 
 		// print("Start move");
 
@@ -76,7 +106,33 @@ public class PathMove : MonoBehaviour {
 			moveFracJourney += (Time.deltaTime) * m_robotPusher.m_moveSpeed / moveJourneyLength;
 			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, m_robotPusher.m_moveCurve.Evaluate(moveFracJourney));
 
-			yield return null;
+			if(m_movementFX.m_movementFxAudioSource != null){
+				if(moveFracJourney >= m_movementFX.m_startFadeIn && !startFadeIn){
+					startFadeIn = true;
+					StartCoroutine(FadeIn());
+				}
+				if(moveFracJourney >= m_movementFX.m_startFadeOut && !startFadeOut){
+					startFadeOut = true;
+					StartCoroutine(FadeOut());
+				}
+
+				m_movementFX.m_movementFxAudioSource.pitch = Mathf.Lerp(m_movementFX.m_minPitch, m_movementFX.m_maxPitch, m_movementFX.m_pitchCurve.Evaluate(moveFracJourney));
+			}
+
+			// Debug.Log(gameObject.name + Vector3.Lerp(fromPosition, toPosition, m_robotPusher.m_moveCurve.Evaluate(moveFracJourney)));
+
+			if(m_robotPusher.m_friendRobot != null){
+				if(!m_robotPusher.m_friendRobot.CanMove && m_robotPusher.m_friendRobot.CanSweep){
+                	friendTimer += Time.deltaTime;
+					if(friendTimer > m_robotPusher.m_maxTimeToWaitFriend){
+						yield return null;
+					}
+				}else{
+			    	yield return null;
+				}
+            }else{
+			    yield return null;
+            }
 		}
 		// print("End move");
 
@@ -84,6 +140,8 @@ public class PathMove : MonoBehaviour {
 
 		m_robotPusher.m_wheel.Move = false;
 		
+		m_robotPusher.CanMove = false;
+
 		yield break;
 	}
 
@@ -101,6 +159,14 @@ public class PathMove : MonoBehaviour {
 	}
 
 	IEnumerator RotateWithRigidbody(Quaternion fromRotation, Quaternion toRotation){
+
+        float friendTimer = 0;
+		m_robotPusher.CanRotate = true;
+		if(m_robotPusher.m_friendRobot != null){
+            while(!m_robotPusher.m_friendRobot.CanRotate){
+			    yield return null;
+            }
+        }
 
 		float rotateJourneyLength = new float();
 		float rotateFracJourney = new float();
@@ -138,11 +204,28 @@ public class PathMove : MonoBehaviour {
 			// Debug.Log("rotateFracJourney = " + rotateFracJourney);
 			// Debug.Log("Quaternion.Slerp = " + Quaternion.Slerp(fromRotation, toRotation, m_robotPusher.m_rotateCurve.Evaluate(rotateFracJourney)).eulerAngles);
 
-			yield return null;
+			// Debug.Log(gameObject.name + Quaternion.Lerp(fromRotation, toRotation, m_robotPusher.m_rotateCurve.Evaluate(rotateFracJourney)));
+
+			if(m_robotPusher.m_friendRobot != null){
+				if((m_robotPusher.m_friendRobot.CanRotate && m_robotPusher.CanRotate) || (m_robotPusher.m_friendRobot.CanMove && m_robotPusher.CanRotate)){
+                	friendTimer += Time.deltaTime;
+					if(friendTimer < m_robotPusher.m_maxTimeToWaitFriend){
+						yield return null;
+					}
+				}else{
+			    	yield return null;
+				}
+            }else{
+			    yield return null;
+            }
 		}
 		// print("End rotate");
 		ChoseNextTarget();
 		StartCoroutine(MoveWithRigidbody(transform, transform.position, m_pathList[m_currenttarget].position, transform, transform.rotation, m_pathList[m_currenttarget].rotation));
+	
+		m_robotPusher.CanRotate = false;
+
+		yield break;
 	}
 
 	void MoveWithNavMesh(){
@@ -211,6 +294,38 @@ public class PathMove : MonoBehaviour {
 			}
 			
 		}
+	}
+
+	IEnumerator FadeIn(){
+		if(m_movementFxCanFadeIn){
+			m_movementFX.m_movementFxAudioSource.Play();
+			m_movementFX.m_movementFxAudioSource.volume = 0;
+			float moveFracJourney = 0;
+			float fadeInTime = m_movementFX.m_fadeInTime;
+			float v = 1 / ((fadeInTime + (fadeInTime/2)) / Time.fixedDeltaTime);
+			while(m_movementFX.m_movementFxAudioSource.volume < 1){
+				moveFracJourney += v;
+				m_movementFX.m_movementFxAudioSource.volume = Mathf.Lerp(0, 1, moveFracJourney);
+				yield return new WaitForSeconds(0.0008f);
+			}
+			m_movementFxCanFadeIn = false;
+		}
+		yield break;
+	}
+	IEnumerator FadeOut(){
+		if(m_movementFX.m_movementFxAudioSource.isPlaying){
+			float moveFracJourney = 0;
+			float fadeOutTime = m_movementFX.m_fadeOutTime;
+			float v = 1 / ((fadeOutTime + (fadeOutTime/2)) / Time.fixedDeltaTime);
+			while(m_movementFX.m_movementFxAudioSource.volume > 0){
+				moveFracJourney += v;
+				m_movementFX.m_movementFxAudioSource.volume = Mathf.Lerp(1, 0, moveFracJourney);
+				yield return new WaitForSeconds(0.0008f);
+			}
+			m_movementFX.m_movementFxAudioSource.Stop();
+			m_movementFxCanFadeIn = true;
+		}
+		yield break;
 	}
 
 }

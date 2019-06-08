@@ -551,9 +551,9 @@ public class PlayerManager : ClimbTypesArea {
 			}
 		}
 
-		if(Input.GetKeyDown(KeyCode.A)){
+		/*if(Input.GetKeyDown(KeyCode.A)){
 			m_switchCamera.SwitchCameraType();
-		}
+		}*/
 
 		if(m_sM.CompareState(0)){
 			SetIddleTimer();
@@ -1408,7 +1408,7 @@ public class PlayerManager : ClimbTypesArea {
 
 			yield return null;
 		}
-			Debug.Log("J'ai fini");
+			// Debug.Log("J'ai fini");
 
 		m_canMoveOnPush = true;
 		yield break;

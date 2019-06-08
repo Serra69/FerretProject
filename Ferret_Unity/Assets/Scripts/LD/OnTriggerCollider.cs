@@ -42,18 +42,24 @@ public class OnTriggerCollider : MonoBehaviour {
         	}
 		}
 	}
-	/*void OnTriggerStay(Collider col){
-		if(col.tag == m_tagName && m_isActiveAtTheStart)
+
+	void OnTriggerStay(Collider col){
+		if(col.tag == m_tagName && !m_activeOnce && m_isActiveAtTheStart)
         {
-			// m_onTriggerStay.Invoke();
+			m_activeOnce = true;
+
+			for(int i = 0, l = m_triggerEnter.Length; i < l; ++i){
+				StartCoroutine(PlayerInTrigger(m_triggerEnter[i]));
+        	}
 		}
 	}
-	void OnTriggerExit(Collider col){
-		if(col.tag == m_tagName && m_isActiveAtTheStart)
-        {
-			// m_onTriggerExit.Invoke();
-		}
-	}*/
+
+	// void OnTriggerExit(Collider col){
+	// 	if(col.tag == m_tagName && m_isActiveAtTheStart)
+    //     {
+	// 		// m_onTriggerExit.Invoke();
+	// 	}
+	// }
 
 	IEnumerator PlayerInTrigger(Triggers triggers){
 		yield return new WaitForSeconds(triggers.m_timer);

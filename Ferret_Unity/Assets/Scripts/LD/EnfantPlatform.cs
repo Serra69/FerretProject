@@ -2,22 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider))]
 public class EnfantPlatform : MonoBehaviour {
 
 	[SerializeField] Transform m_newPlayerParent;
 
 	PlayerManager m_playerManager;
 
-    public BoxCollider BoxCol{
-        get{
-            return GetComponent<BoxCollider>();
-        }
-    }
+    // public BoxCollider BoxCol{
+    //     get{
+    //         return GetComponent<BoxCollider>();
+    //     }
+    // }
 
 	void Start(){
 		m_playerManager = PlayerManager.Instance;
-		BoxCol.isTrigger = true;
+		// BoxCol.isTrigger = true;
 	}
 
 	void OnTriggerEnter(Collider col){

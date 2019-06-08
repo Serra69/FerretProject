@@ -16,12 +16,16 @@ public class BoxToPutAnObject : MonoBehaviour {
 	[SerializeField] float m_interpolationSpeed = 5;
 	[SerializeField] AnimationCurve m_interpolationCurve;
 
-	[Header("Gizmos")]
-	[SerializeField] bool m_showGizmos = true;
-	[SerializeField] Color m_colorGizmos = Color.magenta;
+	[Header("FX")]
+	[SerializeField] GameObject m_puttingPieceFx;
+	[Range(0, 1), SerializeField] float m_timeToStartPieceSound = 0.75f;
 
 	[Header("Event")]
 	[SerializeField] UnityEvent m_onBoxIsOpen;
+
+	[Header("Gizmos")]
+	[SerializeField] bool m_showGizmos = true;
+	[SerializeField] Color m_colorGizmos = Color.magenta;
 
 	bool m_objectIsPut = false;
     ObjectToBeGrapped m_grappedObj;
@@ -42,16 +46,18 @@ public class BoxToPutAnObject : MonoBehaviour {
             m_grappedObj.CanBeGrapped = false;
             m_grappedObj.SetAnUnusableobject(true);
 
-			StartCoroutine(ClimbInterpolation(col.transform, col.transform.position, m_transformToSnap.transform.position, col.transform.rotation, m_transformToSnap.transform.rotation));
+			StartCoroutine(ShapeInterpolation(col.transform, col.transform.position, m_transformToSnap.transform.position, col.transform.rotation, m_transformToSnap.transform.rotation));
 		}
 	}
 
-	IEnumerator ClimbInterpolation(Transform trans, Vector3 fromPosition, Vector3 toPosition, Quaternion fromRotation, Quaternion toRotation){
+	IEnumerator ShapeInterpolation(Transform trans, Vector3 fromPosition, Vector3 toPosition, Quaternion fromRotation, Quaternion toRotation){
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 		float rotateJourneyLength;
 		float rotateFracJourney = new float();
+		
+		bool soundIsPlayed = false;
 
 		while(trans.position != toPosition){
 			// MovePosition
@@ -63,6 +69,11 @@ public class BoxToPutAnObject : MonoBehaviour {
 			rotateJourneyLength = Vector3.Distance(fromPosition, toPosition);
 			rotateFracJourney += (Time.deltaTime) * m_interpolationSpeed / rotateJourneyLength;
 			trans.rotation = Quaternion.Slerp(fromRotation, toRotation, m_interpolationCurve.Evaluate(rotateFracJourney));
+
+			if(moveFracJourney > m_timeToStartPieceSound && !soundIsPlayed){
+				soundIsPlayed = true;
+				Level.AddFX(m_puttingPieceFx, toPosition, toRotation);
+			}
 
 			yield return null;
 		}

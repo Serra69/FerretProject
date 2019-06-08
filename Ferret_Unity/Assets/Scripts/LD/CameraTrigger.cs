@@ -6,11 +6,16 @@ using Cinemachine;
 [RequireComponent(typeof(BoxCollider))]
 public class CameraTrigger : FreeLookCameraType {
 
+	[SerializeField] bool m_activeJusteOneTime = true;
+
 	[Header("Change orbit")]
 	[SerializeField] bool m_canChangeOrbit = true;
 	public ChangeOrbit m_changeOrbit = new ChangeOrbit();
 	[System.Serializable] public class ChangeOrbit {
 		public FreeLookCameraOrbit m_newLookType = FreeLookCameraOrbit.Far;
+		[Space]
+		public bool m_useTriggerExitToResetOrbit = false;
+		public FreeLookCameraOrbit m_resetOrbitType = FreeLookCameraOrbit.Far;
 	}
 
 	[Header("Look position")]
@@ -70,7 +75,10 @@ public class CameraTrigger : FreeLookCameraType {
 
 	void OnTriggerEnter(Collider col){
 		if(col.CompareTag("Player") && !m_isActivated){
-			m_isActivated = true;
+
+			if(m_activeJusteOneTime){
+				m_isActivated = true;
+			}
 
 			if(m_canLookPosiiton){
 				StartCoroutine(MoveCoroutToTarget());
@@ -78,6 +86,14 @@ public class CameraTrigger : FreeLookCameraType {
 
 			if(m_canChangeOrbit){
 				m_freeLookCamManager.SwitchOrbitCamera(m_changeOrbit.m_newLookType);
+			}
+		}
+	}
+
+	void OnTriggerExit(Collider col){
+		if(col.CompareTag("Player")){
+			if(m_canChangeOrbit && m_changeOrbit.m_useTriggerExitToResetOrbit){
+				m_freeLookCamManager.SwitchOrbitCamera(m_changeOrbit.m_resetOrbitType);
 			}
 		}
 	}
@@ -132,7 +148,7 @@ public class CameraTrigger : FreeLookCameraType {
 		}
 		if(BoxColl != null){
 			Gizmos.DrawWireCube(transform.position + BoxColl.center, BoxColl.size);
-			if(m_lookPosition.m_targetPos != null){
+			if(m_lookPosition.m_targetPos != null && m_canLookPosiiton){
 				Gizmos.DrawWireSphere(m_lookPosition.m_targetPos.position, 0.2f);
 				m_realLookAtPosition = Vector3.Lerp(transform.position + BoxColl.center, m_lookPosition.m_targetPos.position, m_lookPosition.m_distanceRange);
 				Gizmos.DrawLine(transform.position + BoxColl.center, m_realLookAtPosition);

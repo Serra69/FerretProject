@@ -8,6 +8,12 @@ public class InteractiveObject : MonoBehaviour {
 	[Header("Handles to disable")]
 	[SerializeField] GameObject[] m_handles = new GameObject[1];
 
+	[Header("Add FX")]
+	[SerializeField] GameObject m_interactionFx;
+
+	[Header("Remove FX")]
+	[SerializeField] GameObject m_deletedFx;
+
 	[Header("Gizmos")]
 	[SerializeField] bool m_showGizmos = true;
 	[SerializeField] Color m_color = Color.white;
@@ -34,6 +40,9 @@ public class InteractiveObject : MonoBehaviour {
 	public void On_ObjectIsTake(){
 		m_isUsed = true;
 		m_skeletonController.On_PikeIsDisable();
+
+		Level.AddFX(m_interactionFx, transform.position, Quaternion.identity);
+		Destroy(m_deletedFx);
 
 		for (int i = 0, l = m_handles.Length; i < l; ++i){
 			Destroy(m_handles[i]);
