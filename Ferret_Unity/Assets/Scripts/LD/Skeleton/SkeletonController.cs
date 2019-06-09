@@ -21,6 +21,7 @@ public class SkeletonController : MonoBehaviour {
 
 	[Header("FX")]
 	[SerializeField] GameObject m_skeletonShakeFX;
+	[SerializeField] GameObject m_skeletonVibration;
 	
 	[Header("Gizmos")]
 	[SerializeField] bool m_showGizmos = true;
@@ -51,12 +52,14 @@ public class SkeletonController : MonoBehaviour {
 			m_camTrigger.On_SkeletonMoved();
 
 			Level.AddFX(m_skeletonShakeFX, m_pointToLookAt.transform.position, Quaternion.identity);
+			Level.AddVibration(m_skeletonVibration, Vector3.zero);
 
 			if(m_finalShakeCamera != null){
 				m_finalShakeCamera.StartShake();
 			}
 		}else{
 			m_camTrigger.On_SkeletonMoved();
+			Level.AddVibration(m_skeletonVibration, Vector3.zero);
 			if(m_shakeCamera != null){
 				m_shakeCamera.StartShake();
 			}

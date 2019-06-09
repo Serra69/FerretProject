@@ -55,6 +55,8 @@ public class FixeCamera : MonoBehaviour {
 	SwitchCameraType m_switchCamera;
 	PlayerManager m_playerManager;
 	Camera m_camera;
+	AudioListener m_audioListener;
+	FreeLookCamManager m_freeLookCamManager;
 
 	float m_actualZPos = 5;
 	bool m_isMaxZoomed = false;
@@ -77,6 +79,8 @@ public class FixeCamera : MonoBehaviour {
 		m_switchCamera = SwitchCameraType.Instance;
 		m_playerManager = PlayerManager.Instance;
 		m_camera = GetComponent<Camera>();
+		m_audioListener = GetComponent<AudioListener>();
+		m_freeLookCamManager = FreeLookCamManager.Instance;
 
 		m_actualZPos = m_parameters.m_maxZPos;
 	}
@@ -133,6 +137,7 @@ public class FixeCamera : MonoBehaviour {
 			m_switchCamera.SwitchCamera(transform, false, this);
 		}else{
 			m_camera.enabled = false;
+			m_audioListener.enabled = false;
 			m_switchCamera.SetLastFixeCamera(this);
 			m_switchCamera.SwitchCamera(m_cameraManager.m_cameraBrain, true, this);
 		}
@@ -142,6 +147,8 @@ public class FixeCamera : MonoBehaviour {
 		if(m_playerIsInTriggers){
 			m_pivotManager.ChangeCamera(transform);
 			m_camera.enabled = true;
+			m_audioListener.enabled = true;
+			m_freeLookCamManager.On_AnotherCamIsActivated(true);
 		}else{
 			m_cameraManager.ResetXInput(true);
 			m_cameraManager.ResetYInput(true);

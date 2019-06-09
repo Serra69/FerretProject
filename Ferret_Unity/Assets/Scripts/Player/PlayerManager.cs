@@ -496,16 +496,17 @@ public class PlayerManager : ClimbTypesArea {
 		}
 
 		m_sM.AddStates(new List<IState> {
-			new PlayerIdleState(this),		// 0 = Idle
-			new PlayerWalkState(this),		// 1 = Walk
-			new PlayerRunState(this),		// 2 = Run
-			new PlayerJumpState(this),		// 3 = Jump
-			new PlayerFallState(this),		// 4 = Fall
-			new PlayerCrawlState(this), 	// 5 = Crawl
-			new PlayerClimbState(this), 	// 6 = Climb
-			new PlayerPushState(this),		// 7 = Push
-			new PlayerDeathState(this),		// 8 = Death
-			new PlayerCinematicState(this),	// 9 = Cinematic
+			new PlayerIdleState(this),				// 0 = Idle
+			new PlayerWalkState(this),				// 1 = Walk
+			new PlayerRunState(this),				// 2 = Run
+			new PlayerJumpState(this),				// 3 = Jump
+			new PlayerFallState(this),				// 4 = Fall
+			new PlayerCrawlState(this), 			// 5 = Crawl
+			new PlayerClimbState(this), 			// 6 = Climb
+			new PlayerPushState(this),				// 7 = Push
+			new PlayerDeathState(this),				// 8 = Death
+			new PlayerCinematicState(this),			// 9 = Cinematic
+			new PlayerRobotCollisionState(this),	// 10 = BeCharged
 		});
 
 		m_rigidbody = GetComponent<Rigidbody>();
@@ -551,9 +552,9 @@ public class PlayerManager : ClimbTypesArea {
 			}
 		}
 
-		/*if(Input.GetKeyDown(KeyCode.A)){
-			m_switchCamera.SwitchCameraType();
-		}*/
+		// if(Input.GetKeyDown(KeyCode.A)){
+		// 	m_switchCamera.SwitchCameraType();
+		// }
 
 		if(m_sM.CompareState(0)){
 			SetIddleTimer();
@@ -1458,6 +1459,16 @@ public class PlayerManager : ClimbTypesArea {
 		m_canHadeLandingFx = false;
 		yield return new WaitForSeconds(m_states.m_fall.m_landingFxCooldown);
 		m_canHadeLandingFx = true;
+	}
+
+	public bool m_isCharged = false;
+	public Transform m_chargedRobot;
+	public void On_PlayerIsChargedByARobot(bool b, Transform chargedRobot = null){
+		if(chargedRobot != null){
+			m_chargedRobot = chargedRobot;
+		}
+		m_isCharged = b;
+		ChangeState( b ? 10 : 4);
 	}
 
 #endregion Public functions

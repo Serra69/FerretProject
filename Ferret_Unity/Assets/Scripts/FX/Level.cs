@@ -4,10 +4,10 @@ using UnityEngine;
 
 // Singleton pattern
 public class Level : MonoBehaviour {
-    [SerializeField] private Transform m_fxRoot;
-    // [SerializeField] private Transform m_vibrationRoot;
+    [SerializeField] Transform m_fxRoot;
+    [SerializeField] Transform m_vibrationRoot;
 
-    static private Level s_instance = null;
+    static Level s_instance = null;
 
     static public Level GetInstance(){  // Permet de récupérer la référence de s_instance pour tout le monde sans la modifier
         return s_instance;
@@ -31,7 +31,7 @@ public class Level : MonoBehaviour {
         return null;    // On instentie pas de nouveaux FX
     }
     
-    /*static public Vibration AddVibration(GameObject model, Vector3 position){
+    static public Vibration AddVibration(GameObject model, Vector3 position){
         if(model != null){	// Si la variable model est différente de null alors :
 			// Création d'une copie en mémoire de ce préfab dans la hiérarchie :
 			GameObject go = Instantiate(model, position, Quaternion.identity);	// On instentie l'objet original (model) avec une position (position) et une rotation (Quaternion.identity)
@@ -39,6 +39,6 @@ public class Level : MonoBehaviour {
             return go.GetComponent<Vibration>();
 		}
         return null;    // On instentie pas de nouveaux FX
-    }*/
+    }
     
 }

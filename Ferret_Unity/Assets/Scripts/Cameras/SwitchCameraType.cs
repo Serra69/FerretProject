@@ -23,15 +23,16 @@ public class SwitchCameraType : MonoBehaviour {
 	[SerializeField] AnimationCurve m_positionCurve;
 	[SerializeField] AnimationCurve m_rotationCurve;
 
-	FreeLookCamManager m_camManager;
+	FreeLookCamManager m_freeLookCamManager;
 	Camera m_camera;
+	AudioListener m_audioListener;
 	FixeCamera m_lastFixeCamera;
 	CameraPivot m_pivotManager;
 
 	void Start(){
-		m_camManager = FreeLookCamManager.Instance;
+		m_freeLookCamManager = FreeLookCamManager.Instance;
 		m_camera = GetComponent<Camera>();
-		m_camera.enabled = false;
+		m_audioListener = GetComponent<AudioListener>();
 		m_pivotManager = CameraPivot.Instance;
 	}
 
@@ -41,13 +42,15 @@ public class SwitchCameraType : MonoBehaviour {
 
 	public void SwitchCamera(Transform newTrans, bool toCameraBrain, FixeCamera fixeCam){
 		if(!toCameraBrain){
-			transform.position = m_camManager.m_cameraBrain.position;
-			transform.rotation = m_camManager.m_cameraBrain.rotation;
+			transform.position = m_freeLookCamManager.m_cameraBrain.position;
+			transform.rotation = m_freeLookCamManager.m_cameraBrain.rotation;
 		}/*else{
 			transform.position = fixeCam.transform.position;
 			transform.rotation = fixeCam.transform.rotation;
 		}*/
 		m_camera.enabled = true;
+		m_audioListener.enabled = true;
+		m_freeLookCamManager.On_AnotherCamIsActivated(true);
 		StopAllCoroutines();
 		StartCoroutine(SwitchingCamera(transform.position, newTrans, transform.rotation, newTrans));
 	}
@@ -57,6 +60,7 @@ public class SwitchCameraType : MonoBehaviour {
 		m_pivotManager.ChangeCamera(transform);
 
 		m_camera.enabled = true;
+		m_audioListener.enabled = true;
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
@@ -78,7 +82,9 @@ public class SwitchCameraType : MonoBehaviour {
 		}
 
 		m_camera.enabled = false;
+		m_audioListener.enabled = false;
 		m_lastFixeCamera.On_SwitchCameraIsFinished();
+		m_freeLookCamManager.On_AnotherCamIsActivated(false);
 	}
 
 }

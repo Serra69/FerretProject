@@ -35,6 +35,7 @@ public class SwitchCamera : MonoBehaviour {
 	[SerializeField] Camera m_thirdPersonCam;
 
 	Camera m_camera;
+	AudioListener m_audioListener;
 	CinemachineBrain m_cameraBrain;
 	PlayerManager m_playerManager;
 	float m_moveJourneyLength;
@@ -69,7 +70,7 @@ public class SwitchCamera : MonoBehaviour {
     void Start(){
 		m_firstPersonCamera = FirstPersonCamera.Instance;
 		m_camera = GetComponent<Camera>();
-		m_camera.enabled = false;
+		m_audioListener = GetComponent<AudioListener>();
 		m_cameraBrain = m_thirdPersonCam.GetComponent<CinemachineBrain>();
 		m_playerManager = m_firstPersonCam.GetComponentInParent<PlayerManager>();
 		m_cameraBrainParent = m_cameraBrain.GetComponentInParent<CameraSettings>().transform;
@@ -100,6 +101,7 @@ public class SwitchCamera : MonoBehaviour {
 		transform.rotation = m_thirdPersonTrans.rotation;
 
 		m_camera.enabled = true;
+		m_audioListener.enabled = true;
 		m_canChangePosition = false;
 
 		float changePositionSpeed = new float();
@@ -143,6 +145,7 @@ public class SwitchCamera : MonoBehaviour {
 		m_firstPersonCamera.ResetCameraOrientation();
 
 		m_camera.enabled = false;
+		m_audioListener.enabled = false;
 
 		ChangeCameraBrainType();
 

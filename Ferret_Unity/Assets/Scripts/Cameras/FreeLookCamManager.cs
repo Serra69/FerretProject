@@ -47,7 +47,10 @@ public class FreeLookCamManager : FreeLookCameraType {
 	AxisState m_dontMoveYAxis;    
 	bool m_canIResetCamPos = true;
 
-    void Start(){
+	Camera m_brainCamera;
+	AudioListener m_brainAudioListener;
+
+	void Start(){
 		m_freeLookCam = GetComponent<CinemachineFreeLook>();
 
 		m_dontMoveXAxis = m_freeLookCam.m_XAxis;
@@ -59,6 +62,9 @@ public class FreeLookCamManager : FreeLookCameraType {
 
 		m_saveXAxisRecentering = m_freeLookCam.m_RecenterToTargetHeading;
 		m_saveYAxisRecentering = m_freeLookCam.m_YAxisRecentering;
+
+		m_brainCamera = m_cameraBrain.gameObject.GetComponent<Camera>();
+		m_brainAudioListener = m_cameraBrain.gameObject.GetComponent<AudioListener>();
 	}
 
 	void Update(){
@@ -178,6 +184,11 @@ public class FreeLookCamManager : FreeLookCameraType {
 			m_dontMoveYAxis.Value = m_saveYAxis.Value;
 			m_freeLookCam.m_YAxis = m_dontMoveYAxis;
 		}
+	}
+
+	public void On_AnotherCamIsActivated(bool b){
+		m_brainCamera.enabled = !b;
+		m_brainAudioListener.enabled = !b;
 	}
 
 }
