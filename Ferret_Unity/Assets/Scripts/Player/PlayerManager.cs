@@ -52,6 +52,8 @@ public class PlayerManager : ClimbTypesArea {
 		public Climb m_climb = new Climb();
 		[System.Serializable] public class Climb {
 			public bool m_canClimb = true;
+			public float m_waitClimbCameraMove = 0.25f;
+
 			// public float m_timeToCanReClimb = 0.1f;
 			[Space]
 			public LayerMask m_climbCollision;
@@ -506,7 +508,6 @@ public class PlayerManager : ClimbTypesArea {
 			new PlayerPushState(this),				// 7 = Push
 			new PlayerDeathState(this),				// 8 = Death
 			new PlayerCinematicState(this),			// 9 = Cinematic
-			new PlayerRobotCollisionState(this),	// 10 = BeCharged
 		});
 
 		m_rigidbody = GetComponent<Rigidbody>();
@@ -1420,9 +1421,8 @@ public class PlayerManager : ClimbTypesArea {
 		transform.rotation = m_states.m_climb.m_endClimbAnimPos.rotation;
 		StartCoroutine(WaitClimbCameraMove());
 	}
-	public float m_waitClimbCameraMove = 0.25f;
 	IEnumerator WaitClimbCameraMove(){
-		yield return new WaitForSeconds(m_waitClimbCameraMove);
+		yield return new WaitForSeconds(m_states.m_climb.m_waitClimbCameraMove);
 		m_updates.m_followPlayer.On_PlayerEndClimb(true);
 		// m_updates.m_followPlayer.ReturnToPlayerAfterClimb();
 	}
@@ -1459,16 +1459,6 @@ public class PlayerManager : ClimbTypesArea {
 		m_canHadeLandingFx = false;
 		yield return new WaitForSeconds(m_states.m_fall.m_landingFxCooldown);
 		m_canHadeLandingFx = true;
-	}
-
-	public bool m_isCharged = false;
-	public Transform m_chargedRobot;
-	public void On_PlayerIsChargedByARobot(bool b, Transform chargedRobot = null){
-		if(chargedRobot != null){
-			m_chargedRobot = chargedRobot;
-		}
-		m_isCharged = b;
-		ChangeState( b ? 10 : 4);
 	}
 
 #endregion Public functions

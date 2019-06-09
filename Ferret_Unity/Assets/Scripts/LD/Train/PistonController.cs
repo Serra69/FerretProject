@@ -31,6 +31,7 @@ public class PistonController : TrainPathsTypes {
 
 	[Header("FX")]
 	[SerializeField] GameObject m_startFx;
+	[SerializeField] GameObject m_endFx;
 	public MovementFX m_movementFX = new MovementFX();
 	[System.Serializable] public class MovementFX {
 
@@ -147,6 +148,7 @@ public class PistonController : TrainPathsTypes {
 				}
 			break;
 		}
+		Level.AddFX(m_endFx, m_rotate.m_transform.position, Quaternion.identity);
 	}
 	IEnumerator MoveCorout(){
 		float moveJourneyLength;
@@ -193,6 +195,7 @@ public class PistonController : TrainPathsTypes {
 				}
 			break;
 		}
+		Level.AddFX(m_endFx, m_move.m_transform.position, Quaternion.identity);
 	}
 	IEnumerator MoveAndRotateCorout(){
 		float moveJourneyLength;
@@ -232,8 +235,10 @@ public class PistonController : TrainPathsTypes {
 		m_trainController.ResetTrainParent();
 
 		if(m_resetTransformAfterMoving){
+			Level.AddFX(m_startFx, m_move.m_transform.position, Quaternion.identity);
 			StartCoroutine(ResetTransform());
 		}
+		Level.AddFX(m_endFx, m_move.m_transform.position, Quaternion.identity);
 	}
 	IEnumerator ResetTransform(){
 		yield return new WaitForSeconds(m_timeToWaitBeforeReset);
@@ -254,6 +259,7 @@ public class PistonController : TrainPathsTypes {
 
 			yield return null;
 		}
+		Level.AddFX(m_endFx, m_move.m_transform.position, Quaternion.identity);
 	}
 
 	void CheckPositionAndRotation(){

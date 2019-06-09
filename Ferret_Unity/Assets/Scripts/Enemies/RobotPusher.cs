@@ -52,9 +52,6 @@ public class RobotPusher : MonoBehaviour {
         public AnimationCurve m_exitCurve;
     }
 
-    [Header("Charged")]
-    [SerializeField, Range(0,1)] float m_chargedMoment = 0.5f; 
-
     [Header("FX")]
     public GameObject m_rotateFx;
     [SerializeField] GameObject m_sweepFx;
@@ -101,16 +98,10 @@ public class RobotPusher : MonoBehaviour {
     }
 
     PathMove m_pathMove;
-    PlayerManager m_playerManager;
-    bool m_ichargedPlayer = false;
 
     void Awake(){
         m_rigidbody = GetComponent<Rigidbody>();
         m_pathMove = GetComponentInChildren<PathMove>();
-    }
-
-    void Start(){
-        m_playerManager = PlayerManager.Instance;
     }
 
     void FixedUpdate(){
@@ -141,8 +132,6 @@ public class RobotPusher : MonoBehaviour {
 		float journeyLength = new float();
 		float fracJourney = new float();
 
-        bool haveChargedPlayer = false;
-
         Level.AddFX(m_sweepFx, transform.position, Quaternion.identity);
 
 		while(trans.localEulerAngles != toRot){
@@ -150,12 +139,6 @@ public class RobotPusher : MonoBehaviour {
 			journeyLength = Vector3.Distance(fromRot, toRot);
 			fracJourney += (Time.deltaTime) * speed / journeyLength;
 			trans.localEulerAngles = Vector3.Lerp(fromRot, toRot, curve.Evaluate(fracJourney));
-
-            if(fracJourney > m_chargedMoment && m_ichargedPlayer && !haveChargedPlayer){
-                m_ichargedPlayer = false;
-                haveChargedPlayer = true;
-                m_playerManager.On_PlayerIsChargedByARobot(false);
-            }
 
             if(m_friendRobot != null){
 				if(!m_friendRobot.CanSweep && m_friendRobot.CanRotate){
@@ -185,14 +168,4 @@ public class RobotPusher : MonoBehaviour {
         yield return new WaitForSeconds(m_broom.m_timeToWaitToEndRotation);
         m_pathMove.StartRotateRigidbody();
     }
-
-    void OnTriggerEnter(Collider col){
-        if(col.CompareTag("Player")){
-            if(!m_playerManager.m_isCharged){
-                m_ichargedPlayer = true;
-                m_playerManager.On_PlayerIsChargedByARobot(true, transform);
-            }
-        }
-    }
-
 }

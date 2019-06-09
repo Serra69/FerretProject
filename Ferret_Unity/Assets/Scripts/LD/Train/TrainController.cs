@@ -35,8 +35,8 @@ public class TrainController : TrainPathsTypes {
 	}
 
 	[System.Serializable] public class FadeInFadeOut {
-		[Range(0, 1)] public float m_startFadeIn = 0f;
-		[Range(0, 1)] public float m_startFadeOut = 0.75f;
+		[Range(0.1f, 1)] public float m_startFadeIn = 0.1f;
+		[Range(0.1f, 1)] public float m_startFadeOut = 0.75f;
 		public float m_fadeInTime = 0.5f;
 		public float m_fadeOutTime = 0.5f;
 	}
@@ -75,9 +75,10 @@ public class TrainController : TrainPathsTypes {
 	}
 
 	void Update(){
-		/*if(Input.GetKeyDown(KeyCode.P)){
+		if(Input.GetKeyDown(KeyCode.P)){
 			ChoseNextTarget();
-		}*/
+		}
+		// Debug.Log("GetNextPathNumber = " + GetNextPathNumber());
 	}
 
 	int GetNextPathNumber(){
@@ -96,20 +97,35 @@ public class TrainController : TrainPathsTypes {
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 
+		float timeToFadeIn;
+		float timeToFadeOut;
+		float FadeInSpeed;
+		float FadeOutSpeed;
+
+
 		while(transformPosition.position != toPosition){
+
+			timeToFadeIn = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_startFadeIn;
+			timeToFadeOut = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_startFadeOut;
+			FadeInSpeed = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeInTime;
+			FadeOutSpeed = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeOutTime;
+
 			// MovePosition
 			moveJourneyLength = Vector3.Distance(fromPosition, toPosition);
 			moveFracJourney += (Time.deltaTime) * m_moveSpeeds[GetNextPathNumber()] / moveJourneyLength;
 			transformPosition.position = Vector3.Lerp(fromPosition, toPosition, m_moveCurve.Evaluate(moveFracJourney));
 
+			// Debug.Log("GetNextPathNumber() = " + GetNextPathNumber());
+
+
 			if(m_moveFxAudioSource != null){
-				if(moveFracJourney >= m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_startFadeIn && !startFadeIn){
+				if(moveFracJourney >= timeToFadeIn && !startFadeIn){
 					startFadeIn = true;
-					StartCoroutine(FadeIn());
+					StartCoroutine(FadeIn(FadeInSpeed));
 				}
-				if(moveFracJourney >= m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_startFadeOut && !startFadeOut){
+				if(moveFracJourney >= timeToFadeOut && !startFadeOut){
 					startFadeOut = true;
-					StartCoroutine(FadeOut());
+					StartCoroutine(FadeOut(FadeOutSpeed));
 				}
 
 				m_moveFxAudioSource.pitch = Mathf.Lerp(m_moveFX.m_minPitch, m_moveFX.m_maxPitch, m_moveFX.m_pitchCurve.Evaluate(moveFracJourney));
@@ -152,12 +168,13 @@ public class TrainController : TrainPathsTypes {
 		}
 	}
 
-	IEnumerator FadeIn(){
+	IEnumerator FadeIn(float nextPathNumber){
 		if(m_moveFxCanFadeIn){
 			m_moveFxAudioSource.Play();
 			m_moveFxAudioSource.volume = 0;
 			float moveFracJourney = 0;
-			float fadeInTime = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeInTime;
+			float fadeInTime = nextPathNumber;
+			// Debug.Log("FadeIn : nextPathNumber = " + nextPathNumber);
 			float v = 1 / ((fadeInTime + (fadeInTime/2)) / Time.fixedDeltaTime);
 			while(m_moveFxAudioSource.volume < 1){
 				moveFracJourney += v;
@@ -168,10 +185,11 @@ public class TrainController : TrainPathsTypes {
 		}
 		yield break;
 	}
-	IEnumerator FadeOut(){
+	IEnumerator FadeOut(float nextPathNumber){
 		if(m_moveFxAudioSource.isPlaying){
 			float moveFracJourney = 0;
-			float fadeOutTime = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeOutTime;
+			float fadeOutTime = nextPathNumber;
+			// Debug.Log("FadeOut : nextPathNumber = " + nextPathNumber);
 			float v = 1 / ((fadeOutTime + (fadeOutTime/2)) / Time.fixedDeltaTime);
 			while(m_moveFxAudioSource.volume > 0){
 				moveFracJourney += v;
