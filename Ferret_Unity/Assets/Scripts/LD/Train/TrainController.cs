@@ -157,7 +157,7 @@ public class TrainController : TrainPathsTypes {
 			m_moveFxAudioSource.Play();
 			m_moveFxAudioSource.volume = 0;
 			float moveFracJourney = 0;
-			float fadeInTime = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeInTime - 0.30f;
+			float fadeInTime = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeInTime;
 			float v = 1 / ((fadeInTime + (fadeInTime/2)) / Time.fixedDeltaTime);
 			while(m_moveFxAudioSource.volume < 1){
 				moveFracJourney += v;
@@ -171,7 +171,7 @@ public class TrainController : TrainPathsTypes {
 	IEnumerator FadeOut(){
 		if(m_moveFxAudioSource.isPlaying){
 			float moveFracJourney = 0;
-			float fadeOutTime = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeOutTime - 0.30f;
+			float fadeOutTime = m_moveFX.m_fadeInFadeOut[GetNextPathNumber()].m_fadeOutTime;
 			float v = 1 / ((fadeOutTime + (fadeOutTime/2)) / Time.fixedDeltaTime);
 			while(m_moveFxAudioSource.volume > 0){
 				moveFracJourney += v;
