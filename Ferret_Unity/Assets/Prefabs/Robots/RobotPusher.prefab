@@ -2364,7 +2364,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1946580751533364}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.12250236, y: 0.0059994785, z: 3.0900002}
+  m_LocalPosition: {x: 5.362508, y: 0.0059994785, z: -2.3579886}
   m_LocalScale: {x: 0.9090908, y: 0.9090908, z: 0.9090908}
   m_Children:
   - {fileID: 4851242180995828}
@@ -6375,7 +6375,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_movementFX:
-    m_movementFxAudioSource: {fileID: 82850428124064184}
+    m_movementFxAudioSource: {fileID: 0}
     m_startFadeIn: 0
     m_startFadeOut: 0.75
     m_fadeInTime: 0.1

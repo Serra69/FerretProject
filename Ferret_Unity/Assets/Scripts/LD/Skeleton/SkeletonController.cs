@@ -21,6 +21,8 @@ public class SkeletonController : MonoBehaviour {
 
 	[Header("FX")]
 	[SerializeField] GameObject m_skeletonShakeFX;
+	[SerializeField] GameObject m_lastSkeletonShakeFX;
+	[SerializeField] Transform m_skeletonShakeFXPosition;
 
 	[Header("Vibration")]
 	[SerializeField] GameObject m_skeletonVibration;
@@ -54,7 +56,7 @@ public class SkeletonController : MonoBehaviour {
 			m_camTrigger.m_lookPosition.m_timeToShowTarget = m_timeToShowLastTarget;
 			m_camTrigger.On_SkeletonMoved();
 
-			Level.AddFX(m_skeletonShakeFX, m_pointToLookAt.transform.position, Quaternion.identity);
+			Level.AddFX(m_lastSkeletonShakeFX, m_skeletonShakeFXPosition.position, m_skeletonShakeFXPosition.rotation);
 			Level.AddVibration(m_lastSkeletonVibration, Vector3.zero);
 
 			if(m_finalShakeCamera != null){
@@ -62,6 +64,7 @@ public class SkeletonController : MonoBehaviour {
 			}
 		}else{
 			m_camTrigger.On_SkeletonMoved();
+			Level.AddFX(m_skeletonShakeFX, m_skeletonShakeFXPosition.position, m_skeletonShakeFXPosition.rotation);
 			Level.AddVibration(m_skeletonVibration, Vector3.zero);
 			if(m_shakeCamera != null){
 				m_shakeCamera.StartShake();
