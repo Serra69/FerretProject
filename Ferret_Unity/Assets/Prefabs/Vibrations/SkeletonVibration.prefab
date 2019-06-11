@@ -53,4 +53,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_intensityLeft: 0.5
   m_intensityRight: 0.5
-  m_vibrationTime: 2
+  m_vibrationTime: 2.5

@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 199335163731383862}
   - component: {fileID: 114440739280786776}
   m_Layer: 0
-  m_Name: DustFX
+  m_Name: DustSkeleteonFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
