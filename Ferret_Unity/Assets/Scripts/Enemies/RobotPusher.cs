@@ -55,6 +55,7 @@ public class RobotPusher : MonoBehaviour {
     [Header("FX")]
     public GameObject m_rotateFx;
     [SerializeField] GameObject m_sweepFx;
+    [SerializeField] Transform m_sweepPos;
 
     Rigidbody m_rigidbody;
     public Rigidbody Rigidbody
@@ -132,7 +133,9 @@ public class RobotPusher : MonoBehaviour {
 		float journeyLength = new float();
 		float fracJourney = new float();
 
-        Level.AddFX(m_sweepFx, transform.position, Quaternion.identity);
+        if(isEnter){
+            Level.AddFX(m_sweepFx, m_sweepPos.position, m_sweepPos.rotation);
+        }
 
 		while(trans.localEulerAngles != toRot){
 			// MoveRotation
