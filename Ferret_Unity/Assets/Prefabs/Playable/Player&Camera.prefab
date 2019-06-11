@@ -412,6 +412,7 @@ GameObject:
   - component: {fileID: 4130958515121742}
   - component: {fileID: 20047892193416236}
   - component: {fileID: 81656258159053264}
+  - component: {fileID: 124483659525592762}
   - component: {fileID: 114516920439294168}
   - component: {fileID: 114052795424925682}
   m_Layer: 9
@@ -420,7 +421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1190230055454412
 GameObject:
   m_ObjectHideFlags: 1
@@ -1126,6 +1127,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4163007226362864}
   - component: {fileID: 20343408486141918}
+  - component: {fileID: 81834498682953922}
+  - component: {fileID: 124253723778821384}
   - component: {fileID: 114187525992377388}
   - component: {fileID: 114884699149180032}
   m_Layer: 0
@@ -1732,6 +1735,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4367965824508010}
   - component: {fileID: 20730911089221012}
+  - component: {fileID: 81121688593330534}
+  - component: {fileID: 124885096949420768}
   - component: {fileID: 114263034431162074}
   - component: {fileID: 114330762277593312}
   m_Layer: 0
@@ -4757,7 +4762,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: -0.064498916, y: 0.0000000543426, z: -0.0000008407809, w: -0.9979178}
+  m_LocalRotation: {x: -0.064498916, y: 0.000000054372666, z: -0.0000008412463, w: -0.9979178}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4909,7 +4914,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: -0.11764805, y: -0.0007103787, z: 0.005996276, w: -0.99303705}
+  m_LocalRotation: {x: -0.11764803, y: -0.00071041455, z: 0.0059962873, w: -0.99303705}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5135,7 +5140,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701019898918854}
-  m_LocalRotation: {x: -0.09178904, y: 0.00000066186914, z: -0.0000071342497, w: -0.9957785}
+  m_LocalRotation: {x: -0.09178904, y: 0.00000065334535, z: -0.000007133928, w: -0.9957785}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5312,7 +5317,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1681364742312364}
-  m_LocalRotation: {x: 0.09178904, y: -0.000000008566804, z: 7.8967227e-10, w: 0.9957785}
+  m_LocalRotation: {x: 0.09178904, y: 0.000000008566916, z: -7.896826e-10, w: 0.9957785}
   m_LocalPosition: {x: 0, y: 2.3364105, z: 5.1125727}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -5434,7 +5439,7 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1172507744465738}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
@@ -5687,13 +5692,27 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!81 &81121688593330534
+AudioListener:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1612911063196440}
+  m_Enabled: 0
 --- !u!81 &81656258159053264
 AudioListener:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1172507744465738}
-  m_Enabled: 1
+  m_Enabled: 0
+--- !u!81 &81834498682953922
+AudioListener:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1403714925671042}
+  m_Enabled: 0
 --- !u!81 &81995800644370782
 AudioListener:
   m_ObjectHideFlags: 1
@@ -6808,6 +6827,7 @@ MonoBehaviour:
       m_speed: 6
     m_climb:
       m_canClimb: 1
+      m_waitClimbCameraMove: 0.25
       m_climbCollision:
         serializedVersion: 2
         m_Bits: 2048
@@ -7029,10 +7049,7 @@ MonoBehaviour:
   m_takeButton: 0
   m_pushButton: 0
   m_startPlayerParent: {fileID: 4228686498102366}
-  m_waitClimbCameraMove: 0.25
   m_targetRunSpeed: 0
-  m_isCharged: 0
-  m_chargedRobot: {fileID: 0}
 --- !u!114 &114550689723641122
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -8104,12 +8121,33 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!124 &124253723778821384
+Behaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1403714925671042}
+  m_Enabled: 1
+--- !u!124 &124483659525592762
+Behaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1172507744465738}
+  m_Enabled: 1
 --- !u!124 &124540534744500348
 Behaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1681364742312364}
+  m_Enabled: 1
+--- !u!124 &124885096949420768
+Behaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1612911063196440}
   m_Enabled: 1
 --- !u!136 &136079892601612742
 CapsuleCollider:

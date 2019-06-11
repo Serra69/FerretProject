@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/LabTest_Quentin.unity
-    guid: fe198d5270237974c8d6b64cb19ba279
+    path: Assets/Scenes/LD_Quentin.unity
+    guid: dd238e1caf1e6824f8630f0b9cbdfd8a
   m_configObjects: {}
