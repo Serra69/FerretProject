@@ -101,7 +101,11 @@ public class SwitchCamera : MonoBehaviour {
 		transform.rotation = m_thirdPersonTrans.rotation;
 
 		m_camera.enabled = true;
-		m_audioListener.enabled = true;
+
+		if(!m_playerManager.m_playerDebugs.m_useAudioListenerOnFerret){
+			m_audioListener.enabled = true;
+		}
+
 		m_canChangePosition = false;
 
 		float changePositionSpeed = new float();
@@ -145,7 +149,10 @@ public class SwitchCamera : MonoBehaviour {
 		m_firstPersonCamera.ResetCameraOrientation();
 
 		m_camera.enabled = false;
-		m_audioListener.enabled = false;
+
+		if(!m_playerManager.m_playerDebugs.m_useAudioListenerOnFerret){
+			m_audioListener.enabled = false;
+		}
 
 		ChangeCameraBrainType();
 

@@ -23,6 +23,7 @@ public class SwitchCameraType : MonoBehaviour {
 	[SerializeField] AnimationCurve m_positionCurve;
 	[SerializeField] AnimationCurve m_rotationCurve;
 
+	PlayerManager m_playerManager;
 	FreeLookCamManager m_freeLookCamManager;
 	Camera m_camera;
 	AudioListener m_audioListener;
@@ -30,6 +31,7 @@ public class SwitchCameraType : MonoBehaviour {
 	CameraPivot m_pivotManager;
 
 	void Start(){
+		m_playerManager = PlayerManager.Instance;
 		m_freeLookCamManager = FreeLookCamManager.Instance;
 		m_camera = GetComponent<Camera>();
 		m_audioListener = GetComponent<AudioListener>();
@@ -49,7 +51,11 @@ public class SwitchCameraType : MonoBehaviour {
 			transform.rotation = fixeCam.transform.rotation;
 		}*/
 		m_camera.enabled = true;
-		m_audioListener.enabled = true;
+
+		if(!m_playerManager.m_playerDebugs.m_useAudioListenerOnFerret){
+			m_audioListener.enabled = true;
+		}
+
 		m_freeLookCamManager.On_AnotherCamIsActivated(true);
 		StopAllCoroutines();
 		StartCoroutine(SwitchingCamera(transform.position, newTrans, transform.rotation, newTrans));
@@ -60,7 +66,10 @@ public class SwitchCameraType : MonoBehaviour {
 		m_pivotManager.ChangeCamera(transform);
 
 		m_camera.enabled = true;
-		m_audioListener.enabled = true;
+
+		if(!m_playerManager.m_playerDebugs.m_useAudioListenerOnFerret){
+			m_audioListener.enabled = true;
+		}
 
 		float moveJourneyLength;
 		float moveFracJourney = new float();
@@ -82,7 +91,11 @@ public class SwitchCameraType : MonoBehaviour {
 		}
 
 		m_camera.enabled = false;
-		m_audioListener.enabled = false;
+
+		if(!m_playerManager.m_playerDebugs.m_useAudioListenerOnFerret){
+			m_audioListener.enabled = false;
+		}
+
 		m_lastFixeCamera.On_SwitchCameraIsFinished();
 		m_freeLookCamManager.On_AnotherCamIsActivated(false);
 	}
