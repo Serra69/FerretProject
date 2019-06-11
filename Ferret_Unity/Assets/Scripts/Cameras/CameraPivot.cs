@@ -23,9 +23,9 @@ public class CameraPivot : MonoBehaviour {
 		ChangeCamera(m_mainCamera);
 	}
 
-	void FixedUpdate(){
-		transform.rotation = m_actualCamera.rotation;
-	}
+	// void FixedUpdate(){
+	// 	transform.rotation = m_actualCamera.rotation;
+	// }
 
 	public void UpdateCameraPivot(){
 		transform.rotation = m_actualCamera.rotation;

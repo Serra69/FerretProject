@@ -75,9 +75,9 @@ public class TrainController : TrainPathsTypes {
 	}
 
 	void Update(){
-		if(Input.GetKeyDown(KeyCode.P)){
-			ChoseNextTarget();
-		}
+		// if(Input.GetKeyDown(KeyCode.P)){
+		// 	ChoseNextTarget();
+		// }
 		// Debug.Log("GetNextPathNumber = " + GetNextPathNumber());
 	}
 

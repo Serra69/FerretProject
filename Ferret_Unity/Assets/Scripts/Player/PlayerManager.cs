@@ -532,7 +532,7 @@ public class PlayerManager : ClimbTypesArea {
 	void FixedUpdate(){
 		MoveDirection = Vector3.zero;
 
-		// m_updates.m_pivotCamera.UpdateCameraPivot();
+		m_updates.m_pivotCamera.UpdateCameraPivot();
 		// m_updates.m_cameraFollowLookAt.UpdateCameraFollowLookAt();
 		// m_updates.m_followPlayer.UpdateFollowPlayerPosition();
 		// m_updates.m_followPlayer.UpdateFollowPlayerRotation();
@@ -552,21 +552,24 @@ public class PlayerManager : ClimbTypesArea {
 				m_closedInteractiveObject.On_ObjectIsTake();
 			}
 		}
-
 		// if(Input.GetKeyDown(KeyCode.A)){
 		// 	m_switchCamera.SwitchCameraType();
 		// }
-
 		if(m_sM.CompareState(0)){
 			SetIddleTimer();
 		}
+
+		// m_updates.m_pivotCamera.UpdateCameraPivot();
+		// m_updates.m_cameraFollowLookAt.UpdateCameraFollowLookAt();
+		// m_updates.m_followPlayer.UpdateFollowPlayerPosition();
+		// m_updates.m_followPlayer.UpdateFollowPlayerRotation();
 	}
 
 	void LateUpdate(){
 		m_sM.LateUpdate();
 
 		// m_updates.m_pivotCamera.UpdateCameraPivot();
-		// m_updates.m_cameraFollowLookAt.UpdateCameraFollowLookAt();
+		m_updates.m_cameraFollowLookAt.UpdateCameraFollowLookAt();
 		// m_updates.m_followPlayer.UpdateFollowPlayerPosition();
 		// m_updates.m_followPlayer.UpdateFollowPlayerRotation();
 	}

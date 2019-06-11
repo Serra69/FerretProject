@@ -30,14 +30,14 @@ public class CameraFollowLookAt : MonoBehaviour {
 	Vector3 m_offset;
 
 
-    void Start(){
+	void Start(){
 		m_offset = transform.localPosition;
 		MainObject = m_mainObjectToFollow;
 	}
 
-	void LateUpdate(){
-		transform.position = m_mainObjectToFollow.transform.position + m_offset;
-	}
+	// void LateUpdate(){
+	// 	transform.position = m_mainObjectToFollow.transform.position + m_offset;
+	// }
 
 	public void UpdateCameraFollowLookAt(){
 		transform.position = m_mainObjectToFollow.transform.position + m_offset;
