@@ -137,7 +137,11 @@ public class FixeCamera : MonoBehaviour {
 			m_switchCamera.SwitchCamera(transform, false, this);
 		}else{
 			m_camera.enabled = false;
-			m_audioListener.enabled = false;
+
+			if(!m_playerManager.m_playerDebugs.m_useAudioListenerOnFerret){
+				m_audioListener.enabled = false;
+			}
+
 			m_switchCamera.SetLastFixeCamera(this);
 			m_switchCamera.SwitchCamera(m_cameraManager.m_cameraBrain, true, this);
 		}
@@ -147,7 +151,11 @@ public class FixeCamera : MonoBehaviour {
 		if(m_playerIsInTriggers){
 			m_pivotManager.ChangeCamera(transform);
 			m_camera.enabled = true;
-			m_audioListener.enabled = true;
+
+			if(!m_playerManager.m_playerDebugs.m_useAudioListenerOnFerret){
+				m_audioListener.enabled = true;
+			}
+			
 			m_freeLookCamManager.On_AnotherCamIsActivated(true);
 		}else{
 			m_cameraManager.ResetXInput(true);

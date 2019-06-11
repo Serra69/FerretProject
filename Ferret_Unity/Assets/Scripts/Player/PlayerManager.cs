@@ -22,6 +22,7 @@ public class PlayerManager : ClimbTypesArea {
 	public PlayerDebugs m_playerDebugs = new PlayerDebugs();
 	[System.Serializable] public class PlayerDebugs {
 		public bool m_playerCanDie = true;
+		public bool m_useAudioListenerOnFerret = true;
 	}
 
 	public StateMachine m_sM = new StateMachine(); 
