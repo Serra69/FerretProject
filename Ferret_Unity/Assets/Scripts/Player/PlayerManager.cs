@@ -21,6 +21,7 @@ public class PlayerManager : ClimbTypesArea {
 
 	public PlayerDebugs m_playerDebugs = new PlayerDebugs();
 	[System.Serializable] public class PlayerDebugs {
+		public bool m_playerCanMove = true;
 		public bool m_playerCanDie = true;
 		public bool m_useAudioListenerOnFerret = true;
 	}
@@ -531,6 +532,9 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	void FixedUpdate(){
+		if(!m_playerDebugs.m_playerCanMove)
+			return;
+
 		MoveDirection = Vector3.zero;
 
 		m_updates.m_pivotCamera.UpdateCameraPivot();
@@ -544,6 +548,9 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	void Update(){
+		if(!m_playerDebugs.m_playerCanMove)
+			return;
+
 		m_sM.Update();
 		UpdateInputButtons();
 		if(m_takeButton && !RayCastToCanPush()){
@@ -567,6 +574,9 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	void LateUpdate(){
+		if(!m_playerDebugs.m_playerCanMove)
+			return;
+			
 		m_sM.LateUpdate();
 
 		// m_updates.m_pivotCamera.UpdateCameraPivot();
