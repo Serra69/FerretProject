@@ -4982,7 +4982,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: -0.11764805, y: -0.00071037957, z: 0.005996283, w: -0.99303705}
+  m_LocalRotation: {x: -0.11764803, y: -0.00071041455, z: 0.0059962873, w: -0.99303705}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -7054,6 +7054,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_playerDebugs:
+    m_startPlayerState: 9
     m_playerCanMove: 1
     m_playerCanDie: 1
     m_useAudioListenerOnFerret: 1
