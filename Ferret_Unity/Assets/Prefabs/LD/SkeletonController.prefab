@@ -2344,7 +2344,7 @@ MonoBehaviour:
         m_RotationOrder: 4
       m_AttackTime: 1.25
       m_SustainTime: 1
-      m_DecayTime: 0.25
+      m_DecayTime: 0
       m_ScaleWithImpact: 1
       m_HoldForever: 0
     m_ImpactRadius: 100
@@ -3275,8 +3275,8 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       m_AttackTime: 0.25
-      m_SustainTime: 1
-      m_DecayTime: 0.25
+      m_SustainTime: 2.5
+      m_DecayTime: 0
       m_ScaleWithImpact: 1
       m_HoldForever: 0
     m_ImpactRadius: 100
@@ -4171,7 +4171,9 @@ MonoBehaviour:
   m_timeToShowLastTarget: 3
   m_shakeCamera: {fileID: 114270407304283322}
   m_finalShakeCamera: {fileID: 114720754651603924}
-  m_skeletonShakeFX: {fileID: 1648344332451688, guid: 9a4a544e2b1504049ad2ac10e340b159,
+  m_skeletonShakeFX: {fileID: 1772147648378638, guid: ccc7a1d611b32eb4ab04490fe771dcc9,
+    type: 2}
+  m_lastSkeletonShakeFX: {fileID: 1317338408388220, guid: 20b9ba98569968a46b41d740a8c7f55d,
     type: 2}
   m_skeletonShakeFXPosition: {fileID: 4944589312882002}
   m_skeletonVibration: {fileID: 1273851038221926, guid: 05a263a1c0768234d8f950819201505a,

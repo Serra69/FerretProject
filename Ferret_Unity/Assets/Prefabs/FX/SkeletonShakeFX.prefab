@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 82212637241251466}
   - component: {fileID: 198535977816363590}
   - component: {fileID: 199335163731383862}
-  - component: {fileID: 114440739280786776}
+  - component: {fileID: 114754351887088100}
   m_Layer: 0
   m_Name: SkeletonShakeFX
   m_TagString: Untagged
@@ -207,7 +207,7 @@ Transform:
   - {fileID: 4465138280910590}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 36.75}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4465138280910590
 Transform:
   m_ObjectHideFlags: 1
@@ -450,17 +450,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1044a6e4ac06b1d40b4ceeaebf36e4ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114440739280786776
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1772147648378638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1044a6e4ac06b1d40b4ceeaebf36e4ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114504956186077926
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -472,6 +461,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1044a6e4ac06b1d40b4ceeaebf36e4ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114754351887088100
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1772147648378638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d47bfe7baf42524b8616fd27e41ea38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_timeToDeleteFX: 2.25
 --- !u!114 &114885388734130762
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -501,10 +502,10 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1467171954208376}
   serializedVersion: 5
-  lengthInSec: 3
+  lengthInSec: 0.25
   simulationSpeed: 1
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -513,7 +514,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 1
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -4911,10 +4912,10 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1149641806636854}
   serializedVersion: 5
-  lengthInSec: 3
+  lengthInSec: 0.25
   simulationSpeed: 1
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -4923,7 +4924,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 1
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -9321,10 +9322,10 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1835904348460278}
   serializedVersion: 5
-  lengthInSec: 3
+  lengthInSec: 0.25
   simulationSpeed: 1
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -9333,7 +9334,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 1
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -13731,10 +13732,10 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1301266696853904}
   serializedVersion: 5
-  lengthInSec: 3
+  lengthInSec: 0.25
   simulationSpeed: 1
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -13743,7 +13744,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 1
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -18141,10 +18142,10 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1032990513399938}
   serializedVersion: 5
-  lengthInSec: 3
+  lengthInSec: 0.25
   simulationSpeed: 1
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -18153,7 +18154,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 1
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -22551,10 +22552,10 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1911047114581050}
   serializedVersion: 5
-  lengthInSec: 3
+  lengthInSec: 0.25
   simulationSpeed: 1
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -22563,7 +22564,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 1
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -26961,10 +26962,10 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1772147648378638}
   serializedVersion: 5
-  lengthInSec: 3
+  lengthInSec: 0.25
   simulationSpeed: 1
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -26973,7 +26974,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 1
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -31371,10 +31372,10 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1183319516489170}
   serializedVersion: 5
-  lengthInSec: 3
+  lengthInSec: 0.25
   simulationSpeed: 1
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -31383,7 +31384,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 1
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -35781,10 +35782,10 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1584695677761578}
   serializedVersion: 5
-  lengthInSec: 3
+  lengthInSec: 0.25
   simulationSpeed: 1
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -35793,7 +35794,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 1
     minScalar: 0
     maxCurve:
       serializedVersion: 2

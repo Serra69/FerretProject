@@ -51,6 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d0907acfcdece646a3983cfdadd44ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_intensityLeft: 0.5
-  m_intensityRight: 0.5
-  m_vibrationTime: 1
+  m_intensityLeft: 0.75
+  m_intensityRight: 0.75
+  m_vibrationTime: 2.75
