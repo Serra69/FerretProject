@@ -221,6 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224781091970321728}
   - component: {fileID: 114330519150618338}
+  - component: {fileID: 114138890276412696}
   m_Layer: 0
   m_Name: Options_Canvas
   m_TagString: Untagged
@@ -4689,6 +4690,21 @@ MonoBehaviour:
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
+--- !u!114 &114138890276412696
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1095781154792848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2600506169645444a95d59fc97d22d43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ambienceSlider: {fileID: 114407301669827080}
+  m_fxSlider: {fileID: 114350233965419524}
+  m_musicAudioMixer: {fileID: 24100000, guid: 8b4923cee54acae42ae35d3583eb8a9c, type: 2}
+  m_fxAudioMixer: {fileID: 24100000, guid: 8b4923cee54acae42ae35d3583eb8a9c, type: 2}
 --- !u!114 &114145525614128388
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -24836,8 +24852,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -667, y: -328}
-  m_SizeDelta: {x: 545.4545, y: 181.8182}
+  m_AnchoredPosition: {x: -609, y: -328}
+  m_SizeDelta: {x: 436.3636, y: 145.45456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224873363270260724
 RectTransform:

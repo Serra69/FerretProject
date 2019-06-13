@@ -68,11 +68,12 @@ public class MenuManager : MonoBehaviour {
 			m_firstObjectToEnableDisable[i].SetActive(false);
 		}
 		
+		m_pauseGame.m_canPaused = true;
+		
 		yield return new WaitForSeconds(m_secondTimeToEndFade);
 		for (int i = 0, l = m_secondObjectToEnableDisable.Length; i < l; ++i){
 			m_firstObjectToEnableDisable[i].SetActive(false);
 		}
-		m_pauseGame.m_canPaused = true;
 	}
 
 	public void ChangeCameraPosition(int toPosInt = 0){
