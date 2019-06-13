@@ -102,7 +102,7 @@ public class PlayerClimbState : IState
       m_playerManager.ChangeState(3);
     }*/
 
-    if(m_playerManager.CanMoveOnClimb && m_playerManager.m_jumpButton && !m_playerManager.IsInLerpRotation){
+    if(m_playerManager.CanMoveOnClimb && m_playerManager.m_jumpButton && !m_playerManager.IsInLerpRotation && !m_playerManager.m_playerDebugs.m_pauseGame.m_pause){
 
       m_playerManager.StartOrientationAfterClimb(m_playerManager.transform, 
                                                 m_playerManager.transform.position, 

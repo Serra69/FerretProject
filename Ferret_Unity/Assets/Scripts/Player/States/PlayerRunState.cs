@@ -41,7 +41,7 @@ public class PlayerRunState : IState
         m_playerManager.ChangeState(1);
       }
 
-      if(m_playerManager.m_jumpButton){
+      if(m_playerManager.m_jumpButton && !m_playerManager.m_playerDebugs.m_pauseGame.m_pause){
         m_playerManager.ChangeState(3);
       }
 

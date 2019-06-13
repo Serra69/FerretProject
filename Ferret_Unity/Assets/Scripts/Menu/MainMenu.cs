@@ -41,6 +41,17 @@ void Awake(){
 		m_fxAudioMixer.SetFloat("fxVolume", volume);
 	}
 
+	public void SetMusicSlider(Slider slider){
+		float value;
+		m_musicAudioMixer.GetFloat("musicVolume", out value);
+		slider.value = value;
+	}
+	public void SetFxSlider(Slider slider){
+		float value;
+		m_musicAudioMixer.GetFloat("fxVolume", out value);
+		slider.value = value;
+	}
+
 // ---------------------------------------------- Régler les paramètres graphiques ----------------------------------------------
 	public void SetQuality(int qualityIndex){
 		QualitySettings.SetQualityLevel(qualityIndex);

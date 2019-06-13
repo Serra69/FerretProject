@@ -25,6 +25,7 @@ public class PlayerManager : ClimbTypesArea {
 		public bool m_playerCanMove = true;
 		public bool m_playerCanDie = true;
 		public bool m_useAudioListenerOnFerret = true;
+		public PauseGame m_pauseGame;
 	}
 
 	public StateMachine m_sM = new StateMachine(); 
