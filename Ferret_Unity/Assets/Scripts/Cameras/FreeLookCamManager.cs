@@ -16,6 +16,7 @@ public class FreeLookCamManager : FreeLookCameraType {
 	}
 #endregion //Singleton
 	
+	[SerializeField] bool m_cameraIsActiveAtStart = true;
 	public Transform m_cameraBrain;
 	[Space]
 	[SerializeField] FreeLookCameraOrbit m_startLookType = FreeLookCameraOrbit.Close;
@@ -50,6 +51,7 @@ public class FreeLookCamManager : FreeLookCameraType {
 
 	Camera m_brainCamera;
 	AudioListener m_brainAudioListener;
+	CinemachineBrain m_cinemachineBrain;
 
 	void Start(){
 		m_playerManager = PlayerManager.Instance;
@@ -67,6 +69,9 @@ public class FreeLookCamManager : FreeLookCameraType {
 
 		m_brainCamera = m_cameraBrain.gameObject.GetComponent<Camera>();
 		m_brainAudioListener = m_cameraBrain.gameObject.GetComponent<AudioListener>();
+
+		m_cinemachineBrain = m_cameraBrain.GetComponent<CinemachineBrain>();
+		SetCamera(m_cameraIsActiveAtStart);
 	}
 
 	void Update(){
@@ -194,6 +199,10 @@ public class FreeLookCamManager : FreeLookCameraType {
 		if(!m_playerManager.m_playerDebugs.m_useAudioListenerOnFerret){
 			m_brainAudioListener.enabled = !b;
 		}
+	}
+
+	public void SetCamera(bool isActive){
+		m_cinemachineBrain.enabled = isActive;
 	}
 
 }

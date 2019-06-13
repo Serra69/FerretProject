@@ -1409,7 +1409,7 @@ public class PlayerManager : ClimbTypesArea {
 		float rotateSecondFracJourney = new float();
 
 		while(transform.position != toPosition){
-			Debug.Log("je calcul comme un FPD");
+			// Debug.Log("je calcul comme un FPD");
 			// MovePosition
 			journeyLength = Vector3.Distance(fromPosition, toPosition);
 			moveFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed / journeyLength;

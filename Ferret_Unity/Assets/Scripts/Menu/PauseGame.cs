@@ -8,7 +8,9 @@ using UnityEngine.EventSystems;
 public class PauseGame : MainMenu {
 	//[SerializeField] private EventSystem m_optionsEventSystem;
 
-	public static bool m_pause = false;
+	public bool m_pause = false;
+
+	public bool m_canPaused = true;
 
 	[SerializeField] Transform m_pausedCanvas;
 	[SerializeField] Transform m_optionsCanvas;
@@ -27,12 +29,13 @@ public class PauseGame : MainMenu {
 		if(m_optionsCanvas != null){
 			m_optionsCanvas.gameObject.SetActive(false);
 		}
+		Time.timeScale = 1;
 	}
 	
 	void Update(){
 
 		m_pauseKey = Input.GetButtonDown("Pause");
-		if( m_pauseKey){
+		if(m_canPaused && m_pauseKey){
 			Resume();
 		}
 	}
