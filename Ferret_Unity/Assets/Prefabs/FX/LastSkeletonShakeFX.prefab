@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 82208357134085544}
   - component: {fileID: 198963750961434450}
   - component: {fileID: 199726028750819286}
-  - component: {fileID: 114809903651518242}
+  - component: {fileID: 114956419242935962}
   m_Layer: 0
   m_Name: LastSkeletonShakeFX
   m_TagString: Untagged
@@ -450,17 +450,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1044a6e4ac06b1d40b4ceeaebf36e4ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114809903651518242
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1317338408388220}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1044a6e4ac06b1d40b4ceeaebf36e4ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114870812814403498
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -483,6 +472,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1044a6e4ac06b1d40b4ceeaebf36e4ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114956419242935962
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1317338408388220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d47bfe7baf42524b8616fd27e41ea38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_timeToDeleteFX: 1.5
 --- !u!114 &114997814805975950
 MonoBehaviour:
   m_ObjectHideFlags: 1
