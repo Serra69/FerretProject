@@ -111,7 +111,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 243250345285050168, guid: d7180e097a5985945b03e041032a498c,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 2033634e73e5396478472297247adea2, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 557b02df4940a8b46a9bb591b7134f77, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0
   m_Pitch: 1
@@ -207,7 +207,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 243928722148039018, guid: d7180e097a5985945b03e041032a498c,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 557b02df4940a8b46a9bb591b7134f77, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 2033634e73e5396478472297247adea2, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0
   m_Pitch: 1
@@ -321,13 +321,7 @@ MonoBehaviour:
     m_loopFX:
     - {fileID: 82028029184280418}
     - {fileID: 82274043120039578}
-    m_fadeInTime: 10
-    m_fadeOutTime: 0
-    m_numberOfLoopMini: 1
-    m_numberOfLoopMax: 1
-  m_additionalAmbientSounds:
-    m_minNewSound: 10
-    m_maxNewSound: 15
     m_fadeInTime: 5
     m_fadeOutTime: 5
-    m_additionalSound: []
+    m_numberOfLoopMini: 1
+    m_numberOfLoopMax: 1
