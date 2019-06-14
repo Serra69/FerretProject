@@ -10,6 +10,11 @@ void Awake(){
 	SetResolution();
 }
 
+void OnEnable(){
+	Cursor.lockState = CursorLockMode.Locked;
+	Cursor.visible = true;
+}
+
 // ---------------------------------------------- Quitter ----------------------------------------------
 	public void Quit(){											// Fonction pour quitter le jeu
 #if UNITY_EDITOR												// Si on est sur Unity Editor alors :
