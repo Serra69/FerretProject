@@ -26,6 +26,7 @@ public class PlayerManager : ClimbTypesArea {
 		public bool m_playerCanDie = true;
 		public bool m_useAudioListenerOnFerret = true;
 		public PauseGame m_pauseGame;
+		public float m_timeToJumpAfterEndPause = 0.1f;
 	}
 
 	public StateMachine m_sM = new StateMachine(); 
@@ -473,6 +474,13 @@ public class PlayerManager : ClimbTypesArea {
         }
     }
 
+    bool m_canJumpAfterEndPause = true;
+    public bool CanJumpAfterEndPause{
+        get{
+            return m_canJumpAfterEndPause;
+        }
+    }
+
 #endregion Encapsulate
 
 #region Private Variables
@@ -600,7 +608,10 @@ public class PlayerManager : ClimbTypesArea {
 			m_runButton = false;
 		}
 
-		m_jumpButton = Input.GetButtonDown("Jump");
+		if(!m_playerDebugs.m_pauseGame.m_pause){
+			m_jumpButton = Input.GetButtonDown("Jump");
+		}
+
 		m_jumpHeldButton = Input.GetButton("Jump");
 		m_crawlButton = Input.GetButtonDown("Crawl");
 		m_takeButton = Input.GetButtonDown("Action");
@@ -1475,6 +1486,15 @@ public class PlayerManager : ClimbTypesArea {
 		m_canHadeLandingFx = false;
 		yield return new WaitForSeconds(m_states.m_fall.m_landingFxCooldown);
 		m_canHadeLandingFx = true;
+	}
+
+	public void StartJumpAfterEndPauseCorout(){
+		StartCoroutine(JumpAfterEndPause());
+	}
+	IEnumerator JumpAfterEndPause(){
+		m_canJumpAfterEndPause = false;
+		yield return new WaitForSeconds(m_playerDebugs.m_timeToJumpAfterEndPause);
+		m_canJumpAfterEndPause = true;
 	}
 
 #endregion Public functions

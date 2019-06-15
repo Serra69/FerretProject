@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour {
 
+[SerializeField] float m_waitTimeToQuit = 0.175f;
+
 void Awake(){
 	SetResolution();
 }
@@ -17,6 +19,11 @@ void OnEnable(){
 
 // ---------------------------------------------- Quitter ----------------------------------------------
 	public void Quit(){											// Fonction pour quitter le jeu
+		StartCoroutine(WaitTimeToQuit());
+	}
+
+	IEnumerator WaitTimeToQuit(){
+		yield return new WaitForSeconds(m_waitTimeToQuit);
 #if UNITY_EDITOR												// Si on est sur Unity Editor alors :
 		if(Application.isPlaying){								// Si on est en mode "play" dans l'éditeur d'Unity
 			UnityEditor.EditorApplication.isPlaying = false;	// Stop le mode play

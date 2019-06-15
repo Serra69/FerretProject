@@ -23,6 +23,8 @@ public class MenuManager : MonoBehaviour {
 	[SerializeField] PauseGame m_pauseGame;
 
 	[Header("Change camera")]
+	[SerializeField] float m_waitTimeToChangeCamera = 0.25f;
+	[Space]
 	[SerializeField] Transform m_cameraToMove;
 	[Space]
 	[SerializeField] Transform m_mainPosition;
@@ -41,6 +43,7 @@ public class MenuManager : MonoBehaviour {
 	PlayerManager m_playerManager;
 	FreeLookCamManager m_freeLookCamManager;
 	bool m_inMainPosition = true;
+	bool m_isInCoroutine = false;
 
 	void Start(){
 		m_playerManager = PlayerManager.Instance;
@@ -56,9 +59,12 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void Play(){
-		StartCoroutine(PlayCorout());
+		if(!m_isInCoroutine){
+			StartCoroutine(PlayCorout());
+		}
 	}
 	IEnumerator PlayCorout(){
+		m_isInCoroutine = true;
 		m_fadeAnimator.SetTrigger("Fade");
 		yield return new WaitForSeconds(m_firstTimeToEndFade);
 		m_playerManager.ChangeState(0);
@@ -74,9 +80,13 @@ public class MenuManager : MonoBehaviour {
 		for (int i = 0, l = m_secondObjectToEnableDisable.Length; i < l; ++i){
 			m_firstObjectToEnableDisable[i].SetActive(false);
 		}
+		m_isInCoroutine = false;
 	}
 
 	public void ChangeCameraPosition(int toPosInt = 0){
+		if(m_isInCoroutine){
+			return;
+		}
 		m_inMainPosition =! m_inMainPosition;
 		if(m_inMainPosition){
 			StartCoroutine(ChangeCameraPositionCorout(m_secondPosition.position, m_mainPosition.position, m_secondPosition.rotation, m_mainPosition.rotation, toPosInt));
@@ -86,6 +96,8 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	IEnumerator ChangeCameraPositionCorout(Vector3 fromPosition, Vector3 toPosition, Quaternion fromRotation, Quaternion toRotation, int toPosInt){
+		m_isInCoroutine = true;
+		yield return new WaitForSeconds(m_waitTimeToChangeCamera);
 
 		// m_canChangePosition = false;
 		
@@ -136,7 +148,7 @@ public class MenuManager : MonoBehaviour {
 				m_creditsCanvas.SetActive(true);
 			break;
 		}
-
+		m_isInCoroutine = false;
 	}
 
 }

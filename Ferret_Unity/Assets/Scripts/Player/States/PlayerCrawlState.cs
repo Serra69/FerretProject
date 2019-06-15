@@ -44,7 +44,7 @@ public class PlayerCrawlState : IState {
           m_playerManager.ChangeState(0);
         }
       }
-      if(m_playerManager.m_jumpButton && !m_playerManager.m_playerDebugs.m_pauseGame.m_pause){
+      if(m_playerManager.m_jumpButton && !m_playerManager.m_playerDebugs.m_pauseGame.m_pause && m_playerManager.CanJumpAfterEndPause){
         if(!m_playerManager.CheckCollider(true)){
           m_playerManager.ChangeState(3);
         }

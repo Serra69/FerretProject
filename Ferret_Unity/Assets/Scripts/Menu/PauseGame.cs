@@ -19,6 +19,7 @@ public class PauseGame : MainMenu {
 	[SerializeField] AudioMixerSnapshot m_unpausedSnapshot;
 
 	bool m_pauseKey = false;
+	PlayerManager m_playerManager;
 
 	void Start(){
 		m_pause = false;
@@ -30,6 +31,7 @@ public class PauseGame : MainMenu {
 			m_optionsCanvas.gameObject.SetActive(false);
 		}
 		Time.timeScale = 1;
+		m_playerManager = PlayerManager.Instance;
 	}
 	
 	void Update(){
@@ -61,6 +63,8 @@ public class PauseGame : MainMenu {
 			if(m_unpausedSnapshot != null){
 				m_unpausedSnapshot.TransitionTo(0.01f);
 			}
+
+			m_playerManager.StartJumpAfterEndPauseCorout();
 		}
 	}
 

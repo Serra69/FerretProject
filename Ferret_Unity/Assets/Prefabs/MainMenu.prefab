@@ -157,6 +157,7 @@ GameObject:
   - component: {fileID: 4671364208297306}
   - component: {fileID: 114183398530520858}
   - component: {fileID: 114125514880517084}
+  - component: {fileID: 114397787803709736}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1437,6 +1438,7 @@ GameObject:
   - component: {fileID: 4897331145669424}
   - component: {fileID: 114082274395294090}
   - component: {fileID: 114194835825592462}
+  - component: {fileID: 114245556135167926}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1561,6 +1563,7 @@ GameObject:
   - component: {fileID: 4337598747360458}
   - component: {fileID: 114541835212946784}
   - component: {fileID: 114353962152496370}
+  - component: {fileID: 114352353989946546}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -3212,7 +3215,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1934504900581988}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4628,7 +4631,7 @@ MonoBehaviour:
   m_Script: {fileID: -619905303, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 1372246820172372}
+  m_FirstSelected: {fileID: 1691620551671776}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!114 &114112538530609546
@@ -4669,6 +4672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e83c951e291914e97be5e7fe2c0853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_waitTimeToQuit: 0.175
   m_musicAudioMixer: {fileID: 0}
   m_fxAudioMixer: {fileID: 0}
   m_resolutionDropdown: {fileID: 0}
@@ -4844,6 +4848,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114245556135167926
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1503662600466564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed608818d889b2a448d449cce43fc973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114260966571223294
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4895,6 +4910,7 @@ MonoBehaviour:
   m_secondObjectToEnableDisable:
   - {fileID: 1373237591131062}
   m_pauseGame: {fileID: 0}
+  m_waitTimeToChangeCamera: 0.175
   m_cameraToMove: {fileID: 4002063213942152}
   m_mainPosition: {fileID: 4503566489622608}
   m_secondPosition: {fileID: 4536465805492022}
@@ -5112,6 +5128,17 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114352353989946546
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1551647399274926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed608818d889b2a448d449cce43fc973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114353962152496370
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5226,6 +5253,17 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114397787803709736
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1068201965469882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed608818d889b2a448d449cce43fc973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114407301669827080
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -24560,7 +24598,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 410, y: 190}
+  m_AnchoredPosition: {x: 410, y: 220}
   m_SizeDelta: {x: 700, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224429769842923830
