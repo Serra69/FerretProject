@@ -909,6 +909,11 @@ public class PlayerManager : ClimbTypesArea {
 		}
 	}
 
+	void PushSound(){
+		if(GetPlayerInputValue() > 0.1f){
+			PushableObject.AddSound();
+		}
+	}
 	public void PushMove(float speed){
 
 		Vector3 worldDirection = new Vector3(0, 0, m_vAxis_Button);
@@ -917,6 +922,10 @@ public class PlayerManager : ClimbTypesArea {
 		MoveDirection = new Vector3(0, 0, m_vAxis_Button);
 		MoveDirection = transform.TransformDirection(MoveDirection);
 		MoveDirection.Normalize();
+
+		if(!PushableObject.BoxCollForward && !PushableObject.BoxCollBackward){
+			PushSound();
+		}
 
 		if(RaycastFromFerretAss() && !PushableObject.BoxCollBackward){
 			m_moveDirection.x *= speed;
@@ -1413,6 +1422,7 @@ public class PlayerManager : ClimbTypesArea {
 	}
 	IEnumerator RotateToPushableObjectInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation, Transform secondTransformRotation, Quaternion secondFromRotation, Quaternion secondToRotation){
 		
+		Rigidbody.isKinematic = true;
 		m_canMoveOnPush = false;
 
 		float journeyLength;
@@ -1439,6 +1449,7 @@ public class PlayerManager : ClimbTypesArea {
 		}
 			// Debug.Log("J'ai fini");
 
+		Rigidbody.isKinematic = false;
 		m_canMoveOnPush = true;
 		yield break;
 	}

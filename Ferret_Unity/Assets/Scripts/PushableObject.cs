@@ -28,6 +28,10 @@ public class PushableObject : MonoBehaviour {
 	[Space]
 	[SerializeField] float m_minusY = 0.1f;
 
+	[Header("FX")]
+	[SerializeField] float m_additionalTimeBetweenEachSound = 0.15f;
+	[SerializeField] GameObject[] m_pushFX;
+
 	bool[] m_raycastReturn;
 	PlayerManager m_playerManager;
 	float actualClosedDistance;
@@ -203,6 +207,21 @@ public class PushableObject : MonoBehaviour {
         {
             m_rigidbody.isKinematic = true;
         }
+	}
+
+	GameObject m_nextSound;
+	float m_nextSoundTimer = 0;
+	float m_timeBetweenEachSound = 0;
+	public void AddSound(){
+		m_nextSoundTimer += Time.deltaTime;
+		if(m_nextSoundTimer > m_timeBetweenEachSound + m_additionalTimeBetweenEachSound){
+			m_nextSoundTimer = 0;
+			m_nextSound = m_pushFX[Random.Range(0, m_pushFX.Length)];
+			Level.AddFX(m_nextSound, transform.position, transform.rotation);
+
+			AudioSource audio = m_nextSound.GetComponent<AudioSource>();
+			m_timeBetweenEachSound = audio.clip.length;
+		}
 	}
 
 	void InitializeBoxCastToSnap(){

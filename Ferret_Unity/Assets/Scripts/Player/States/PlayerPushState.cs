@@ -14,6 +14,7 @@ public class PlayerPushState : IState
 
   public void Enter()
   {
+    m_playerManager.Rigidbody.useGravity = false;
     m_playerManager.Animator.SetBool("Push", true);
 
     doOnceAfterEnterInterpolation = true;
@@ -55,6 +56,7 @@ public class PlayerPushState : IState
     m_playerManager.Animator.SetBool("Push", false);
     m_playerManager.PushableObject.On_ObjectIsPushing(false);
     m_playerManager.SetObjectInChildrenOfFerret(m_playerManager.PushableObject.transform);
+    m_playerManager.Rigidbody.useGravity = true;
   }
 
 }

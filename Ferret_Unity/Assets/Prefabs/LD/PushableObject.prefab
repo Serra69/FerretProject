@@ -468,3 +468,9 @@ MonoBehaviour:
   m_boxSizeRight: {x: 0.01, y: 0.195, z: 0.495}
   m_boxColor: {r: 1, g: 0, b: 1, a: 1}
   m_minusY: 0.1
+  m_additionalTimeBetweenEachSound: 0
+  m_pushFX:
+  - {fileID: 1881164225367532, guid: 5d584fdd3febccb4a96e6c3a603fc2c5, type: 2}
+  - {fileID: 1881164225367532, guid: 267906820c0bec540a094a49c25b218f, type: 2}
+  - {fileID: 1881164225367532, guid: b20f47d9ba010ea4c9b96d0780b1fc6e, type: 2}
+  - {fileID: 1881164225367532, guid: 1dc2fcadde771cf47a76bb3f8b3b2403, type: 2}
