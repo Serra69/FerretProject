@@ -7738,7 +7738,7 @@ MonoBehaviour:
   m_changeCooldown: 3
   m_moveSpeed: 0.25
   m_rotateSpeed: 2
-  sensitivity: 0.1
+  sensitivity: 0.25
   smoothing: 5
   m_rotate: {fileID: 4931067033763904}
 --- !u!114 &114570097517963982
