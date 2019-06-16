@@ -19,9 +19,9 @@ public class PlayerIdleState : IState
       
       m_playerManager.StartIddleTimer();
 
-      if(m_playerManager.m_sM.IsLastStateIndex(4)){
-        m_playerManager.OnPlayerLanding();
-      }
+      // if(m_playerManager.m_sM.IsLastStateIndex(4)){
+      //   m_playerManager.OnPlayerLanding();
+      // }
 
     }
 

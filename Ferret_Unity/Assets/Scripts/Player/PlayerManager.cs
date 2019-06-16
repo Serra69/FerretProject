@@ -138,8 +138,12 @@ public class PlayerManager : ClimbTypesArea {
 			public float m_landingFxCooldown = 0.25f;
 			public GameObject m_landingFx;
 			public Transform m_landingPos;
-			// public float m_fallMultiplier = 1;
-			// public AnimationCurve m_fallCurve = null;
+			[Space]
+			public float m_timeToDoMinSound = 0.25f;
+			public float m_timeToDoMaxSound = 1f;
+			public AnimationCurve m_soundCurve;
+			[Range(0,1)] public float m_minSoundVolume = 0.25f;
+			[Range(0,1)] public float m_maxSoundVolume = 1f;
 		}
 
 		public TakeObject m_takeObject = new TakeObject();
@@ -1487,18 +1491,6 @@ public class PlayerManager : ClimbTypesArea {
 		}
 	}
 
-	public void OnPlayerLanding(){
-		if(m_canHadeLandingFx){
-			Level.AddFX(m_states.m_fall.m_landingFx, m_states.m_fall.m_landingPos.position, m_states.m_fall.m_landingFx.transform.rotation);
-			StartCoroutine(StartLandingCooldown());
-		}
-	}
-	IEnumerator StartLandingCooldown(){
-		m_canHadeLandingFx = false;
-		yield return new WaitForSeconds(m_states.m_fall.m_landingFxCooldown);
-		m_canHadeLandingFx = true;
-	}
-
 	public void StartJumpAfterEndPauseCorout(){
 		StartCoroutine(JumpAfterEndPause());
 	}
@@ -1506,6 +1498,25 @@ public class PlayerManager : ClimbTypesArea {
 		m_canJumpAfterEndPause = false;
 		yield return new WaitForSeconds(m_playerDebugs.m_timeToJumpAfterEndPause);
 		m_canJumpAfterEndPause = true;
+	}
+
+	public void FallingTimeToDoSound(float timeInFallState){
+
+		if(timeInFallState < m_states.m_fall.m_timeToDoMinSound){
+			return;
+		}
+
+		float fallTimeValue = Mathf.InverseLerp(m_states.m_fall.m_timeToDoMinSound, m_states.m_fall.m_timeToDoMaxSound, timeInFallState);
+		// Debug.Log("fallTimeValue = " + fallTimeValue);
+
+		float fallEvalCurve = m_states.m_fall.m_soundCurve.Evaluate(fallTimeValue);
+		// Debug.Log("fallEvalCurve = " + fallEvalCurve);
+
+		FX fallFX = Level.AddFX(m_states.m_fall.m_landingFx, m_states.m_fall.m_landingPos.position, m_states.m_fall.m_landingPos.rotation);
+		// Debug.Log("fallFX = " + fallFX);
+
+		float soundVolume = Mathf.Lerp(m_states.m_fall.m_minSoundVolume, m_states.m_fall.m_maxSoundVolume, fallEvalCurve);
+		fallFX.GetComponent<AudioSource>().volume = soundVolume;
 	}
 
 #endregion Public functions

@@ -14,7 +14,7 @@ public class PlayerCinematicState : IState {
 
     public void Enter()
     {
-    	m_playerManager.Animator.SetTrigger("Idle");
+
     }
 
     public void Exit()

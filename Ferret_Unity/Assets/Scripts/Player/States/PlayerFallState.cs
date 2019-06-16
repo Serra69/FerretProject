@@ -7,7 +7,7 @@ public class PlayerFallState : IState
     float m_currentime = 0;
 
     bool m_isFalling = false;
-    float m_currentTimeOfFall = 0;
+    float m_timeInFallState = 0;
     PlayerManager m_playerManager;
 
     // Constructor (CTOR)
@@ -20,12 +20,7 @@ public class PlayerFallState : IState
     {
         //Debug.LogFormat("{0} : Enter()", GetType().Name);
         m_currentime = 1 - m_playerManager.TimerOfPressSpace;
-        m_currentTimeOfFall = 0;
-    }
-
-    public void Exit()
-    {
-        //Debug.LogFormat("{0} : Exit()", GetType().Name);
+        m_timeInFallState = 0;
     }
 
     public void FixedUpdate()
@@ -37,6 +32,7 @@ public class PlayerFallState : IState
         {
             m_currentime = m_playerManager.m_states.m_fall.m_duration;
         }
+        m_timeInFallState += Time.deltaTime;
     }
 
     public void Update()
@@ -87,6 +83,12 @@ public class PlayerFallState : IState
             }
         }
 
+    }
+
+    public void Exit()
+    {
+        //Debug.LogFormat("{0} : Exit()", GetType().Name);
+        m_playerManager.FallingTimeToDoSound(m_timeInFallState);
     }
 
 }
