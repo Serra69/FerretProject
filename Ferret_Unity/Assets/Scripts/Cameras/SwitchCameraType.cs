@@ -46,10 +46,10 @@ public class SwitchCameraType : MonoBehaviour {
 		if(!toCameraBrain){
 			transform.position = m_freeLookCamManager.m_cameraBrain.position;
 			transform.rotation = m_freeLookCamManager.m_cameraBrain.rotation;
-		}/*else{
+		}else{
 			transform.position = fixeCam.transform.position;
 			transform.rotation = fixeCam.transform.rotation;
-		}*/
+		}
 		m_camera.enabled = true;
 
 		if(!m_playerManager.m_playerDebugs.m_useAudioListenerOnFerret){
