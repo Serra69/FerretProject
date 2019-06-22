@@ -362,6 +362,15 @@ public class PlayerManager : ClimbTypesArea {
         }
     }
 
+	bool m_endOfFirstClimbSnap = false;
+    public bool EndOfFirstClimbSnap
+    {
+        get
+        {
+            return m_endOfFirstClimbSnap;
+        }
+    }
+
 	bool m_isInLerpRotation = false;
 	public bool IsInLerpRotation
     {
@@ -1044,7 +1053,7 @@ public class PlayerManager : ClimbTypesArea {
 		StartCoroutine(ClimbInterpolation(transformPosition, fromPosition, toPosition, transformRotation, fromRotation, toRotation, secondTransformRotation, secondFromRotation, secondToRotation));
 	}
 	IEnumerator ClimbInterpolation(Transform transformPosition, Vector3 fromPosition, Vector3 toPosition, Transform transformRotation, Quaternion fromRotation, Quaternion toRotation, Transform secondTransformRotation, Quaternion secondFromRotation, Quaternion secondToRotation){
-		
+		m_endOfFirstClimbSnap = false;
 		m_canMoveOnClimb = false;
 
 		m_rigidbody.isKinematic = true;
@@ -1078,17 +1087,25 @@ public class PlayerManager : ClimbTypesArea {
 
 			yield return null;
 		}
-
 		m_rigidbody.isKinematic = false;
 
-		m_canMoveOnClimb = true;
+		if(RayCastDownToStopClimbing()){
+			m_canMoveOnClimb = true;
+		}else{
+			m_canMoveOnClimb = false;
+		}
 
 		m_endOfClimbInterpolation = true;
 		yield return new WaitForSeconds(0.5f);
 		m_endOfClimbInterpolation = false;
+
+
+		m_endOfFirstClimbSnap = true;
+		// Debug.Log("EnterClimbInterpolation is finished");
 	}
 
 	public void EndClimbAnimation(){
+		// Debug.Log("Start EndClimbAnimation");
 		StartCoroutine(ClimbAnimation());
 	}
 	IEnumerator ClimbAnimation(){
