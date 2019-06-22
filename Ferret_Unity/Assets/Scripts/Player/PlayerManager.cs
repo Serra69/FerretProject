@@ -171,6 +171,8 @@ public class PlayerManager : ClimbTypesArea {
 			[Header("Snap interpolation")]
 			public float m_snapSpeed = 3;
 			public AnimationCurve m_snapCurve;
+			[Space]
+			public float m_maxTimeToSnap = 0.5f;
 		}
 
 		public Death m_death = new Death();
@@ -1434,6 +1436,8 @@ public class PlayerManager : ClimbTypesArea {
 		float rotateFracJourney = new float();
 		float rotateSecondFracJourney = new float();
 
+		float timer = 0;
+
 		while(transform.position != toPosition){
 			// Debug.Log("je calcul comme un FPD");
 			// MovePosition
@@ -1449,13 +1453,22 @@ public class PlayerManager : ClimbTypesArea {
 			rotateSecondFracJourney += (Time.deltaTime) * m_states.m_push.m_snapSpeed  / journeyLength;
 			secondTransformRotation.rotation = Quaternion.Slerp(secondFromRotation, secondToRotation, m_states.m_push.m_snapCurve.Evaluate(rotateSecondFracJourney));
 
+			timer += Time.deltaTime;
+
+			if(timer > m_states.m_push.m_maxTimeToSnap){
+				EndOfRotateToPushableObject();
+				break;
+			}
+
 			yield return null;
 		}
 			// Debug.Log("J'ai fini");
-
+		EndOfRotateToPushableObject();
+		yield break;
+	}
+	void EndOfRotateToPushableObject(){
 		Rigidbody.isKinematic = false;
 		m_canMoveOnPush = true;
-		yield break;
 	}
 
 	public void On_EndClimbAnimIsFinished(){
