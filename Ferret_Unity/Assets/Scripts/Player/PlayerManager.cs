@@ -1489,14 +1489,13 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	public void On_EndClimbAnimIsFinished(){
+		StartCoroutine(WaitClimbCameraMove());
 		transform.position = m_states.m_climb.m_endClimbAnimPos.position;
 		transform.rotation = m_states.m_climb.m_endClimbAnimPos.rotation;
-		StartCoroutine(WaitClimbCameraMove());
 	}
 	IEnumerator WaitClimbCameraMove(){
 		yield return new WaitForSeconds(m_states.m_climb.m_waitClimbCameraMove);
 		m_updates.m_followPlayer.On_PlayerEndClimb(true);
-		// m_updates.m_followPlayer.ReturnToPlayerAfterClimb();
 	}
 
 	[HideInInspector] public float m_targetRunSpeed;

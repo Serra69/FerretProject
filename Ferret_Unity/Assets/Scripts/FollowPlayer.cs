@@ -22,9 +22,6 @@ public class FollowPlayer : MonoBehaviour {
 
 	public PlayerClimbCamera m_playerClimbCamera = new PlayerClimbCamera();
 	[System.Serializable] public class PlayerClimbCamera {
-		public float m_additionalY = 2;
-		public float m_additionalZ = 2;
-		[Space]
 		public float m_speed = 0.25f;
 		public AnimationCurve m_moveCurve;
 	}
@@ -93,14 +90,17 @@ public class FollowPlayer : MonoBehaviour {
 			m_cameraFollowLookAt.m_mainObjectToFollow = transform;
 			m_followLookAtPoint = false;
 		}else{
+			// m_followLookAtPoint = false;
 			m_playerManager.m_updates.m_followPlayer.ReturnToPlayerAfterClimb();
 		}
 	}
 
 	public void ReturnToPlayerAfterClimb(){
+		StopAllCoroutines();
 		StartCoroutine(ReturnToPlayerAfterClimbCorout());
 	}
 	IEnumerator ReturnToPlayerAfterClimbCorout(){
+		Debug.Log("m_followLookAtPoint = " + m_followLookAtPoint);
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 
@@ -110,38 +110,14 @@ public class FollowPlayer : MonoBehaviour {
 			transform.position = Vector3.Lerp(transform.position, m_desiredPosition, m_playerClimbCamera.m_moveCurve.Evaluate(moveFracJourney));
 			yield return null;
 		}
-		m_followLookAtPoint = true;
-		// m_cameraFollowLookAt.m_mainObjectToFollow = m_cameraFollowLookAt.MainObject;
-	}
-
-	/*public void EndClimbMoveCamera(){
-		StartCoroutine(StartEndClimbMoveCamera());
-	}
-	IEnumerator StartEndClimbMoveCamera(){
-
-		m_followLookAtPoint = false;
-
-		float moveJourneyLength;
-		float moveFracJourney = new float();
-
-		/*Vector3 desiredPos = new Vector3(m_playerManager.transform.position.x, 
-										m_playerManager.transform.position.y + m_playerManager.transform.up.y * m_playerClimbCamera.m_additionalY,
-										m_playerManager.transform.position.z + m_playerManager.transform.up.z * m_playerClimbCamera.m_additionalZ);*
-
-		Vector3 desiredPos = m_playerManager.transform.position + Vector3.down * m_playerClimbCamera.m_additionalY + Vector3.up * m_playerClimbCamera.m_additionalZ;
-
-		// (m_playerManager.transform, m_playerManager.transform.position, m_playerManager.transform.position + Vector3.down * 2 + Vector3.up * 3, 
-
-		GameObject go = Instantiate(new GameObject(), desiredPos, Quaternion.identity);
-		go.name = "TestPosition";
-
-		while(transform.position != desiredPos){
-			moveJourneyLength = Vector3.Distance(transform.position, desiredPos);
-			moveFracJourney += (Time.deltaTime) * m_playerClimbCamera.m_speed / moveJourneyLength;
-			transform.position = Vector3.Lerp(transform.position, desiredPos, m_playerClimbCamera.m_moveCurve.Evaluate(moveFracJourney));
-			yield return null;
+		if(m_playerManager.m_sM.CompareState(6)){
+			m_followLookAtPoint = false;
+			Debug.Log("on escalade");
+		}else{
+			m_followLookAtPoint = true;
+			Debug.Log("on escalade PAS");
 		}
-		// m_followLookAtPoint = true;
-	}*/
+		// Debug.Log("ReturnToPlayerAfterClimbCorout is finished and m_followLookAtPoint = " + m_followLookAtPoint);
+	}
 
 }
