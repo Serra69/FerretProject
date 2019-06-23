@@ -3884,7 +3884,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1135182035404522}
-  m_LocalRotation: {x: 0.09178904, y: -0.000000008566916, z: 7.896826e-10, w: 0.9957785}
+  m_LocalRotation: {x: 0.09178904, y: 0.000000008566916, z: -7.896826e-10, w: 0.9957785}
   m_LocalPosition: {x: 0, y: 2.3364105, z: 5.1125727}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -4875,7 +4875,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1292305816423738}
-  m_LocalRotation: {x: -0.06449891, y: 0.00000005437268, z: -0.00000084124633, w: -0.9979178}
+  m_LocalRotation: {x: -0.064498916, y: 0.00000005437267, z: -0.00000084124633, w: -0.9979178}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5028,7 +5028,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432286780233964}
-  m_LocalRotation: {x: -0.11764805, y: -0.0007104157, z: 0.0059962864, w: -0.99303705}
+  m_LocalRotation: {x: -0.11764803, y: -0.00071038125, z: 0.005996282, w: -0.99303705}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5267,7 +5267,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701019898918854}
-  m_LocalRotation: {x: -0.09178904, y: 0.0000006619122, z: -0.0000071347167, w: -0.9957785}
+  m_LocalRotation: {x: -0.09178904, y: 0.0000006533453, z: -0.000007133927, w: -0.9957785}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5602,7 +5602,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 130359
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -5642,7 +5642,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -5722,7 +5722,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -8084,8 +8084,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   m_playerClimbCamera:
-    m_additionalY: 2
-    m_additionalZ: 3
     m_speed: 0.25
     m_moveCurve:
       serializedVersion: 2
