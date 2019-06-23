@@ -557,6 +557,14 @@ public class PlayerManager : ClimbTypesArea {
 	}
 
 	void FixedUpdate(){
+
+		if(Cursor.lockState != CursorLockMode.Locked){
+			Cursor.lockState = CursorLockMode.Locked;
+		}
+		if(Cursor.visible){
+			Cursor.visible = false;
+		}
+	
 		if(!m_playerDebugs.m_playerCanMove)
 			return;
 
