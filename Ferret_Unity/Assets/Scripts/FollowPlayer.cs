@@ -90,7 +90,6 @@ public class FollowPlayer : MonoBehaviour {
 			m_cameraFollowLookAt.m_mainObjectToFollow = transform;
 			m_followLookAtPoint = false;
 		}else{
-			// m_followLookAtPoint = false;
 			m_playerManager.m_updates.m_followPlayer.ReturnToPlayerAfterClimb();
 		}
 	}
@@ -100,7 +99,6 @@ public class FollowPlayer : MonoBehaviour {
 		StartCoroutine(ReturnToPlayerAfterClimbCorout());
 	}
 	IEnumerator ReturnToPlayerAfterClimbCorout(){
-		Debug.Log("m_followLookAtPoint = " + m_followLookAtPoint);
 		float moveJourneyLength;
 		float moveFracJourney = new float();
 
@@ -112,12 +110,9 @@ public class FollowPlayer : MonoBehaviour {
 		}
 		if(m_playerManager.m_sM.CompareState(6)){
 			m_followLookAtPoint = false;
-			Debug.Log("on escalade");
 		}else{
 			m_followLookAtPoint = true;
-			Debug.Log("on escalade PAS");
 		}
-		// Debug.Log("ReturnToPlayerAfterClimbCorout is finished and m_followLookAtPoint = " + m_followLookAtPoint);
 	}
 
 }
