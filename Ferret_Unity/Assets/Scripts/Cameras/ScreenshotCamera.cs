@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class ScreenshotCamera : MonoBehaviour {
 
@@ -40,6 +40,8 @@ public class ScreenshotCamera : MonoBehaviour {
 	Camera m_camera;
 	PlayerManager m_playerManager;
 
+	bool m_takeScreenshotOnNextFrame = false;
+
 	void Start(){
 		m_camera = GetComponentInChildren<Camera>();
 		m_playerManager = PlayerManager.Instance;
@@ -51,12 +53,25 @@ public class ScreenshotCamera : MonoBehaviour {
 
 		md = new Vector2(Input.GetAxisRaw("CameraX"), Input.GetAxisRaw("CameraY"));
 
-		if(m_canChangeCamera && Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.G) && Input.GetKey(KeyCode.H) && Input.GetKey(KeyCode.J) && Input.GetKey(KeyCode.K) 
-		&& Input.GetKey(KeyCode.L) && Input.GetKey(KeyCode.M)){
+		// if(m_canChangeCamera && Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.G) && Input.GetKey(KeyCode.H) && Input.GetKey(KeyCode.J) && Input.GetKey(KeyCode.K) && Input.GetKey(KeyCode.L) && Input.GetKey(KeyCode.M)){
+		if(m_canChangeCamera && Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.N)){
 			StartCoroutine(StartCooldown());
 			m_freeCamActivate =! m_freeCamActivate;
 			ActivateCamera(m_freeCamActivate);
-			m_playerManager.m_playerDebugs.m_playerCanMove = !m_freeCamActivate;
+			ChangePlayerSettings();
+		}
+
+		if(m_freeCamActivate && Input.GetKey(KeyCode.Space)){
+			TakeScreenshot();
+		}
+	}
+
+	void ChangePlayerSettings(){
+		m_playerManager.m_playerDebugs.m_playerCanMove = !m_freeCamActivate;
+		if(m_freeCamActivate){
+			m_playerManager.m_sM.ChangeState(9);
+		}else{
+			m_playerManager.m_sM.ChangeState(0);
 		}
 	}
 
@@ -85,6 +100,19 @@ public class ScreenshotCamera : MonoBehaviour {
 		yield return new WaitForSeconds(m_changeCooldown);
 		m_canChangeCamera = true;
 	}
+
+#region Screenshot
+
+	void TakeScreenshot(){
+		string currentDate = System.DateTime.Now.ToString();
+		currentDate = currentDate.Replace("/", "-");
+		currentDate = currentDate.Replace(":", "-");
+		currentDate = currentDate.Replace(" ", "-");
+
+		ScreenCapture.CaptureScreenshot("Screenshots/Screenshot-" + currentDate + ".png", 1);
+	}
+#endregion Screenshot
+
 
 }
 

@@ -14,12 +14,14 @@ public class PlayerCinematicState : IState {
 
     public void Enter()
     {
-
+      m_playerManager.Rigidbody.useGravity = false;
+      m_playerManager.Rigidbody.isKinematic = true;
     }
 
     public void Exit()
     {
-
+      m_playerManager.Rigidbody.useGravity = true;
+      m_playerManager.Rigidbody.isKinematic = false;
     }
 
     public void FixedUpdate()
@@ -29,7 +31,6 @@ public class PlayerCinematicState : IState {
 
     public void Update()
     {
-
     }
 
     public void LateUpdate(){

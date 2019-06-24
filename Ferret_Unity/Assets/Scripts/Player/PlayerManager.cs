@@ -565,10 +565,10 @@ public class PlayerManager : ClimbTypesArea {
 			Cursor.visible = false;
 		}
 	
+		MoveDirection = Vector3.zero;
+
 		if(!m_playerDebugs.m_playerCanMove)
 			return;
-
-		MoveDirection = Vector3.zero;
 
 		m_updates.m_pivotCamera.UpdateCameraPivot();
 		// m_updates.m_cameraFollowLookAt.UpdateCameraFollowLookAt();
