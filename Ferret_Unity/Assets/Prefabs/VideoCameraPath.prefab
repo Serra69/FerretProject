@@ -253,7 +253,7 @@ MonoBehaviour:
     showPathOptions: 1
     showVertexPathDisplayOptions: 0
     showVertexPathOptions: 1
-    showNormals: 1
+    showNormals: 0
     showNormalsHelpInfo: 0
     tabIndex: 0
   initialized: 1
@@ -268,15 +268,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 325af55ce3471594f8030d52306ea37b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_endOfPathInstruction: 2
+  m_usePathAtStart: 1
+  m_delayToStartUsePath: 0
   m_followTransform: {fileID: 4700346569906638}
   m_startMoveSpeed: 1
-  m_speeds:
-  - m_timer: 1
-    m_moveSpeed: 3
-    m_timerIsPassed: 0
-  - m_timer: 2
+  m_moveSpeeds:
+  - m_positionNumber: 0
+    m_timer: 3
     m_moveSpeed: 1
-    m_timerIsPassed: 0
+  - m_positionNumber: 1
+    m_timer: 1
+    m_moveSpeed: 3
   m_gizmos:
     m_radius: 0.25
     m_color: {r: 0.061918736, g: 0, b: 1, a: 1}
