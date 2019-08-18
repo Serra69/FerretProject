@@ -236,7 +236,7 @@ MonoBehaviour:
       - 0
       globalNormalsAngle: 0
       flipNormals: 1
-    vertexPathUpToDate: 1
+    vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0.3
     vertexPathMinVertexSpacing: 0.01
     showTransformTool: 1
@@ -269,13 +269,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_followTransform: {fileID: 4700346569906638}
+  m_startMoveSpeed: 1
   m_speeds:
-  - m_timer: 0
-    m_moveSpeed: 1
   - m_timer: 1
     m_moveSpeed: 3
+    m_timerIsPassed: 0
   - m_timer: 2
     m_moveSpeed: 1
+    m_timerIsPassed: 0
   m_gizmos:
     m_radius: 0.25
     m_color: {r: 0.061918736, g: 0, b: 1, a: 1}
