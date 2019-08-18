@@ -1849,7 +1849,7 @@ AnimatorStateMachine:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Iddle
+  m_Name: Idle
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102355073842596040}
@@ -1920,7 +1920,7 @@ AnimatorStateMachine:
     m_Position: {x: 312, y: -240, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: 1107614648500813380}
-    m_Position: {x: 252, y: 288, z: 0}
+    m_Position: {x: 180, y: 216, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: 1107728415193537398}
     m_Position: {x: 420, y: -96, z: 0}
