@@ -515,6 +515,8 @@ public class PlayerManager : ClimbTypesArea {
 
 #endregion Private Variables
 
+[HideInInspector] public bool m_videoCamerasManagerIsActive = false;
+
 #region Private functions
 
     void Awake(){
@@ -558,11 +560,20 @@ public class PlayerManager : ClimbTypesArea {
 
 	void FixedUpdate(){
 
-		if(Cursor.lockState != CursorLockMode.Locked){
-			Cursor.lockState = CursorLockMode.Locked;
-		}
-		if(Cursor.visible){
-			Cursor.visible = false;
+		if(!m_videoCamerasManagerIsActive){
+			if(Cursor.lockState != CursorLockMode.Locked){
+				Cursor.lockState = CursorLockMode.Locked;
+			}
+			if(Cursor.visible){
+				Cursor.visible = false;
+			}
+		}else{
+			if(Cursor.lockState != CursorLockMode.None){
+				Cursor.lockState = CursorLockMode.None;
+			}
+			if(!Cursor.visible){
+				Cursor.visible = true;
+			}
 		}
 	
 		MoveDirection = Vector3.zero;

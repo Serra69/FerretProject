@@ -56,9 +56,13 @@ public class FollowPathCreator : MonoBehaviour {
 	IEnumerator m_changeSpeedCorout;
 	bool m_changeSpeedCoroutIsRunning = false;
 
+	VideoCamerasManager m_videoCameraManager;
+
 	void Start(){
+		m_videoCameraManager = VideoCamerasManager.Instance;
 		m_pathCreator = GetComponent<PathCreator>();
 		m_actualMoveSpeed = m_startMoveSpeed;
+		m_followTransform.gameObject.SetActive(false);
 		StartCoroutine(WaitTimeToUsePath(m_usePathAtStart));
 	}
 
@@ -80,7 +84,7 @@ public class FollowPathCreator : MonoBehaviour {
 				m_changeSpeedCorout = ChangeMoveSpeedValue(m_moveSpeeds[m_moveSpeedNumber].m_moveSpeed, m_moveSpeeds[m_moveSpeedNumber].m_timeToReachNewSpeed, m_moveSpeeds[m_moveSpeedNumber].m_changeSpeedCurve);
 				StartCoroutine(m_changeSpeedCorout);
 
-				m_actualLastTimer += m_moveSpeeds[m_moveSpeedNumber].m_timer;
+				m_actualLastTimer += m_moveSpeeds[m_moveSpeedNumber].m_timer + m_moveSpeeds[m_moveSpeedNumber].m_timeToReachNewSpeed;
 				m_moveSpeedNumber ++;
 			}
 		}
@@ -99,18 +103,23 @@ public class FollowPathCreator : MonoBehaviour {
 	IEnumerator WaitTimeToUsePath(bool usePath){
 		yield return new WaitForSeconds(m_delayToStartUsePath);
 		m_usePath = usePath;
+		if(m_usePath){
+			m_videoCameraManager.SetPathsCanvasIsActive(false);
+			m_followTransform.gameObject.SetActive(true);
+		}
 	}
 
 	IEnumerator ChangeMoveSpeedValue(float newSpeedValue, float timeToReachNewSpeed, AnimationCurve changeSpeedCurve)
 	{
 		m_changeSpeedCoroutIsRunning = true;
+		float startCoroutSpeed = m_actualMoveSpeed;
 		float distance = Mathf.Abs(m_actualMoveSpeed - newSpeedValue);
 		float vitesse = distance / timeToReachNewSpeed;
 		float moveFracJourney = new float();
 
 		while(m_actualMoveSpeed != newSpeedValue){
 			moveFracJourney += (Time.deltaTime) * vitesse / distance;
-			m_actualMoveSpeed = Mathf.Lerp(m_actualMoveSpeed, newSpeedValue, changeSpeedCurve.Evaluate(moveFracJourney));
+			m_actualMoveSpeed = Mathf.Lerp(startCoroutSpeed, newSpeedValue, changeSpeedCurve.Evaluate(moveFracJourney));
 			yield return null;
 		}
 		m_changeSpeedCoroutIsRunning = false;

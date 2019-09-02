@@ -21,11 +21,11 @@ MonoBehaviour:
   anchor: {r: 1, g: 0.3726415, b: 0.3726415, a: 1}
   anchorHighlighted: {r: 0.735849, g: 0.03818085, b: 0.03818085, a: 1}
   anchorSelected: {r: 1, g: 1, b: 1, a: 1}
-  control: {r: 0.35, g: 0.6, b: 1, a: 1}
-  controlHighlighted: {r: 0.19579923, g: 0.19579923, b: 0.754717, a: 1}
+  control: {r: 0.19607843, g: 0.19607843, b: 0.7529412, a: 1}
+  controlHighlighted: {r: 0.15512636, g: 0.15512636, b: 0.3962264, a: 1}
   controlSelected: {r: 1, g: 1, b: 1, a: 1}
   handleDisabled: {r: 1, g: 1, b: 1, a: 0.2}
-  controlLine: {r: 0, g: 0, b: 0, a: 0.7254902}
+  controlLine: {r: 0.12927197, g: 0.5540351, b: 0.7830189, a: 0.7254902}
   bezierPath: {r: 0, g: 1, b: 0, a: 1}
   highlightedPath: {r: 1, g: 0.6, b: 0, a: 1}
   bounds: {r: 1, g: 1, b: 1, a: 0.4}

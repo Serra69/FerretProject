@@ -43,7 +43,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1786151570653542
 GameObject:
   m_ObjectHideFlags: 0
@@ -52,7 +52,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4203783941217776}
-  - component: {fileID: 114384194432521606}
+  - component: {fileID: 114730316376327372}
   - component: {fileID: 114895258338560876}
   m_Layer: 0
   m_Name: PathCreator
@@ -201,7 +201,7 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
---- !u!114 &114384194432521606
+--- !u!114 &114730316376327372
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -215,34 +215,13 @@ MonoBehaviour:
   editorData:
     _bezierPath:
       points:
-      - {x: 0, y: 0, z: 0}
-      - {x: 1.0996104, y: 0.2041981, z: -0.022167033}
-      - {x: 2.199221, y: 0.4083962, z: -0.044334065}
-      - {x: 3, y: 0, z: 0}
-      - {x: 3.7612655, y: -0.38824442, z: 0.042146455}
-      - {x: 4.339631, y: -1.5631084, z: -0.032310188}
-      - {x: 4.6636276, y: -2.302948, z: 0.25}
-      - {x: 5.679305, y: -4.6222258, z: 1.1349969}
-      - {x: 3.9423065, y: -8.26994, z: 3.9121218}
-      - {x: 5.8679695, y: -9.742473, z: 5.0598755}
-      - {x: 6.804691, y: -10.458773, z: 5.61819}
-      - {x: 9.060127, y: -9.8529215, z: 6.31228}
-      - {x: 10.176672, y: -9.8663845, z: 5.637451}
-      - {x: 11.091366, y: -9.877414, z: 5.084619}
-      - {x: 11.219101, y: -9.787088, z: 3.344396}
-      - {x: 11.4, y: -9.822184, z: 2.291565}
-      - {x: 11.7927065, y: -9.898371, z: 0.006001234}
-      - {x: 12.687396, y: -10.28101, z: -3.5518231}
-      - {x: 11.317236, y: -10.417299, z: -5.4194183}
-      - {x: 10.131856, y: -10.535209, z: -7.035149}
-      - {x: 6.4379406, y: -10.595685, z: -6.149575}
-      - {x: 4.961729, y: -10.541746, z: -7.5088043}
-      - {x: 3.5202074, y: -10.489075, z: -8.836093}
-      - {x: 2.9742389, y: -10.294981, z: -11.175829}
-      - {x: 2.4282703, y: -10.100887, z: -13.515564}
+      - {x: -2, y: 0, z: 0}
+      - {x: -1, y: 0.5, z: 0}
+      - {x: 1, y: -0.5, z: 0}
+      - {x: 2, y: 0, z: 0}
       isClosed: 0
       space: 0
-      controlMode: 3
+      controlMode: 0
       autoControlLength: 0.3
       boundsUpToDate: 0
       bounds:
@@ -251,24 +230,17 @@ MonoBehaviour:
       perAnchorNormalsAngle:
       - 0
       - 0
-      - 76.24408
-      - 56.187683
-      - 59.26877
-      - 49.843533
-      - 64.82004
-      - 50.09674
-      - 51.778656
-      globalNormalsAngle: 270
-      flipNormals: 1
+      globalNormalsAngle: 0
+      flipNormals: 0
     vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0.3
     vertexPathMinVertexSpacing: 0.01
-    showTransformTool: 0
+    showTransformTool: 1
     showPathBounds: 0
     showPerSegmentBounds: 0
     displayAnchorPoints: 1
     displayControlPoints: 1
-    bezierHandleScale: 3
+    bezierHandleScale: 1
     globalDisplaySettingsFoldout: 0
     keepConstantHandleSize: 0
     showNormalsInVertexMode: 0
@@ -276,7 +248,7 @@ MonoBehaviour:
     showDisplayOptions: 0
     showPathOptions: 1
     showVertexPathDisplayOptions: 0
-    showVertexPathOptions: 0
+    showVertexPathOptions: 1
     showNormals: 0
     showNormalsHelpInfo: 0
     tabIndex: 0

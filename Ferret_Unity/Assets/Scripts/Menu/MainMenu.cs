@@ -8,13 +8,20 @@ public class MainMenu : MonoBehaviour {
 
 [SerializeField] float m_waitTimeToQuit = 0.175f;
 
+[HideInInspector] public bool m_videoCamerasManagerIsActive = false;
+
 void Awake(){
 	SetResolution();
 }
 
 void OnEnable(){
-	Cursor.lockState = CursorLockMode.Locked;
-	Cursor.visible = true;
+	if(!m_videoCamerasManagerIsActive){
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+	}else{
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
+	}
 }
 
 // ---------------------------------------------- Quitter ----------------------------------------------
