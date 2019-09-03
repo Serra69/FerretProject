@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using PathCreation;
+using UnityEngine.Events;
 
 public class FollowPathCreator : MonoBehaviour {
 
@@ -35,6 +36,8 @@ public class FollowPathCreator : MonoBehaviour {
 		public AnimationCurve m_changeSpeedCurve;
 	}
 
+	[SerializeField] UnityEvent m_eventsAtStartPath;
+
 	[Header("Gizmos")]
 	public GizmosFollow m_gizmos;
 	[Serializable] public class GizmosFollow {
@@ -60,6 +63,8 @@ public class FollowPathCreator : MonoBehaviour {
 
 	void Start(){
 		m_videoCameraManager = VideoCamerasManager.Instance;
+		m_videoCameraManager.SetFollowPathCreator(this);
+
 		m_pathCreator = GetComponent<PathCreator>();
 		m_actualMoveSpeed = m_startMoveSpeed;
 		m_followTransform.gameObject.SetActive(false);
@@ -104,8 +109,11 @@ public class FollowPathCreator : MonoBehaviour {
 		yield return new WaitForSeconds(m_delayToStartUsePath);
 		m_usePath = usePath;
 		if(m_usePath){
+			m_videoCameraManager.DisableOtherFollowPath();
+			m_usePath = true;
 			m_videoCameraManager.SetPathsCanvasIsActive(false);
 			m_followTransform.gameObject.SetActive(true);
+			m_eventsAtStartPath.Invoke();
 		}
 	}
 
@@ -123,6 +131,16 @@ public class FollowPathCreator : MonoBehaviour {
 			yield return null;
 		}
 		m_changeSpeedCoroutIsRunning = false;
+	}
+
+	public void ResetPath(){
+		m_followTransform.gameObject.SetActive(false);
+		m_distanceTravelled = 0;
+		m_timer = 0;
+		m_actualLastTimer = 0;
+		m_moveSpeedNumber = 0;
+		m_actualMoveSpeed = m_startMoveSpeed;
+		m_usePath = false;
 	}
 
 	void OnDrawGizmos(){
