@@ -1331,7 +1331,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1612695284128748
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
@@ -1339,7 +1339,7 @@ GameObject:
   - component: {fileID: 4696343163258562}
   - component: {fileID: 95099453133352006}
   m_Layer: 9
-  m_Name: Ferret
+  m_Name: FerretMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1674,6 +1674,21 @@ GameObject:
   - component: {fileID: 4094608804893486}
   m_Layer: 9
   m_Name: ctrl_spine_D01
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1807118722693476
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4124478150094868}
+  m_Layer: 9
+  m_Name: Ferret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2123,6 +2138,21 @@ Transform:
   m_Father: {fileID: 4165821110038238}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0.7796325, y: 1.8640754, z: -26.43342}
+--- !u!4 &4124478150094868
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1807118722693476}
+  m_LocalRotation: {x: -0, y: 0.66705704, z: -0, w: 0.74500674}
+  m_LocalPosition: {x: -3.300003, y: -3.6592083, z: 0.8106537}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4792875117979298}
+  - {fileID: 4696343163258562}
+  m_Father: {fileID: 4735495075120330}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4135092158406896
 Transform:
   m_ObjectHideFlags: 1
@@ -2259,7 +2289,7 @@ Transform:
   - {fileID: 4702618480894604}
   - {fileID: 4936909716998542}
   m_Father: {fileID: 4696343163258562}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4188273811103260
 Transform:
@@ -2535,7 +2565,7 @@ Transform:
   - {fileID: 4321709298801750}
   - {fileID: 4163992469497482}
   m_Father: {fileID: 4696343163258562}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4349076856876436
 Transform:
@@ -3251,15 +3281,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1612695284128748}
-  m_LocalRotation: {x: -0, y: 0.66705704, z: -0, w: 0.74500674}
-  m_LocalPosition: {x: -3.300003, y: -3.6592083, z: 0.8106537}
-  m_LocalScale: {x: 30.000011, y: 30, z: 30.000011}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 30, y: 30, z: 30}
   m_Children:
-  - {fileID: 4792875117979298}
   - {fileID: 4174967212527232}
   - {fileID: 4345036968501380}
-  m_Father: {fileID: 4735495075120330}
-  m_RootOrder: 2
+  m_Father: {fileID: 4124478150094868}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 83.68101, z: 0}
 --- !u!4 &4701034074705342
 Transform:
@@ -3340,16 +3369,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1298155750313174}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 68.37, y: 9.784208, z: -154.07}
+  m_LocalRotation: {x: -0, y: 0.86602527, z: -0, w: 0.50000036}
+  m_LocalPosition: {x: 62.42, y: 9.784208, z: -155.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4402317604128482}
   - {fileID: 4295068872567954}
-  - {fileID: 4696343163258562}
+  - {fileID: 4124478150094868}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 120.00001, z: 0}
 --- !u!4 &4735859604565482
 Transform:
   m_ObjectHideFlags: 1
@@ -3428,10 +3457,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1764148912640078}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.083333336, z: 0}
-  m_LocalScale: {x: 0.03333335, y: 0.033333335, z: 0.03333335}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4696343163258562}
+  m_Father: {fileID: 4124478150094868}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4793711799140700
@@ -3912,9 +3941,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_target: {fileID: 4792875117979298}
-  m_startVectorUp: 2
+  m_startVectorUp: 0
   m_changeVectorUp:
-    m_additionnalVectorUp: 5
+    m_additionnalVectorUp: 8.25
     m_timeToChange: 10
     m_changeSpeedCurve:
       serializedVersion: 2
@@ -3929,13 +3958,22 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
+        time: 0.83185166
+        value: 0.82973033
+        inSlope: 1.9193597
+        outSlope: 1.9193597
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: -0.054212295
+        outSlope: -0.054212295
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.62565964
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -3954,22 +3992,28 @@ MonoBehaviour:
   editorData:
     _bezierPath:
       points:
-      - {x: 3.088379, y: 0, z: -1.7255249}
-      - {x: 2.129083, y: 0.5440372, z: 3.3094888}
-      - {x: 1.1697869, y: 1.0880744, z: 8.344502}
+      - {x: 5.345887, y: 0, z: -0.09428356}
+      - {x: 3.3101006, y: 0.583105, z: 4.327786}
+      - {x: 1.2743137, y: 1.16621, z: 8.749855}
       - {x: -2.261177, y: 2, z: 9.970795}
-      - {x: -4.813237, y: 2.6783195, z: 11.180483}
-      - {x: -9.783707, y: 3.4008868, z: 9.825632}
+      - {x: -4.9408665, y: 2.6319625, z: 10.8961935}
+      - {x: -9.783706, y: 3.400887, z: 9.825632}
       - {x: -11.403744, y: 4, z: 7.4904633}
-      - {x: -14.358789, y: 5.0928187, z: 3.2309728}
-      - {x: -13.763768, y: 5.1902127, z: -6.3602057}
-      - {x: -10, y: 6, z: -10}
-      - {x: -6.366047, y: 6.7818575, z: -13.514256}
-      - {x: 2.4480357, y: 7.097747, z: -13.104492}
-      - {x: 6.9154434, y: 8, z: -10.781754}
-      - {x: 9.698435, y: 8.562062, z: -9.334793}
-      - {x: 11.074044, y: 9.281031, z: -5.6366806}
-      - {x: 12.449654, y: 10, z: -1.9385681}
+      - {x: -14.358792, y: 5.0928187, z: 3.2309723}
+      - {x: -13.504044, y: 5.213022, z: -6.104851}
+      - {x: -10.000009, y: 6.0000005, z: -10.000006}
+      - {x: -7.1925497, y: 6.630533, z: -13.120833}
+      - {x: -0.14284635, y: 7.326697, z: -14.088618}
+      - {x: 3.8019974, y: 7.75, z: -12.579318}
+      - {x: 7.5374446, y: 8.150834, z: -11.150133}
+      - {x: 11.748937, y: 8.102136, z: -6.002413}
+      - {x: 12.00001, y: 8.375, z: -2}
+      - {x: 12.320803, y: 8.723636, z: 3.113841}
+      - {x: 7.898793, y: 9.176777, z: 10.443955}
+      - {x: 3.2954352, y: 9.5, z: 12.697942}
+      - {x: -0.09958935, y: 9.73838, z: 14.36028}
+      - {x: -4.661029, y: 9.86919, z: 12.745472}
+      - {x: -9.222468, y: 10, z: 11.130663}
       isClosed: 0
       space: 0
       controlMode: 3
@@ -3979,6 +4023,8 @@ MonoBehaviour:
         m_Center: {x: 0, y: 0, z: 0}
         m_Extent: {x: 0, y: 0, z: 0}
       perAnchorNormalsAngle:
+      - 0
+      - 0
       - 0
       - 0
       - 0
@@ -4024,13 +4070,42 @@ MonoBehaviour:
   m_delayToStartUsePath: 1
   m_followTransform: {fileID: 4295068872567954}
   m_usePathRotation: 0
-  m_startMoveSpeed: 1
+  m_startMoveSpeed: 2
   m_moveSpeeds:
   - m_positionNumber: 0
     m_levelPart: 
     m_timer: 0
     m_moveSpeed: 7.5
     m_timeToReachNewSpeed: 5
+    m_changeSpeedCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - m_positionNumber: 1
+    m_levelPart: 
+    m_timer: 5
+    m_moveSpeed: 2
+    m_timeToReachNewSpeed: 7.5
     m_changeSpeedCurve:
       serializedVersion: 2
       m_Curve:
